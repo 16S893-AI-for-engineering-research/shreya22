@@ -1,7 +1,7 @@
 // map.js
 // Renders a world map SVG and animates ONE aircraft that flies through the
 // 36 illustrative routes in sequence, one flight at a time. Only one plane
-// is ever visible on the map. map.js dispatches a "flightmap:planeready"
+// is ever visible on the map. map.js dispatches a "flightmap:flightstart"
 // event each time the aircraft completes a flight; the easter egg logic
 // (trail + tooltip) lives separately in egg.js and listens for that event.
 
@@ -9,7 +9,14 @@
   const VIEWBOX_W = 1000;
   const VIEWBOX_H = 500;
   const GAP_BETWEEN_FLIGHTS_MS = 700; // pause at destination before next takeoff
-  const FLIGHT_DURATION_MS = 4200; // slower, more readable flight speed
+
+  // Speed is now constant (px/sec) instead of a fixed duration per flight,
+  // so long routes no longer cover far more ground per second than short
+  // ones (that was the "planes speed up on long flights" bug). The value
+  // below is calibrated as 1/5th of the previous average speed (was a
+  // fixed 4200ms for an average ~317px route ≈ 75.5 px/s), per the
+  // "5 times slower" request.
+  const PLANE_SPEED_PX_PER_SEC = 15;
 
   const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -84,12 +91,12 @@
     return copy;
   }
 
-  function animatePlane(planeGroup, pathEl, onDone) {
+  function animatePlane(planeGroup, pathEl, durationMs, onDone) {
     const totalLength = pathEl.getTotalLength();
     const start = performance.now();
 
     function frame(now) {
-      const t = Math.min(1, (now - start) / FLIGHT_DURATION_MS);
+      const t = Math.min(1, (now - start) / durationMs);
       const dist = t * totalLength;
       const point = pathEl.getPointAtLength(dist);
       const lookAheadDist = Math.min(totalLength, dist + 1);
@@ -122,7 +129,13 @@
 
     const group = el("g", { class: "route", "data-index": index });
     const line = el("path", { class: "route-line", d });
+    // A wider, invisible line on top of the visible route, purely to make
+    // clicking/tapping anywhere along the flight path trigger the easter
+    // egg -- not just the small plane icon (which was hard to hit,
+    // especially while it's moving).
+    const lineHit = el("path", { class: "route-line-hit", d });
     group.appendChild(line);
+    group.appendChild(lineHit);
 
     const dotFrom = el("circle", {
       class: "city-dot",
@@ -140,11 +153,16 @@
     group.appendChild(dotTo);
     routeLayer.appendChild(group);
 
-    // Draw-in reveal via stroke-dasharray/dashoffset.
+    // Duration is derived from this route's actual on-screen length so
+    // every flight moves at the same speed (px/sec), rather than every
+    // flight taking the same fixed time regardless of distance.
     const totalLength = line.getTotalLength();
+    const durationMs = (totalLength / PLANE_SPEED_PX_PER_SEC) * 1000;
+
+    // Draw-in reveal via stroke-dasharray/dashoffset.
     line.style.strokeDasharray = String(totalLength);
     line.style.strokeDashoffset = String(totalLength);
-    line.style.transition = `stroke-dashoffset ${FLIGHT_DURATION_MS}ms linear`;
+    line.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
     // Force a reflow before triggering the transition.
     // eslint-disable-next-line no-unused-expressions
     line.getBoundingClientRect();
@@ -159,13 +177,21 @@
     );
     planeGroup.dataset.ready = "false";
 
-    animatePlane(planeGroup, line, () => {
+    // Kept on a shared object rather than dispatched as an event, so
+    // there's no risk of egg.js "missing" the notification if it
+    // attaches its listener a moment late (events fire-and-forget; this
+    // is just a live value egg.js reads at click-time instead).
+    window.FlightMap.currentFlight = {
+      element: planeGroup,
+      pathEl: line,
+      lineHitEl: lineHit,
+      routeGroup: group,
+      route,
+      index,
+    };
+
+    animatePlane(planeGroup, line, durationMs, () => {
       planeGroup.dataset.ready = "true";
-      svg.dispatchEvent(
-        new CustomEvent("flightmap:planeready", {
-          detail: { element: planeGroup, pathEl: line, routeGroup: group, route, index },
-        })
-      );
       onDone(group, line);
     });
   }
@@ -215,6 +241,11 @@
     container.appendChild(svg);
     container.dataset.svgReady = "true";
 
+    // Exposed before the first flight starts, since flyRoute() writes
+    // window.FlightMap.currentFlight on every call -- this must exist
+    // first or the very first flight's assignment would throw.
+    window.FlightMap = { svg, trailLayer, routeLayer, planeGroup, routes, currentFlight: null };
+
     let i = 0;
     function next() {
       const route = routes[i % routes.length];
@@ -233,9 +264,6 @@
       });
     }
     next();
-
-    // Expose for egg.js / debugging
-    window.FlightMap = { svg, trailLayer, routeLayer, planeGroup, routes };
   }
 
   if (document.readyState === "loading") {

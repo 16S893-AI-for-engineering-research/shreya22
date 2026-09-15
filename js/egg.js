@@ -1,23 +1,24 @@
 // egg.js
-// The easter egg: click (or press Enter/Space on) the aircraft once it has
-// landed, and a lingering "emissions trail" spreads along its just-flown
-// route, plus a one-line aviation-emissions fact appears near the plane.
+// The easter egg: click (or press Enter/Space on) the aircraft, or click
+// anywhere along its currently-flying route line, and a lingering
+// "emissions trail" spreads along that route, plus a one-line
+// aviation-emissions fact appears near the plane.
 //
-// The aircraft is a single persistent element that's reused across all
-// flights (see map.js), so this file tracks "the flight that just landed"
-// via the flightmap:planeready event rather than binding a new listener
-// per route.
+// map.js keeps window.FlightMap.currentFlight up to date with whichever
+// flight is in progress. Rather than binding a listener per plane/route
+// element (which risks missing the very first flight if egg.js attaches
+// a moment late), we bind ONE delegated click listener on the whole SVG
+// and just read the live currentFlight value at click-time.
 
 (function () {
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const PARTICLE_COUNT = 34;
+  const PARTICLE_COUNT = 18;
   const SPREAD_DURATION_MS = 7000; // slow, gradual spread rather than a quick puff
 
   let facts = [];
   let factIndex = 0;
   const triggered = new Set(); // flight indices already popped, so repeat
-  // clicks on the same landed flight don't restart or duplicate its trail.
-  let currentFlight = null; // { element, pathEl, route, index }
+  // clicks on the same flight don't restart or duplicate its trail.
   let currentTooltip = null; // only one fact bubble on screen at a time
 
   function el(tag, attrs) {
@@ -64,8 +65,8 @@
   }
 
   function showTooltip(pageX, pageY, text) {
-    // Tweak: the previous fact bubble disappears as soon as a new one
-    // is triggered, instead of both being visible at once.
+    // The previous fact bubble disappears as soon as a new one is
+    // triggered, instead of letting both stack on screen.
     dismissTooltip();
 
     const host = ensureTooltipHost();
@@ -83,6 +84,9 @@
     });
   }
 
+  // Simple, cheap "puff" mark along the path -- a small circle that grows
+  // and fades slowly. Kept intentionally simple rather than a fluid/blob
+  // shader effect: the visual payoff wasn't worth the added complexity.
   function spreadTrail(trailLayer, pathEl) {
     const totalLength = pathEl.getTotalLength();
 
@@ -98,17 +102,11 @@
       haze.style.opacity = "0.5";
     });
 
-    // Particle puffs distributed along the path. Each starts small, dark,
-    // and tight to the path (fresh, concentrated emissions), then slowly
-    // grows and drifts outward while lightening — mimicking a contrail /
-    // emissions plume dispersing over time. Growth uses several staged
-    // steps rather than one CSS transition so the "spreading" reads as
-    // continuous and slow rather than a single jump.
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const t = i / (PARTICLE_COUNT - 1);
       const dist = t * totalLength;
       const point = pathEl.getPointAtLength(dist);
-      const driftAngleBase = Math.random() * Math.PI * 2;
+      const driftAngle = Math.random() * Math.PI * 2;
       const startDelay = t * SPREAD_DURATION_MS * 0.4 + Math.random() * 300;
 
       const particle = el("circle", {
@@ -122,32 +120,22 @@
       trailLayer.appendChild(particle);
 
       setTimeout(() => {
-        const stages = 5;
-        for (let s = 1; s <= stages; s++) {
-          setTimeout(() => {
-            const progress = s / stages;
-            const radius = 0.6 + progress * (3.5 + Math.random() * 3);
-            const driftDist = progress * (6 + Math.random() * 10);
-            const dx = Math.cos(driftAngleBase) * driftDist;
-            const dy = Math.sin(driftAngleBase) * driftDist;
-            particle.style.transition =
-              "r 1400ms ease-out, cx 1400ms ease-out, cy 1400ms ease-out, opacity 1400ms ease-out, fill 1400ms ease-out";
-            particle.setAttribute("r", String(radius));
-            particle.setAttribute("cx", String(point.x + dx));
-            particle.setAttribute("cy", String(point.y + dy));
-            // Lighten and fade as it disperses outward.
-            particle.style.opacity = String(0.85 - progress * 0.55);
-            particle.style.fill = progress < 0.5 ? "#3a3a3a" : "#b91c1c";
-          }, s * (SPREAD_DURATION_MS / stages));
-        }
+        const radius = 3 + Math.random() * 3;
+        const driftDist = 8 + Math.random() * 8;
+        particle.style.transition =
+          "r 2000ms ease-out, cx 2000ms ease-out, cy 2000ms ease-out, opacity 2000ms ease-out, fill 2000ms ease-out";
+        particle.setAttribute("r", String(radius));
+        particle.setAttribute("cx", String(point.x + Math.cos(driftAngle) * driftDist));
+        particle.setAttribute("cy", String(point.y + Math.sin(driftAngle) * driftDist));
+        particle.style.opacity = "0.4";
+        particle.style.fill = "#b91c1c";
       }, startDelay);
     }
   }
 
-  function handleTrigger() {
-    if (!currentFlight) return;
-    const { element, pathEl, route, index } = currentFlight;
-    if (element.dataset.ready !== "true") return; // still mid-flight; ignore
+  function handleTrigger(flight) {
+    if (!flight) return;
+    const { element, pathEl, route, index } = flight;
 
     if (!triggered.has(index)) {
       triggered.add(index);
@@ -167,25 +155,25 @@
 
     loadFacts();
 
-    let wired = false;
+    // Single delegated listener: catches clicks on the plane AND clicks
+    // anywhere along the current route's line-hit path (see map.js),
+    // since both are descendants of the SVG. No per-element wiring, no
+    // risk of missing the first flight.
     const watchSvg = () => {
       const svg = container.querySelector("svg.map-svg");
       if (svg) {
-        svg.addEventListener("flightmap:planeready", (e) => {
-          currentFlight = e.detail;
-          if (!wired) {
-            // The aircraft element is created once and reused, so we only
-            // need to bind the click/keyboard handlers a single time.
-            const plane = e.detail.element;
-            plane.addEventListener("click", handleTrigger);
-            plane.addEventListener("keydown", (evt) => {
-              if (evt.key === "Enter" || evt.key === " ") {
-                evt.preventDefault();
-                handleTrigger();
-              }
-            });
-            wired = true;
-          }
+        svg.addEventListener("click", (evt) => {
+          const target = evt.target;
+          const isPlane = target.closest(".plane");
+          const isRouteLine = target.classList.contains("route-line-hit");
+          if (!isPlane && !isRouteLine) return;
+          handleTrigger(window.FlightMap && window.FlightMap.currentFlight);
+        });
+        svg.addEventListener("keydown", (evt) => {
+          if (evt.key !== "Enter" && evt.key !== " ") return;
+          if (!evt.target.closest(".plane")) return;
+          evt.preventDefault();
+          handleTrigger(window.FlightMap && window.FlightMap.currentFlight);
         });
       } else {
         requestAnimationFrame(watchSvg);

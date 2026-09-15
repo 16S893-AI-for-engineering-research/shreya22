@@ -249,6 +249,15 @@ p {
   pointer-events: none;
 }
 
+.route-line-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  stroke-linecap: round;
+  cursor: pointer;
+  pointer-events: stroke;
+}
+
 .city-dot {
   fill: var(--accent);
   pointer-events: none;
@@ -283,6 +292,7 @@ p {
 
 .emission-particle {
   fill: #3a3a3a;
+  pointer-events: none;
 }
 
 .emission-tooltip {
