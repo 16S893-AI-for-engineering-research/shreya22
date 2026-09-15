@@ -164,6 +164,46 @@ p {
   margin-right: 6px;
 }
 
+/* ---------- Dev log two-column layout ---------- */
+
+.devlog-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.devlog-col__label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.devlog-col p {
+  margin: 0;
+}
+
+.devlog-col:first-child {
+  border-right: 1px solid var(--line);
+  padding-right: 24px;
+}
+
+@media (max-width: 720px) {
+  .devlog-columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .devlog-col:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+}
+
 /* ---------- Hero / Map (home page) ---------- */
 
 .hero {
@@ -220,8 +260,6 @@ p {
 
 .plane-icon {
   fill: var(--accent-dark);
-  stroke: var(--accent-dark);
-  stroke-width: 0.5;
 }
 
 .plane:hover .plane-icon {
@@ -237,14 +275,14 @@ p {
 
 .emission-trail {
   fill: none;
-  stroke: var(--danger);
-  stroke-width: 3;
+  stroke: #3a3a3a;
+  stroke-width: 2.5;
   stroke-linecap: round;
   opacity: 0;
 }
 
 .emission-particle {
-  fill: var(--danger-soft);
+  fill: #3a3a3a;
 }
 
 .emission-tooltip {
