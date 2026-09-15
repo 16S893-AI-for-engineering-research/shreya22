@@ -1,0 +1,7 @@
+[
+  {
+    "date": "2025-09-14",
+    "title": "Planning the site with pi",
+    "body": "Used the pi coding agent to plan the whole site before writing any code. Reviewed the assignment requirements (multi-page nav, animation, easter egg) directly from the class slides. Discussed and decided: plain HTML/CSS/JS (no Astro) for simplicity and zero build step, a minimal/clean visual style (chose after comparing 3 rendered mockups: minimal, retro-poster, dark-tech), an illustrative 36-flight network across all 6 continents for the home page animation, and an easter egg where clicking a plane reveals a persistent emissions trail plus a one-line aviation-emissions fact. Approved the plan and the route list before any implementation started."
+  }
+]
