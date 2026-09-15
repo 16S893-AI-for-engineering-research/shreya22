@@ -13,7 +13,7 @@
 (function () {
   const SVG_NS = "http://www.w3.org/2000/svg";
   const PARTICLE_COUNT = 18;
-  const SPREAD_DURATION_MS = 7000; // slow, gradual spread rather than a quick puff
+  const SPREAD_DURATION_MS = 2800; // 2.5x faster than the previous 7000ms, matching plane speed
 
   let facts = [];
   let factIndex = 0;
@@ -123,7 +123,7 @@
         const radius = 3 + Math.random() * 3;
         const driftDist = 8 + Math.random() * 8;
         particle.style.transition =
-          "r 2000ms ease-out, cx 2000ms ease-out, cy 2000ms ease-out, opacity 2000ms ease-out, fill 2000ms ease-out";
+          "r 800ms ease-out, cx 800ms ease-out, cy 800ms ease-out, opacity 800ms ease-out, fill 800ms ease-out";
         particle.setAttribute("r", String(radius));
         particle.setAttribute("cx", String(point.x + Math.cos(driftAngle) * driftDist));
         particle.setAttribute("cy", String(point.y + Math.sin(driftAngle) * driftDist));

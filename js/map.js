@@ -16,7 +16,7 @@
   // below is calibrated as 1/5th of the previous average speed (was a
   // fixed 4200ms for an average ~317px route ≈ 75.5 px/s), per the
   // "5 times slower" request.
-  const PLANE_SPEED_PX_PER_SEC = 15;
+  const PLANE_SPEED_PX_PER_SEC = 37.5; // 2.5x faster than the previous 15 px/sec
 
   const SVG_NS = "http://www.w3.org/2000/svg";
 
