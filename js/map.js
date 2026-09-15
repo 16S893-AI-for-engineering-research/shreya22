@@ -1,14 +1,15 @@
 // map.js
-// Renders a world map SVG and animates 36 illustrative flight routes,
-// revealing them one after another. Each landed plane becomes clickable —
-// map.js dispatches a "flightmap:planeready" event; the easter egg logic
+// Renders a world map SVG and animates ONE aircraft that flies through the
+// 36 illustrative routes in sequence, one flight at a time. Only one plane
+// is ever visible on the map. map.js dispatches a "flightmap:planeready"
+// event each time the aircraft completes a flight; the easter egg logic
 // (trail + tooltip) lives separately in egg.js and listens for that event.
 
 (function () {
   const VIEWBOX_W = 1000;
   const VIEWBOX_H = 500;
-  const REVEAL_INTERVAL_MS = 900; // gap between successive flights starting
-  const FLIGHT_DURATION_MS = 1600; // how long a single flight takes to draw + fly
+  const GAP_BETWEEN_FLIGHTS_MS = 700; // pause at destination before next takeoff
+  const FLIGHT_DURATION_MS = 4200; // slower, more readable flight speed
 
   const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -40,14 +41,25 @@
     return `M ${from[0]},${from[1]} Q ${cx},${cy} ${to[0]},${to[1]}`;
   }
 
+  // A proper aircraft glyph (Material Symbols "flight" icon path), which
+  // points "up" (+y is down in SVG, so "up" = -y) in its native
+  // orientation. We bake in a +90deg rotation here so that the icon's
+  // zero-rotation state points along +x, matching the atan2-based
+  // direction-of-travel angle used in animatePlane.
+  const PLANE_ICON_PATH =
+    "M340-80v-60l80-60v-220L80-320v-80l340-200v-220q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v220l340 200v80L540-420v220l80 60v60l-140-40-140 40Z";
+
   function buildPlaneIcon() {
-    // Simple chevron/plane glyph, points along +x by default.
     const g = el("g", { class: "plane-icon-group" });
+    const inner = el("g", {
+      transform: "rotate(90) scale(0.018) translate(-480,-480)",
+    });
     const body = el("path", {
       class: "plane-icon",
-      d: "M -7,0 L 5,0 M 5,0 L 1,-4 M 5,0 L 1,4 M -7,0 L -3,-2 M -7,0 L -3,2",
+      d: PLANE_ICON_PATH,
     });
-    g.appendChild(body);
+    inner.appendChild(body);
+    g.appendChild(inner);
     return g;
   }
 
@@ -61,6 +73,15 @@
     const res = await fetch(url);
     if (!res.ok) throw new Error("Failed to load " + url);
     return res.json();
+  }
+
+  function shuffle(array) {
+    const copy = array.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   }
 
   function animatePlane(planeGroup, pathEl, onDone) {
@@ -92,13 +113,14 @@
     requestAnimationFrame(frame);
   }
 
-  function revealRoute(svg, route, index) {
+  function flyRoute(svg, planeGroup, route, index, onDone) {
     const from = route.fromXY;
     const to = route.toXY;
     const d = pathD(from, to);
 
-    const group = el("g", { class: "route", "data-index": index });
+    const routeLayer = svg.querySelector(".route-layer");
 
+    const group = el("g", { class: "route", "data-index": index });
     const line = el("path", { class: "route-line", d });
     group.appendChild(line);
 
@@ -116,8 +138,7 @@
     });
     group.appendChild(dotFrom);
     group.appendChild(dotTo);
-
-    svg.appendChild(group);
+    routeLayer.appendChild(group);
 
     // Draw-in reveal via stroke-dasharray/dashoffset.
     const totalLength = line.getTotalLength();
@@ -131,28 +152,21 @@
       line.style.strokeDashoffset = "0";
     });
 
-    // Plane that flies along the same path, then rests at the destination.
-    const planeGroup = el("g", {
-      class: "plane",
-      transform: `translate(${from[0]},${from[1]})`,
-      tabindex: "0",
-      role: "button",
-      "aria-label": `Flight ${route.from} to ${route.to}`,
-    });
-    planeGroup.appendChild(buildPlaneIcon());
-    // Invisible larger hit target for easier clicking/tapping.
-    planeGroup.appendChild(
-      el("circle", { class: "plane-hit", cx: 0, cy: 0, r: 9 })
+    planeGroup.setAttribute("transform", `translate(${from[0]},${from[1]})`);
+    planeGroup.setAttribute(
+      "aria-label",
+      `Flight ${route.from} to ${route.to}`
     );
-    group.appendChild(planeGroup);
+    planeGroup.dataset.ready = "false";
 
     animatePlane(planeGroup, line, () => {
-      planeGroup.setAttribute("data-ready", "true");
+      planeGroup.dataset.ready = "true";
       svg.dispatchEvent(
         new CustomEvent("flightmap:planeready", {
-          detail: { element: planeGroup, pathEl: line, route, index },
+          detail: { element: planeGroup, pathEl: line, routeGroup: group, route, index },
         })
       );
+      onDone(group, line);
     });
   }
 
@@ -160,37 +174,68 @@
     const container = document.getElementById("map-container");
     if (!container) return; // not on the home page
 
-    const [worldPath, routes] = await Promise.all([
+    const [worldPath, routesRaw] = await Promise.all([
       loadText("data/world-outline.path.txt"),
       loadJSON("data/routes.json"),
     ]);
+
+    const routes = shuffle(routesRaw);
 
     const svg = el("svg", {
       viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`,
       class: "map-svg",
       role: "img",
       "aria-label":
-        "Animated world map showing illustrative flight routes between continents",
+        "Animated world map showing a single aircraft flying illustrative routes between continents",
     });
 
     const land = el("path", { class: "land", d: worldPath });
     svg.appendChild(land);
 
+    // Route lines/dots live in their own layer, kept separate from the
+    // emissions layer so route fade-out (tweak #2) never touches trails.
+    const routeLayer = el("g", { class: "route-layer" });
+    svg.appendChild(routeLayer);
+
     // A dedicated layer the easter egg draws into, kept separate so trail
     // effects never interfere with route/plane hit-testing.
     const trailLayer = el("g", { class: "emission-layer" });
     svg.appendChild(trailLayer);
-    svg.setAttribute("data-trail-layer", "true");
+
+    // Single persistent aircraft, created once and reused across flights.
+    const planeGroup = el("g", {
+      class: "plane",
+      tabindex: "0",
+      role: "button",
+    });
+    planeGroup.appendChild(buildPlaneIcon());
+    planeGroup.appendChild(el("circle", { class: "plane-hit", cx: 0, cy: 0, r: 10 }));
+    svg.appendChild(planeGroup);
 
     container.appendChild(svg);
     container.dataset.svgReady = "true";
 
-    routes.forEach((route, index) => {
-      setTimeout(() => revealRoute(svg, route, index), index * REVEAL_INTERVAL_MS);
-    });
+    let i = 0;
+    function next() {
+      const route = routes[i % routes.length];
+      flyRoute(svg, planeGroup, route, i, (routeGroup, lineEl) => {
+        // Fade the route line out shortly after arrival, per tweak #2 —
+        // the path disappears but any emissions trail (drawn separately
+        // in the trail layer by egg.js) remains untouched.
+        setTimeout(() => {
+          routeGroup.style.transition = "opacity 1.2s ease";
+          routeGroup.style.opacity = "0";
+          setTimeout(() => routeGroup.remove(), 1300);
+        }, 900);
 
-    // Expose for egg.js
-    window.FlightMap = { svg, trailLayer, routes };
+        i += 1;
+        setTimeout(next, GAP_BETWEEN_FLIGHTS_MS);
+      });
+    }
+    next();
+
+    // Expose for egg.js / debugging
+    window.FlightMap = { svg, trailLayer, routeLayer, planeGroup, routes };
   }
 
   if (document.readyState === "loading") {
