@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dev Log — Shreya Sharma</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <h1>Dev Log</h1>
+    <p class="lede">
+      Running notes on how this site was built — what I asked the
+      <code>pi</code> coding agent to do, what I reviewed, and what I
+      changed or rejected. Newest entries first.
+    </p>
+
+    <div id="devlog-entries"></div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script>
+    (async function () {
+      const container = document.getElementById("devlog-entries");
+      try {
+        const res = await fetch("data/devlog.json");
+        const entries = await res.json();
+        entries
+          .slice()
+          .reverse()
+          .forEach((entry) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+              <h3>${entry.title}</h3>
+              <div class="meta">${entry.date}</div>
+              <p>${entry.body}</p>
+            `;
+            container.appendChild(card);
+          });
+      } catch (err) {
+        container.innerHTML = "<p>Could not load dev log entries.</p>";
+      }
+    })();
+  </script>
+</body>
+</html>
