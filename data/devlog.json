@@ -2,6 +2,19 @@
   {
     "date": "2025-09-14",
     "title": "Planning the site with pi",
-    "body": "Used the pi coding agent to plan the whole site before writing any code. Reviewed the assignment requirements (multi-page nav, animation, easter egg) directly from the class slides. Discussed and decided: plain HTML/CSS/JS (no Astro) for simplicity and zero build step, a minimal/clean visual style (chose after comparing 3 rendered mockups: minimal, retro-poster, dark-tech), an illustrative 36-flight network across all 6 continents for the home page animation, and an easter egg where clicking a plane reveals a persistent emissions trail plus a one-line aviation-emissions fact. Approved the plan and the route list before any implementation started."
+    "agentLog": "Reviewed the assignment requirements directly from the class slides (multi-page nav, animation, easter egg). Proposed a full plan: plain HTML/CSS/JS (no Astro), a minimal/clean visual style chosen after rendering 3 side-by-side mockups, an illustrative 36-flight network across all 6 continents for the home page animation, and an easter egg where clicking a plane reveals a persistent emissions trail plus a one-line aviation-emissions fact.",
+    "yourNotes": "<em>Add your notes here \u2014 e.g. why you picked Style A, what you liked/changed about the plan.</em>"
+  },
+  {
+    "date": "2025-09-14",
+    "title": "Built the full site in 5 staged commits",
+    "agentLog": "Implemented the plan: data files (routes, facts, dev log), shared layout/nav, the 4 HTML pages, the animated map (36 routes, staggered reveal), and the easter egg (click-to-reveal trail + fact tooltip). Verified everything with real headless-browser tests, not just visual inspection \u2014 caught and fixed a bug where city-dots were blocking clicks on planes at shared destination cities. Committed in 5 logical stages matching the build order, then pushed and helped enable GitHub Pages.",
+    "yourNotes": "<em>Add your notes here.</em>"
+  },
+  {
+    "date": "2025-09-14",
+    "title": "Six refinements after trying the live site",
+    "agentLog": "Changed the animation model from 36 simultaneous planes to a single aircraft that flies each route in sequence, using a proper airplane icon (verified its orientation empirically before wiring up rotation math). Slowed the flight speed (1.6s to 4.2s per leg). Route lines now fade out and are removed after landing, while emissions trails persist independently in a separate SVG layer. The fact tooltip now dismisses itself when a new one is triggered instead of stacking. Emissions particles now start small, dark, and concentrated at the flight path, then slowly grow and lighten as they spread outward over ~7 seconds. Restructured the dev log data/page into two columns.",
+    "yourNotes": "<em>Add your notes here.</em>"
   }
 ]

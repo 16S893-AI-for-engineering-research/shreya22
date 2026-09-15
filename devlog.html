@@ -12,9 +12,10 @@
   <main>
     <h1>Dev Log</h1>
     <p class="lede">
-      Running notes on how this site was built — what I asked the
-      <code>pi</code> coding agent to do, what I reviewed, and what I
-      changed or rejected. Newest entries first.
+      Two-column running log: the left column is what I asked the
+      <code>pi</code> coding agent to do and what it generated; the right
+      column is my own notes on what actually happened, what I checked,
+      and what I would change. Newest entries first.
     </p>
 
     <div id="devlog-entries"></div>
@@ -34,12 +35,22 @@
           .reverse()
           .forEach((entry) => {
             const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-              <h3>${entry.title}</h3>
-              <div class="meta">${entry.date}</div>
-              <p>${entry.body}</p>
-            `;
+            card.className = "card devlog-entry";
+            const agentLog = entry.agentLog || entry.body || "";
+            const yourNotes = entry.yourNotes || "";
+            card.innerHTML =
+              "<h3>" + entry.title + "</h3>" +
+              "<div class='meta'>" + entry.date + "</div>" +
+              "<div class='devlog-columns'>" +
+                "<div class='devlog-col'>" +
+                  "<div class='devlog-col__label'>Agent log</div>" +
+                  "<p>" + agentLog + "</p>" +
+                "</div>" +
+                "<div class='devlog-col'>" +
+                  "<div class='devlog-col__label'>My notes</div>" +
+                  "<p>" + (yourNotes || "<em>Add your notes here.</em>") + "</p>" +
+                "</div>" +
+              "</div>";
             container.appendChild(card);
           });
       } catch (err) {
