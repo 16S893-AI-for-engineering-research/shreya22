@@ -21,6 +21,6 @@
     "date": "2025-09-21",
     "title": "Created --reality-check skill",
     "agentLog": "Wrote a reusable skill that the agent loads when you ask for a 'reality check' on any idea or proposal. The skill ensures balanced tradeoff analysis by enforcing at least one genuine pro and one genuine con, both specific to your actual context. Committed to .pi/skills/reality-check/SKILL.md.",
-    "yourNotes": "This skill addresses a pattern I kept fixing by hand: the agent would default to one-sided enthusiasm or passive agreement instead of giving honest tradeoff analysis. Without this, I'd commit to something only to discover a downside later that should have been obvious. The skill works by making the pro-and-con format explicit and verifiable: both must be real, both must be specific to my situation, and I should feel more prepared to decide, not less."
+    "yourNotes": "I used Haiku, since I expeced fewer queries for a simpler task. It wrote a pretty comprehensive skill.md, though it did not inittially follow the template in the class repo, and only told me it did not have access to it after I probed it to ask why the template was not followed. I liked that ti checked pi's skills template too inittially. I had initially interpreted the 'verification' aspect to be some sort of user feedback on the output of the skill, but let it be a simple check since I did not want it to get into an iterative loop with this one skill."
   }
 ]
