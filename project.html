@@ -11,7 +11,7 @@
   <div id="project-subnav"></div>
 
   <main>
-    <h1>Network structure, fuel, and who breathes the difference</h1>
+    <h1>Air Quality Impacts of Changing Airline Network Structures</h1>
     <p class="lede">
       Project proposal &mdash; 16.S893. Scroll top to bottom; this page is
       the three-minute version of the argument.
@@ -28,8 +28,8 @@
       </p>
 
       <figure class="fig">
-        <svg viewBox="0 0 640 380" class="fig__svg" role="img"
-             aria-label="Map of the contiguous United States with circles at major airports sized by passenger demand">
+        <svg viewBox="0 0 640 380" class="fig__svg" id="fig1-us-map" role="img"
+             aria-label="Map of the contiguous United States with circles at major airports sized by passenger demand, and one small plane animating between a few of them">
           <!-- simplified contiguous US outline -->
           <path class="us-land" d="
             M 59,66 L 43,67 L 49,157 L 68,195 L 83,223 L 115,246
@@ -165,15 +165,99 @@
           fuel-burn and emissions footprints, geographically and chemically.
         </figcaption>
       </figure>
+
+      <figure class="fig">
+        <p class="example-caption" style="text-align:left; margin: 0 0 14px; font-size:13px;">
+          <strong>An extreme case, to make the difference vivid:</strong>
+          Eugene, OR (EUG) to Bangor, ME (BGR) &mdash; 2,286 nautical miles,
+          a city pair with too little direct demand for any airline to fly
+          nonstop today. A true 50-seat regional jet (~1,650 nm range)
+          cannot make this trip nonstop at all &mdash; so the
+          point-to-point option below only exists if a larger,
+          longer-range aircraft is assigned to a route this thin.
+        </p>
+        <div class="split">
+          <div class="split__half">
+            <div class="split__title">Hub &amp; spoke &mdash; 3 legs</div>
+            <svg viewBox="0 0 640 380" class="fig__svg" role="img"
+                 aria-label="US map showing a three-leg hub and spoke itinerary from Eugene through Seattle and Chicago to Bangor">
+              <path class="us-land" d="
+                M 59,66 L 43,67 L 49,157 L 68,195 L 83,223 L 115,246
+                L 173,259 L 201,259 L 215,253 L 249,285 L 285,314 L 301,320
+                L 322,286 L 344,276 L 372,285 L 391,270 L 419,277 L 438,296
+                L 453,321 L 466,311 L 453,266 L 476,231 L 506,196 L 505,174
+                L 524,153 L 552,141 L 562,128 L 590,105 L 571,80 L 500,111
+                L 443,105 L 438,141 L 421,88 L 400,88 L 372,77 L 325,60
+                L 239,60 L 116,60 Z" />
+              <path class="example-edge example-edge--hub" d="M 57,115 Q 71,98 66,77" />
+              <path class="example-edge example-edge--hub" d="M 66,77 Q 222,147 392,139" stroke-width="5" />
+              <path class="example-edge example-edge--hub" d="M 392,139 Q 489,159 573,107" />
+              <circle class="example-emit example-emit--lg" cx="66" cy="77" r="22" />
+              <circle class="example-emit example-emit--lg" cx="392" cy="139" r="26" />
+              <circle class="example-node" cx="57" cy="115" r="7" />
+              <circle class="example-node example-node--hub" cx="66" cy="77" r="9" />
+              <circle class="example-node example-node--hub" cx="392" cy="139" r="9" />
+              <circle class="example-node" cx="573" cy="107" r="7" />
+              <text class="example-label" x="40" y="128">EUG</text>
+              <text class="example-label" x="66" y="55">SEA</text>
+              <text class="example-label" x="392" y="117">ORD</text>
+              <text class="example-label" x="595" y="100">BGR</text>
+            </svg>
+            <ul class="split__notes">
+              <li>Regional jet EUG&rarr;SEA, then mainline SEA&rarr;ORD&rarr;BGR</li>
+              <li>3 takeoffs/landings on this itinerary</li>
+              <li>NO&#8339;/nvPM concentrated at two major hub metros</li>
+            </ul>
+          </div>
+
+          <div class="split__half">
+            <div class="split__title">Point to point &mdash; 1 leg</div>
+            <svg viewBox="0 0 640 380" class="fig__svg" role="img"
+                 aria-label="US map showing a single nonstop leg directly from Eugene to Bangor">
+              <path class="us-land" d="
+                M 59,66 L 43,67 L 49,157 L 68,195 L 83,223 L 115,246
+                L 173,259 L 201,259 L 215,253 L 249,285 L 285,314 L 301,320
+                L 322,286 L 344,276 L 372,285 L 391,270 L 419,277 L 438,296
+                L 453,321 L 466,311 L 453,266 L 476,231 L 506,196 L 505,174
+                L 524,153 L 552,141 L 562,128 L 590,105 L 571,80 L 500,111
+                L 443,105 L 438,141 L 421,88 L 400,88 L 372,77 L 325,60
+                L 239,60 L 116,60 Z" />
+              <path class="example-edge example-edge--p2p" d="M 57,115 Q 316,173 573,107" />
+              <circle class="example-node example-node--skip" cx="66" cy="77" r="6" />
+              <circle class="example-node example-node--skip" cx="392" cy="139" r="6" />
+              <circle class="example-emit" cx="57" cy="115" r="14" />
+              <circle class="example-emit" cx="573" cy="107" r="14" />
+              <circle class="example-node" cx="57" cy="115" r="7" />
+              <circle class="example-node" cx="573" cy="107" r="7" />
+              <text class="example-label" x="40" y="128">EUG</text>
+              <text class="example-label" x="595" y="100">BGR</text>
+            </svg>
+            <ul class="split__notes">
+              <li>One long-range narrowbody, not a true regional jet</li>
+              <li>1 takeoff/landing, but ~2,300 nm of cruise track</li>
+              <li>Cruise NO&#8339; smeared across the full transcontinental route</li>
+            </ul>
+          </div>
+        </div>
+        <figcaption>
+          The hub itinerary trades distance and two extra takeoffs/landings
+          for concentrating its NO&#8339;/nvPM near SEA and ORD. The nonstop
+          itinerary touches only two airports, but only exists because a
+          bigger, longer-range aircraft than this thin market would
+          normally get can fly it &mdash; so its per-seat fuel burn is not
+          automatically lower, and its cruise emissions are spread across
+          the full transcontinental track instead. Point to point is not a
+          free win; it is a different trade.
+        </figcaption>
+      </figure>
     </section>
 
     <!-- ============ 3. THE QUESTION ============ -->
     <section class="deck deck--question">
       <div class="deck__label">03 &middot; The question</div>
       <p class="question">
-        If we redesign the US air transport network to burn the least fuel,
-        do we also get the best outcome for climate <em>and</em> for the air
-        people actually breathe &mdash; or do those two goals pull apart?
+        For a fixed demand, how does the choice between hub-and-spoke and
+        point-to-point networks affect air quality?
       </p>
     </section>
 
@@ -184,266 +268,199 @@
 
       <figure class="fig">
         <div class="split split--tight">
-          <!-- LEFT: fuel -> climate, clean mapping -->
+          <!-- LEFT: refinery -> fuel -> CO2 -> warming, clean mapping -->
           <div class="split__half">
-            <svg viewBox="0 0 320 250" class="fig__svg" role="img"
-                 aria-label="Less fuel leads directly to less carbon dioxide and less warming">
-              <!-- fuel drop icon -->
-              <g transform="translate(46,60)">
-                <path class="icon-fill" d="M0,-26 C10,-10 20,0 20,11 A20,20 0 0 1 -20,11 C-20,0 -10,-10 0,-26 Z" />
-                <text class="icon-cap" x="0" y="48">fuel burn</text>
+            <svg viewBox="0 0 320 150" class="fig__svg" role="img"
+                 aria-label="A jet fuel refinery feeding fuel burn, which leads directly to carbon dioxide and then warming">
+              <!-- refinery icon -->
+              <g transform="translate(52,70)">
+                <rect class="refinery-fill" x="-34" y="6" width="68" height="30" rx="2" />
+                <rect class="refinery-stroke" x="-34" y="6" width="68" height="30" rx="2" fill="none" />
+                <rect class="refinery-stroke" x="-20" y="-16" width="10" height="22" fill="none" />
+                <rect class="refinery-stroke" x="-2" y="-26" width="10" height="32" fill="none" />
+                <rect class="refinery-stroke" x="16" y="-10" width="10" height="16" fill="none" />
+                <circle class="refinery-flame" cx="3" cy="-30" r="4" />
+                <circle class="refinery-flame" cx="21" cy="-14" r="3" />
+                <text class="icon-cap" x="0" y="58">fuel burn</text>
               </g>
-              <!-- arrow -->
-              <path class="flow-arrow" d="M80,60 L128,60" marker-end="url(#ar)" />
-              <!-- CO2 -->
-              <g transform="translate(172,60)">
-                <circle class="icon-fill" r="24" />
+
+              <!-- arrow to CO2 -->
+              <path class="flow-arrow" d="M92,70 L134,70" marker-end="url(#arL1)" />
+              <g transform="translate(166,70)">
+                <circle class="icon-fill" r="22" />
                 <text class="icon-in" x="0" y="5">CO&#8322;</text>
               </g>
-              <path class="flow-arrow" d="M212,60 L252,60" marker-end="url(#ar)" />
-              <!-- warming globe/thermometer -->
-              <g transform="translate(286,60)">
-                <circle class="icon-fill" r="22" />
+              <path class="flow-arrow" d="M200,70 L236,70" marker-end="url(#arL1)" />
+              <!-- warming globe -->
+              <g transform="translate(266,70)">
+                <circle class="icon-fill" r="18" />
                 <text class="icon-in" x="0" y="5">&#127777;</text>
               </g>
-              <text class="fig__sub" x="160" y="118">well-mixed, global, roughly linear in fuel</text>
-
-              <g class="verdict verdict--ok" transform="translate(160,170)">
-                <rect x="-138" y="-26" width="276" height="52" rx="10" />
-                <text x="-112" y="6" class="verdict__tick">&#10003;</text>
-                <text x="-92" y="1">Minimise fuel</text>
-                <text x="-92" y="17" class="verdict__sub">&rarr; you have minimised the climate forcing you control</text>
-              </g>
               <defs>
-                <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
+                <marker id="arL1" viewBox="0 0 10 10" refX="9" refY="5"
                         markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                   <path d="M0,0 L10,5 L0,10 Z" class="arrow-head" />
                 </marker>
               </defs>
             </svg>
+            <ul class="split__notes">
+              <li>Depends mostly on aircraft/engine type and stage length</li>
+              <li>Well mixed globally &mdash; it does not matter where it is burned</li>
+              <li>Roughly linear in fuel burned</li>
+            </ul>
+            <div class="verdict-box verdict-box--ok">
+              Minimise fuel &rarr; you have minimised the climate forcing you control.
+            </div>
           </div>
 
-          <!-- RIGHT: many factors -> respiratory harm -->
+          <!-- RIGHT: many factors -> a person coughing -->
           <div class="split__half">
-            <svg viewBox="0 0 320 250" class="fig__svg" role="img"
-                 aria-label="Many factors feed into air quality and respiratory health impacts">
-              <!-- lungs / respiratory icon -->
-              <g transform="translate(160,112)">
-                <!-- trachea -->
-                <path class="icon-stroke-w" d="M0,-46 L0,-16" />
-                <path class="icon-stroke-w" d="M0,-16 L-16,-4 M0,-16 L16,-4" />
-                <!-- left lung -->
-                <path class="icon-fill icon-fill--warn"
-                      d="M-17,-5 C-40,-2 -50,20 -46,40 C-43,56 -30,60 -23,52 C-16,44 -17,22 -17,-5 Z" />
-                <!-- right lung -->
-                <path class="icon-fill icon-fill--warn"
-                      d="M17,-5 C40,-2 50,20 46,40 C43,56 30,60 23,52 C16,44 17,22 17,-5 Z" />
-                <!-- irritation marks -->
-                <g class="irritate">
-                  <path d="M-34,20 l6,-6 M-30,32 l6,-6 M28,20 l6,-6 M24,32 l6,-6" />
+            <svg viewBox="0 0 320 150" class="fig__svg" role="img"
+                 aria-label="Fuel burn leads to a person coughing from respiratory harm, but the path is not direct">
+              <!-- refinery icon, smaller, echoing the left panel -->
+              <g transform="translate(40,70)">
+                <rect class="refinery-fill" x="-24" y="4" width="48" height="22" rx="2" />
+                <rect class="refinery-stroke" x="-24" y="4" width="48" height="22" rx="2" fill="none" />
+                <rect class="refinery-stroke" x="-14" y="-10" width="7" height="16" fill="none" />
+                <rect class="refinery-stroke" x="-1" y="-18" width="7" height="24" fill="none" />
+                <rect class="refinery-stroke" x="12" y="-6" width="7" height="12" fill="none" />
+                <circle class="refinery-flame" cx="2" cy="-21" r="3" />
+                <text class="icon-cap" x="0" y="48">fuel burn</text>
+              </g>
+
+              <path class="flow-arrow flow-arrow--warn" d="M76,70 L118,70" marker-end="url(#arR1)" />
+
+              <!-- coughing person icon -->
+              <g transform="translate(160,72)">
+                <circle class="person-fill" cx="0" cy="-22" r="11" />
+                <path class="person-stroke" d="M-16,26 C-16,4 -10,-6 0,-6 C10,-6 16,4 16,26" fill="none" />
+                <path class="person-stroke" d="M3,-2 C13,2 19,10 22,18" fill="none" />
+                <g class="cough-mark">
+                  <path d="M22,10 q8,-3 14,2" />
+                  <path d="M25,17 q9,-1 15,5" />
                 </g>
-                <text class="icon-cap" x="0" y="82">respiratory harm (PM&#8322;.&#8325;, O&#8323;)</text>
+                <circle class="cough-dot" cx="42" cy="9" r="2" />
+                <circle class="cough-dot" cx="47" cy="17" r="1.6" />
+                <text class="icon-cap" x="0" y="48">respiratory harm</text>
               </g>
 
-              <!-- inbound factor arrows -->
-              <g class="factor">
-                <path class="flow-arrow flow-arrow--warn" d="M44,24 L118,86" marker-end="url(#ar2)" />
-                <text x="40" y="18" text-anchor="start">NO&#8339; &amp; nvPM at the gate</text>
+              <path class="flow-arrow flow-arrow--warn" d="M204,70 L228,70" marker-end="url(#arR1)" />
+              <text class="fig__sub" x="278" y="58">but only</text>
+              <text class="fig__sub" x="278" y="70">via&#8230;</text>
 
-                <path class="flow-arrow flow-arrow--warn" d="M30,92 L112,108" marker-end="url(#ar2)" />
-                <text x="26" y="86" text-anchor="start">where the airport is</text>
-
-                <path class="flow-arrow flow-arrow--warn" d="M38,176 L116,136" marker-end="url(#ar2)" />
-                <text x="34" y="192" text-anchor="start">population downwind</text>
-
-                <path class="flow-arrow flow-arrow--warn" d="M276,24 L202,86" marker-end="url(#ar2)" />
-                <text x="280" y="18" text-anchor="end">LTO vs cruise split</text>
-
-                <path class="flow-arrow flow-arrow--warn" d="M290,92 L208,108" marker-end="url(#ar2)" />
-                <text x="294" y="86" text-anchor="end">meteorology</text>
-
-                <path class="flow-arrow flow-arrow--warn" d="M282,176 L204,136" marker-end="url(#ar2)" />
-                <text x="286" y="192" text-anchor="end">background chemistry</text>
-              </g>
-
-              <g class="verdict verdict--warn" transform="translate(160,228)">
-                <rect x="-146" y="-20" width="292" height="40" rx="10" />
-                <text x="-124" y="6" class="verdict__tick">!</text>
-                <text x="-106" y="1">Minimise fuel</text>
-                <text x="-106" y="16" class="verdict__sub">&rarr; tells you almost nothing about exposure</text>
-              </g>
               <defs>
-                <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5"
+                <marker id="arR1" viewBox="0 0 10 10" refX="9" refY="5"
                         markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                   <path d="M0,0 L10,5 L0,10 Z" class="arrow-head arrow-head--warn" />
                 </marker>
               </defs>
             </svg>
+            <ul class="split__notes split__notes--warn">
+              <li>NO&#8339; &amp; nvPM emitted at the gate, not just how much fuel</li>
+              <li>Where the airport is, and who lives downwind</li>
+              <li>The landing/takeoff vs. cruise split</li>
+              <li>Meteorology and background atmospheric chemistry</li>
+            </ul>
+            <div class="verdict-box verdict-box--warn">
+              Minimise fuel &rarr; tells you almost nothing about exposure.
+            </div>
           </div>
         </div>
         <figcaption>
-          Climate impact scales with how much fuel you burn. Health impact
-          depends on <em>where</em> and <em>how</em> you burn it, and on who
-          happens to live nearby. A fuel-optimal network can quietly move
-          the burden onto a different population.
+          Climate impact scales with how much fuel you burn, wherever it is
+          burned. Health impact depends on <em>where</em> and <em>how</em>
+          you burn it, and on who happens to live nearby. A fuel-optimal
+          network can quietly move the burden onto a different population.
         </figcaption>
       </figure>
     </section>
 
     <!-- ============ 5. HOW ============ -->
     <section class="deck">
-      <div class="deck__label">05 &middot; How &mdash; four tasks</div>
-      <h2>Four tasks.</h2>
+      <div class="deck__label">05 &middot; How</div>
+      <h2>Where an agent fits into the work.</h2>
+      <p>
+        A few representative examples of what I plan to hand to an agent
+        over the semester &mdash; not an exhaustive list, and likely to
+        grow as the project runs into things I did not anticipate.
+      </p>
 
       <div class="panels">
         <div class="panel">
           <div class="panel__num">01</div>
-          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Database and map icon">
-            <ellipse class="p-fill" cx="24" cy="18" rx="16" ry="6" />
-            <path class="p-stroke" d="M8,18 v22 c0,3.3 7.2,6 16,6 s16,-2.7 16,-6 V18" />
-            <path class="p-stroke" d="M8,29 c0,3.3 7.2,6 16,6 s16,-2.7 16,-6" />
-            <path class="p-stroke" d="M44,52 l8,-4 8,4 8,-4 v16 l-8,4 -8,-4 -8,4 Z" />
-            <circle class="p-fill" cx="56" cy="56" r="3.5" />
+          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Literature synthesis icon">
+            <rect class="p-stroke" x="14" y="10" width="32" height="42" rx="2" fill="none" />
+            <line class="p-stroke" x1="21" y1="20" x2="39" y2="20" />
+            <line class="p-stroke" x1="21" y1="28" x2="39" y2="28" />
+            <line class="p-stroke" x1="21" y1="36" x2="33" y2="36" />
+            <circle class="p-fill" cx="50" cy="48" r="14" />
+            <line class="p-stroke" x1="60" y1="58" x2="68" y2="66" />
           </svg>
-          <h3>Build the demand &amp; network baseline</h3>
+          <h3>Scope the question from the ops side</h3>
           <p>
-            Assemble US origin&ndash;destination demand, scheduled
-            operations, and fleet assignment into one consistent
-            present-day picture to optimise against.
+            Use an agent to synthesize the airline-operations literature on
+            hub-and-spoke vs. point-to-point network design &mdash; new
+            territory for me, since I have only approached this from the
+            regulatory side before &mdash; and narrow it into one
+            answerable research question.
           </p>
         </div>
 
         <div class="panel">
           <div class="panel__num">02</div>
-          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Network optimisation icon">
-            <g class="p-stroke">
-              <line x1="36" y1="36" x2="36" y2="12" /><line x1="36" y1="36" x2="57" y2="24" />
-              <line x1="36" y1="36" x2="57" y2="50" /><line x1="36" y1="36" x2="36" y2="60" />
-              <line x1="36" y1="36" x2="15" y2="50" /><line x1="36" y1="36" x2="15" y2="24" />
-            </g>
-            <g class="p-fill">
-              <circle cx="36" cy="12" r="4" /><circle cx="57" cy="24" r="4" />
-              <circle cx="57" cy="50" r="4" /><circle cx="36" cy="60" r="4" />
-              <circle cx="15" cy="50" r="4" /><circle cx="15" cy="24" r="4" />
-            </g>
-            <circle class="p-accent" cx="36" cy="36" r="8" />
+          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Workplan and milestones icon">
+            <line class="p-stroke" x1="12" y1="58" x2="60" y2="58" />
+            <circle class="p-fill" cx="20" cy="58" r="4" />
+            <circle class="p-fill" cx="36" cy="58" r="4" />
+            <circle class="p-accent" cx="52" cy="58" r="5" />
+            <path class="p-stroke" d="M52,53 v-30" />
+            <path class="p-stroke" d="M52,23 l10,-6 -10,-6 z" />
+            <text class="icon-cap" x="36" y="16" style="font-size:9px;">stretch</text>
           </svg>
-          <h3>Re-optimise the network for fuel</h3>
+          <h3>Turn it into a week-by-week workplan</h3>
           <p>
-            Re-allocate demand across network structures &mdash; from
-            hub-consolidated to fully point-to-point &mdash; and find the
-            fuel-minimising configuration for each.
+            Have the agent convert the scoped question into a
+            semester-sized plan &mdash; weekly milestones, checkpoints, and
+            a stretch goal &mdash; so scope stays matched to the time
+            available.
           </p>
         </div>
 
         <div class="panel">
           <div class="panel__num">03</div>
-          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Emissions to impact icon">
-            <path class="p-stroke" d="M10,54 q10,-14 24,-10 t28,-16" />
-            <circle class="p-fill" cx="10" cy="54" r="3.5" />
-            <circle class="p-accent" cx="34" cy="44" r="5" />
-            <circle class="p-fill" cx="62" cy="28" r="3.5" />
-            <g class="p-stroke">
-              <path d="M18,20 q6,-8 12,0 t12,0" opacity="0.7" />
-              <path d="M22,12 q6,-8 12,0 t12,0" opacity="0.45" />
-            </g>
-            <path class="p-fill" d="M50,62 h14 v4 h-14 z" />
+          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Reading open-source tool codebases icon">
+            <path class="p-stroke" d="M22,16 L10,36 L22,56" fill="none" />
+            <path class="p-stroke" d="M50,16 L62,36 L50,56" fill="none" />
+            <line class="p-stroke" x1="40" y1="14" x2="32" y2="58" opacity="0.6" />
+            <circle class="p-accent" cx="36" cy="36" r="6" />
           </svg>
-          <h3>Translate emissions into impacts</h3>
+          <h3>Get up to speed on the tools, from source</h3>
           <p>
-            Convert fuel burn into CO&#8322; forcing <em>and</em> into
-            gridded NO&#8339;/nvPM emissions, then into PM&#8322;.&#8325;
-            and ozone exposure and health burden by population.
+            Read the codebases of the open-source performance and emissions
+            tools I will depend on, using an agent to surface their
+            limitations and undocumented assumptions before I build
+            anything on top of them.
           </p>
         </div>
 
         <div class="panel">
           <div class="panel__num">04</div>
-          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Trade-off balance icon">
-            <line class="p-stroke" x1="36" y1="14" x2="36" y2="52" />
-            <line class="p-stroke" x1="12" y1="22" x2="60" y2="22" />
-            <path class="p-stroke" d="M12,22 l-6,14 a9,7 0 0 0 12,0 Z" />
-            <path class="p-stroke" d="M60,22 l6,14 a9,7 0 0 1 -12,0 Z" />
-            <path class="p-fill" d="M24,52 h24 v6 h-24 z" />
-            <circle class="p-accent" cx="36" cy="14" r="4" />
+          <svg viewBox="0 0 72 72" class="panel__icon" role="img" aria-label="Exploratory visualization and interactive walkthrough icon">
+            <rect class="p-stroke" x="10" y="14" width="52" height="36" rx="3" fill="none" />
+            <path class="p-stroke" d="M16,42 L28,26 L38,36 L48,20 L58,42" fill="none" />
+            <circle class="p-fill" cx="28" cy="26" r="3" />
+            <circle class="p-fill" cx="48" cy="20" r="3" />
+            <rect class="p-fill" x="22" y="56" width="28" height="6" rx="2" />
           </svg>
-          <h3>Map the trade-off (and its fragility)</h3>
+          <h3>Visualize, then build the walkthrough</h3>
           <p>
-            Where do climate-optimal and health-optimal networks disagree,
-            how large is the gap, and how much of the answer survives the
-            gaps in publicly available data?
+            Generate exploratory visualizations throughout, and eventually
+            an interactive walkthrough of the analysis for the project
+            website. The final write-up stays in my own voice &mdash; the
+            agent does not draft the prose.
           </p>
         </div>
       </div>
-    </section>
-
-    <!-- ============ 6. DATA RESTRICTIONS ============ -->
-    <section class="deck">
-      <div class="deck__label">06 &middot; The honest constraint</div>
-      <h2>What I can see, and what I have to model around.</h2>
-      <p>
-        The pieces of this chain sit behind very different doors. Schedules
-        and operations are open; the numbers that actually determine fuel
-        burn are commercial or proprietary.
-      </p>
-
-      <figure class="fig">
-        <svg viewBox="0 0 660 330" class="fig__svg" role="img"
-             aria-label="Diagram contrasting open data, restricted data, and the proxies used to bridge the gap">
-          <!-- OPEN column -->
-          <g class="datacol datacol--open">
-            <rect x="14" y="40" width="192" height="236" rx="12" />
-            <text class="datacol__head" x="110" y="66">OPEN</text>
-            <text class="datacol__icon" x="110" y="98">&#128275;</text>
-            <g class="datacol__item">
-              <text x="34" y="132">Scheduled flights &amp; seats</text>
-              <text x="34" y="158">Airport passenger totals</text>
-              <text x="34" y="184">Aircraft / engine types</text>
-              <text x="34" y="210">Emission indices (ICAO)</text>
-              <text x="34" y="236">Population &amp; met. fields</text>
-            </g>
-          </g>
-
-          <!-- RESTRICTED column -->
-          <g class="datacol datacol--locked">
-            <rect x="454" y="40" width="192" height="236" rx="12" />
-            <text class="datacol__head" x="550" y="66">RESTRICTED</text>
-            <text class="datacol__icon" x="550" y="98">&#128274;</text>
-            <g class="datacol__item">
-              <text x="474" y="132">Actual fuel uplift</text>
-              <text x="474" y="158">Load factors by flight</text>
-              <text x="474" y="184">Airline cost &amp; yield data</text>
-              <text x="474" y="210">Proprietary performance decks</text>
-              <text x="474" y="236">Real trajectories at scale</text>
-            </g>
-          </g>
-
-          <!-- BRIDGE -->
-          <g class="bridge">
-            <path class="bridge__arrow" d="M214,158 L444,158" marker-end="url(#ar3)" />
-            <rect x="236" y="120" width="186" height="76" rx="10" />
-            <text class="bridge__head" x="329" y="144">BRIDGED WITH PROXIES</text>
-            <text class="bridge__sub" x="329" y="164">performance models + published</text>
-            <text class="bridge__sub" x="329" y="180">averages + declared assumptions</text>
-          </g>
-
-          <text class="fig__foot" x="330" y="308">
-            Every proxy is a stated assumption, and each one gets its own sensitivity test.
-          </text>
-
-          <defs>
-            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5"
-                    markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 Z" class="arrow-head" />
-            </marker>
-          </defs>
-        </svg>
-        <figcaption>
-          The result is a study about <em>relative</em> differences between
-          network structures, not absolute fuel accounting &mdash; which is
-          the right claim to make with open data anyway.
-        </figcaption>
-      </figure>
     </section>
 
     <nav class="next-up">
@@ -456,5 +473,6 @@
 
   <script src="js/layout.js"></script>
   <script src="js/project-nav.js"></script>
+  <script src="js/us-plane.js"></script>
 </body>
 </html>
