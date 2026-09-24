@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project · Data — Shreya Sharma</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <div id="project-subnav"></div>
+
+  <main>
+    <h1>Data</h1>
+    <p class="lede">
+      What is open, what is restricted, and exactly which assumption stands
+      in for each thing I cannot see.
+    </p>
+
+    <h2>Open inputs</h2>
+    <div class="card">
+      <h3>Available and usable directly</h3>
+      <p>
+        Scheduled flights and seat counts, airport-level passenger totals,
+        aircraft and engine type assignments, certified engine emission
+        indices, and gridded population and meteorological fields.
+      </p>
+    </div>
+
+    <h2>Restricted inputs</h2>
+    <div class="card">
+      <h3>Commercial or proprietary</h3>
+      <p>
+        Actual fuel uplift per flight, per-flight load factors, airline cost
+        and yield data, manufacturer performance decks, and full-resolution
+        real trajectories at national scale.
+      </p>
+    </div>
+
+    <h2>The bridge</h2>
+    <div class="card">
+      <h3>Proxies, stated as assumptions</h3>
+      <p>
+        Fuel burn comes from open performance models rather than measured
+        uplift. Load factors come from published averages by route type
+        rather than per flight. Trajectories are idealised
+        climb&ndash;cruise&ndash;descent profiles rather than observed
+        tracks.
+      </p>
+      <p>
+        Each of these is a declared assumption with an associated sensitivity
+        test, and the conclusions are stated as relative differences between
+        network structures rather than absolute totals.
+      </p>
+    </div>
+
+    <h2>Why this is defensible</h2>
+    <p>
+      The question is comparative: does the fuel-optimal network differ from
+      the health-optimal one? Systematic bias in a fuel model affects both
+      candidate networks in the same direction, so the <em>sign</em> and
+      rough magnitude of the difference is far more robust than either
+      absolute number. Where that is not true, the sensitivity analysis
+      should expose it.
+    </p>
+
+    <nav class="next-up">
+      <span>Next:</span>
+      <a href="project-progress.html">Progress &rarr;</a>
+    </nav>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/project-nav.js"></script>
+</body>
+</html>

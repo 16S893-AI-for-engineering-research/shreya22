@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project · Methods — Shreya Sharma</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <div id="project-subnav"></div>
+
+  <main>
+    <h1>Methods</h1>
+    <p class="lede">
+      The four tasks from the proposal, expanded into what actually has to
+      be built and in what order.
+    </p>
+
+    <h2>Task 1 &mdash; Demand and network baseline</h2>
+    <div class="card">
+      <p>
+        Construct a present-day US baseline: origin&ndash;destination
+        passenger demand, scheduled operations by route, and aircraft/engine
+        assignment per flight. This is the reference case every alternative
+        network is compared against.
+      </p>
+      <p><strong>Output:</strong> a reproducible baseline network with fuel burn attributed per flight leg.</p>
+    </div>
+
+    <h2>Task 2 &mdash; Re-optimise network structure</h2>
+    <div class="card">
+      <p>
+        Hold total demand fixed and re-allocate it across a spectrum of
+        network structures, from hub-consolidated to fully point-to-point.
+        For each structure, solve for the fuel-minimising assignment of
+        aircraft and frequencies subject to capacity and connectivity
+        constraints.
+      </p>
+      <p><strong>Output:</strong> a family of candidate networks indexed by how hub-centric they are.</p>
+    </div>
+
+    <h2>Task 3 &mdash; Emissions to impacts</h2>
+    <div class="card">
+      <p>
+        Two parallel translations from fuel burn:
+      </p>
+      <p>
+        <strong>Climate:</strong> CO&#8322; from fuel burn, plus a note on
+        non-CO&#8322; forcing where the network change affects cruise
+        altitude or routing.
+      </p>
+      <p>
+        <strong>Air quality:</strong> spatially resolved NO&#8339; and nvPM
+        emissions, separated into landing/takeoff and cruise phases, mapped
+        to PM&#8322;.&#8325; and ozone exposure and then to health burden
+        weighted by the population actually exposed.
+      </p>
+    </div>
+
+    <h2>Task 4 &mdash; Map the trade-off</h2>
+    <div class="card">
+      <p>
+        Place every candidate network on a climate-versus-health plane and
+        identify where the two objectives disagree, how large the
+        disagreement is, and which network structures are Pareto-efficient.
+      </p>
+      <p>
+        Then stress-test it: re-run the comparison under alternative
+        assumptions for every proxy used in place of restricted data, and
+        report which conclusions survive and which do not.
+      </p>
+    </div>
+
+    <h2>Deliberate scope limits</h2>
+    <p>
+      US domestic only. Passenger operations only. Relative comparisons
+      between network structures rather than absolute fuel accounting.
+      Demand is treated as fixed rather than responding to changes in fares
+      or itinerary quality.
+    </p>
+
+    <nav class="next-up">
+      <span>Next:</span>
+      <a href="project-data.html">Data &rarr;</a>
+    </nav>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/project-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://nono.sh/schemas/nono-profile.schema.json",
+  "extends": "default",
+  "meta": {
+    "name": "mit-parley-portfolio",
+    "version": "1.0.0",
+    "description": "Sandbox profile used to run the 16.S893 portfolio site work (project proposal page build) through pi-nono. Derived from the denials actually hit during one real task, with each grant justified and each refusal recorded.",
+    "author": "Shreya Sharma"
+  },
+  "groups": {
+    "include": [
+      "system_read_macos",
+      "system_write_macos",
+      "user_tools",
+      "node_runtime",
+      "deny_credentials"
+    ]
+  },
+  "filesystem": {
+    "allow": [
+      "/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22",
+      "/Users/shreyasharma/.pi/agent"
+    ],
+    "read": [
+      "/Users/shreyasharma/.local/share/pi-node/node-v22.23.2-darwin-arm64/lib/node_modules/@earendil-works/pi-coding-agent",
+      "/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/Documents"
+    ]
+  },
+  "network": {
+    "allow_domain": [
+      "parley.api.mit.edu",
+      "github.com",
+      "api.github.com"
+    ]
+  },
+  "commands": {
+    "deny": [
+      "rm",
+      "rmdir",
+      "dd",
+      "truncate",
+      "srm",
+      "chmod",
+      "chown",
+      "chgrp",
+      "mv",
+      "cp",
+      "rsync",
+      "scp",
+      "sftp",
+      "ftp",
+      "sudo",
+      "su",
+      "doas",
+      "pip",
+      "npm",
+      "brew",
+      "kill",
+      "killall",
+      "pkill",
+      "shutdown",
+      "reboot",
+      "halt",
+      "poweroff",
+      "launchctl",
+      "xargs"
+    ]
+  }
+}

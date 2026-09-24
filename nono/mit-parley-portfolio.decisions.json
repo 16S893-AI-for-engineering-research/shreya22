@@ -1,0 +1,47 @@
+{
+  "granted": [
+    {
+      "denial": "read /…/16.S893/Documents/Project Proposal.docx",
+      "why_output": "DENIED — path_not_granted; suggested fix: --read /…/16.S893/Documents",
+      "decision": "GRANTED, read-only, scoped to the Documents folder only (not the 16.S893 parent that nono suggested when I widened the query)",
+      "reasoning": "The proposal is the actual input to the task. Read-only is sufficient: the agent needs to quote the proposal, never to rewrite it. Granting the parent 16.S893 directory would have pulled in every other course folder for no benefit, so I took the narrower of the two suggested fixes."
+    },
+    {
+      "denial": "network CONNECT to raw.githubusercontent.com (403 from proxy)",
+      "why_output": "nono why --host said ALLOWED, but the live CONNECT returned 403 — allowed_domains was only ['parley.api.mit.edu']",
+      "decision": "GRANTED github.com and api.github.com only; refused raw.githubusercontent.com",
+      "reasoning": "github.com/api.github.com are needed to push the portfolio repo. raw.githubusercontent.com serves arbitrary unreviewed file content from any repo on GitHub, which is a plausible route for pulling something into the site that I never read. I would rather type a URL myself than allow blanket raw fetches."
+    }
+  ],
+  "refused": [
+    {
+      "denial": "readwrite /Users/shreyasharma/Library/Application Support/Google/Chrome",
+      "why_output": "DENIED — filesystem_deny; covered by filesystem.deny rule",
+      "decision": "REFUSED",
+      "reasoning": "Headless Chrome wanted the real browser profile directory, which holds cookies, session tokens and saved passwords. Taking a screenshot of my own static HTML is not worth exposing live logged-in sessions. Worked around it with --user-data-dir plus HOME pointed at a scratch dir under /tmp instead."
+    },
+    {
+      "denial": "AF_UNIX bind() under $TMPDIR and /tmp (Chrome ProcessSingleton socket)",
+      "why_output": "Sandbox blocks unix socket bind; the profile schema exposes filesystem.unix_socket for narrow grants",
+      "decision": "REFUSED — no unix_socket grant added",
+      "reasoning": "This is what finally stopped headless Chrome, so it is the one grant that would have gotten me screenshots. I declined it anyway: local socket bind is a general-purpose IPC channel and the only thing I lose is visual verification, which I replaced with a structural check — parsing all 10 inline SVGs, asserting every shape sits inside its viewBox, and diffing used-vs-defined CSS classes. That check actually found two real bugs (an undefined .verdict--ok class and airport labels colliding with their demand bubbles), so the cheaper verification was not obviously worse."
+    },
+    {
+      "denial": "read /Users/shreyasharma/.config/nono/",
+      "why_output": "Operation not permitted",
+      "decision": "REFUSED",
+      "reasoning": "An agent that can read and edit its own sandbox profile is not sandboxed. Left it blocked on purpose; this profile is written into the portfolio repo instead, where I review it by hand."
+    },
+    {
+      "denial": "write access to the Documents folder / the .docx itself",
+      "decision": "REFUSED — read-only only",
+      "reasoning": "A previous dev-log entry is about the agent editing that .docx and the changes not appearing in Word because of OneDrive sync. I do not want an agent writing into a cloud-synced Office file at all; read is enough to build the site."
+    },
+    {
+      "denial": "read /Users/shreyasharma/.gitconfig (blocks all git commands)",
+      "why_output": "DENIED — path_not_granted; suggested fix: --read-file /Users/shreyasharma/.gitconfig",
+      "decision": "REFUSED — left to the human to commit",
+      "reasoning": "nono offered a single-file read grant, which is genuinely narrow, but .gitconfig can carry credential.helper entries and in practice granting it is what makes the agent able to commit and push on my behalf. I would rather review the diff and run git myself than have committing be something the agent can do silently. Cost of refusing: I have to stage and commit this change by hand."
+    }
+  ]
+}

@@ -16,8 +16,14 @@
     return path === "" ? "index.html" : path;
   }
 
+  // Every project-*.html sub-page should light up the "Project" nav item.
+  function activeTopLevel() {
+    const page = currentPage();
+    return page.startsWith("project") ? "project.html" : page;
+  }
+
   function buildNav() {
-    const current = currentPage();
+    const current = activeTopLevel();
     const nav = document.createElement("nav");
     nav.className = "site-nav";
 
