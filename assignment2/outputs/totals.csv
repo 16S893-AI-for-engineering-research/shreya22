@@ -1,0 +1,5 @@
+metric,hub_kg_as_printed,city_kg_as_printed,recomputed_reduction_percent,source
+fuel,6.71e7,1.88e8,64.30851063829787234042553191,"Table 7, Base Case columns"
+NOx,2.69e9,5.53e9,51.35623869801084990958408680,"Table 7, Base Case columns"
+CO,7.86e8,1.90e9,58.63157894736842105263157895,"Table 7, Base Case columns"
+HC,1.49e8,4.14e8,64.00966183574879227053140097,"Table 7, Base Case columns"

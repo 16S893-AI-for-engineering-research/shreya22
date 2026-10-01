@@ -1,0 +1,209 @@
+{
+  "doi": "10.3390/su13020465",
+  "method": "Reported-aggregate reconstruction and consistency audit; no physical model rerun",
+  "canonical_source": "Table 7, Base Case columns",
+  "relative_tolerance": "0.001",
+  "all_passed": false,
+  "checks": [
+    {
+      "kind": "figure4_label",
+      "metric": "fuel",
+      "network": "hub",
+      "actual": "6.71E+7",
+      "reference": "6.71E+7",
+      "difference": "0E+5",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "fuel",
+      "network": "city",
+      "actual": "1.88E+8",
+      "reference": "1.88E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "fuel",
+      "network": "hub",
+      "actual": "6.71E+7",
+      "reference": "6.71E+7",
+      "difference": "0E+5",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "fuel",
+      "network": "city",
+      "actual": "1.88E+8",
+      "reference": "1.88E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "reduction",
+      "metric": "fuel",
+      "network": "both",
+      "actual": "64.30851063829787234042553191",
+      "reference": "64.38",
+      "difference": "-0.07148936170212765957446809",
+      "relative_error_percent": "0.1110428109694433979100156726",
+      "passed": false
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "NOx",
+      "network": "hub",
+      "actual": "2.69E+9",
+      "reference": "2.69E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "NOx",
+      "network": "city",
+      "actual": "5.53E+9",
+      "reference": "5.53E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "NOx",
+      "network": "hub",
+      "actual": "2.69E+9",
+      "reference": "2.69E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "NOx",
+      "network": "city",
+      "actual": "5.53E+9",
+      "reference": "5.53E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "reduction",
+      "metric": "NOx",
+      "network": "both",
+      "actual": "51.35623869801084990958408680",
+      "reference": "51.38",
+      "difference": "-0.02376130198915009041591320",
+      "relative_error_percent": "0.04624620862037775479936395485",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "CO",
+      "network": "hub",
+      "actual": "7.86E+8",
+      "reference": "7.86E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "CO",
+      "network": "city",
+      "actual": "1.90E+9",
+      "reference": "1.90E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "CO",
+      "network": "hub",
+      "actual": "7.86E+8",
+      "reference": "7.86E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "prose_total",
+      "metric": "CO",
+      "network": "city",
+      "actual": "1.90E+9",
+      "reference": "1.90E+9",
+      "difference": "0E+7",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "reduction",
+      "metric": "CO",
+      "network": "both",
+      "actual": "58.63157894736842105263157895",
+      "reference": "58.64",
+      "difference": "-0.00842105263157894736842105",
+      "relative_error_percent": "0.01436059452861348459826236357",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "HC",
+      "network": "hub",
+      "actual": "1.49E+8",
+      "reference": "1.49E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "figure4_label",
+      "metric": "HC",
+      "network": "city",
+      "actual": "4.14E+8",
+      "reference": "4.14E+9",
+      "difference": "-3.726E+9",
+      "relative_error_percent": "90.0",
+      "passed": false
+    },
+    {
+      "kind": "prose_total",
+      "metric": "HC",
+      "network": "hub",
+      "actual": "1.49E+8",
+      "reference": "1.48E+8",
+      "difference": "1E+6",
+      "relative_error_percent": "0.6756756756756756756756756757",
+      "passed": false
+    },
+    {
+      "kind": "prose_total",
+      "metric": "HC",
+      "network": "city",
+      "actual": "4.14E+8",
+      "reference": "4.14E+8",
+      "difference": "0E+6",
+      "relative_error_percent": "0",
+      "passed": true
+    },
+    {
+      "kind": "reduction",
+      "metric": "HC",
+      "network": "both",
+      "actual": "64.00966183574879227053140097",
+      "reference": "64.10",
+      "difference": "-0.09033816425120772946859903",
+      "relative_error_percent": "0.1409331735588264110274555850",
+      "passed": false
+    }
+  ]
+}

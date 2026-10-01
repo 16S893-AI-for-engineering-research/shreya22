@@ -1,0 +1,23 @@
+{
+  "doi": "10.3390/su13020465",
+  "retrieval_date_utc": "2026-10-01",
+  "paper_license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "files": [
+    {
+      "path": "sun2021.xml",
+      "url": "https://mdpi-res.com/d_attachment/sustainability/sustainability-13-00465/article_deploy/sustainability-13-00465.xml",
+      "sha256": "cf54dc19605908d22df4c128a11a8ad71f1b4b5c917e2a84622fc150fbfa70a9"
+    },
+    {
+      "path": "figure4-original.png",
+      "url": "https://mdpi-res.com/d_attachment/sustainability/sustainability-13-00465/article_deploy/html/images/sustainability-13-00465-g004.png",
+      "sha256": "7aded0b8e73e5bef5ebb06da876d2ef845087a860fe19efe64a306f4b19b6238"
+    },
+    {
+      "path": "crossref.json",
+      "url": "https://api.crossref.org/works/10.3390/su13020465",
+      "sha256": "fe2acd244227cbc83d8171b9f24a3e0184f47d09aa6b50435e9fc013820a8310"
+    }
+  ]
+}

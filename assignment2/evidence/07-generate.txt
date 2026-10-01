@@ -1,0 +1,12 @@
+UTC: 2026-10-01T02:05:05Z
+Command: uv run --locked --offline python -m netenv --page ../project-assignment2.html
+16/20 source-consistency checks pass at 0.1% relative error.
+FAIL reduction fuel both: relative error 0.111043%
+FAIL figure4_label HC city: relative error 90.000000%
+FAIL prose_total HC hub: relative error 0.675676%
+FAIL reduction HC both: relative error 0.140933%
+Strict paper agreement: NOT achieved.
+Scope: reported-aggregate reconstruction; no network or aircraft model rerun.
+Outputs: /Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22/assignment2/outputs
+
+Exit status: 0

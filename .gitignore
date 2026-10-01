@@ -1,0 +1,11 @@
+# Local Python environments, tools, and caches (not website assets)
+.tools/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+.cache/
+*.egg-info/
+.DS_Store

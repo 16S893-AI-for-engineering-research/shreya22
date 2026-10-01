@@ -1,0 +1,20 @@
+[project]
+name = "netenv-reproduction"
+version = "0.1.0"
+description = "Audited first-pass reconstruction of Sun et al. (2021), Figure 4"
+requires-python = ">=3.12,<3.13"
+dependencies = ["matplotlib>=3.10,<4"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "hypothesis>=6,<7"]
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/netenv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

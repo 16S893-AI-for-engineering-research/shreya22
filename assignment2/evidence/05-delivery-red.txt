@@ -1,0 +1,44 @@
+UTC: 2026-10-01T01:59:20Z
+Command: uv run --locked pytest -q --tb=short
+.....................................FFFF......                          [100%]
+=================================== FAILURES ===================================
+____________ test_cli_builds_page_data_and_honest_numerical_tables _____________
+tests/test_delivery.py:72: in test_cli_builds_page_data_and_honest_numerical_tables
+    assert result.returncode == 0, result.stderr
+E   AssertionError: Traceback (most recent call last):
+E       File "<frozen runpy>", line 198, in _run_module_as_main
+E       File "<frozen runpy>", line 88, in _run_code
+E       File "/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22/assignment2/src/netenv/__main__.py", line 4, in <module>
+E         raise SystemExit(main())
+E                          ^^^^^^
+E       File "/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22/assignment2/src/netenv/cli.py", line 5, in main
+E         raise NotImplementedError
+E     NotImplementedError
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Cours...6.S893/shreya22/assignment2/src/netenv/cli.py", line 5, in main\n    raise NotImplementedError\nNotImplementedError\n').returncode
+___ test_strict_cli_returns_failure_for_publication_not_successful_rendering ___
+tests/test_delivery.py:96: in test_strict_cli_returns_failure_for_publication_not_successful_rendering
+    assert "0.1% relative" in result.stdout
+E   assert '0.1% relative' in ''
+E    +  where '' = CompletedProcess(args=['/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Cours...6.S893/shreya22/assignment2/src/netenv/cli.py", line 5, in main\n    raise NotImplementedError\nNotImplementedError\n').stdout
+__________ test_invalid_input_is_rejected_before_outputs_are_created ___________
+tests/test_delivery.py:111: in test_invalid_input_is_rejected_before_outputs_are_created
+    assert result.returncode == 2
+E   assert 1 == 2
+E    +  where 1 = CompletedProcess(args=['/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Cours...6.S893/shreya22/assignment2/src/netenv/cli.py", line 5, in main\n    raise NotImplementedError\nNotImplementedError\n').returncode
+_______________________ test_page_escapes_source_labels ________________________
+tests/test_delivery.py:120: in test_page_escapes_source_labels
+    page = render_page(data, audit(data), tmp_path / "page.html", tmp_path / "outputs")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/page.py:5: in render_page
+    raise NotImplementedError
+E   NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/test_delivery.py::test_cli_builds_page_data_and_honest_numerical_tables
+FAILED tests/test_delivery.py::test_strict_cli_returns_failure_for_publication_not_successful_rendering
+FAILED tests/test_delivery.py::test_invalid_input_is_rejected_before_outputs_are_created
+FAILED tests/test_delivery.py::test_page_escapes_source_labels - NotImplement...
+4 failed, 43 passed in 1.57s
+
+Exit status: 1

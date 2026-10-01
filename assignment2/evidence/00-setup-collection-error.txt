@@ -1,0 +1,20 @@
+UTC: 2026-10-01T01:52:35Z
+Command: uv run --locked pytest tests/test_core.py -q --tb=short
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting tests/test_core.py ______________________
+ImportError while importing test module '/Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22/assignment2/tests/test_core.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../.tools/python/cpython-3.12.12-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_core.py:12: in <module>
+    from netenv.core import (
+E   ModuleNotFoundError: No module named 'netenv'
+=========================== short test summary info ============================
+ERROR tests/test_core.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.97s
+
+Exit status: 2

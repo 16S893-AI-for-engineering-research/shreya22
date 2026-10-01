@@ -1,0 +1,304 @@
+UTC: 2026-10-01T01:52:46Z
+Command: uv run --locked pytest tests/test_core.py -q --tb=short
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                                    [100%]
+=================================== FAILURES ===================================
+______ test_reduction_uses_city_baseline_and_allows_increases[25-100-75] _______
+tests/test_core.py:24: in test_reduction_uses_city_baseline_and_allows_increases
+    assert reduction_percent(D(hub), D(city)) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+______ test_reduction_uses_city_baseline_and_allows_increases[0-100-100] _______
+tests/test_core.py:24: in test_reduction_uses_city_baseline_and_allows_increases
+    assert reduction_percent(D(hub), D(city)) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+______ test_reduction_uses_city_baseline_and_allows_increases[100-100-0] _______
+tests/test_core.py:24: in test_reduction_uses_city_baseline_and_allows_increases
+    assert reduction_percent(D(hub), D(city)) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+_____ test_reduction_uses_city_baseline_and_allows_increases[125-100--25] ______
+tests/test_core.py:24: in test_reduction_uses_city_baseline_and_allows_increases
+    assert reduction_percent(D(hub), D(city)) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+__________ test_reduction_rejects_undefined_or_unphysical_inputs[1-0] __________
+tests/test_core.py:33: in test_reduction_rejects_undefined_or_unphysical_inputs
+    reduction_percent(D(hub), D(city))
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+_________ test_reduction_rejects_undefined_or_unphysical_inputs[-1-10] _________
+tests/test_core.py:33: in test_reduction_rejects_undefined_or_unphysical_inputs
+    reduction_percent(D(hub), D(city))
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+_________ test_reduction_rejects_undefined_or_unphysical_inputs[1--10] _________
+tests/test_core.py:33: in test_reduction_rejects_undefined_or_unphysical_inputs
+    reduction_percent(D(hub), D(city))
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+________ test_reduction_rejects_undefined_or_unphysical_inputs[NaN-10] _________
+tests/test_core.py:33: in test_reduction_rejects_undefined_or_unphysical_inputs
+    reduction_percent(D(hub), D(city))
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+______ test_reduction_rejects_undefined_or_unphysical_inputs[1-Infinity] _______
+tests/test_core.py:33: in test_reduction_rejects_undefined_or_unphysical_inputs
+    reduction_percent(D(hub), D(city))
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+_______ test_conversion_handles_three_orders_of_magnitude[2500-g-kg-2.5] _______
+tests/test_core.py:41: in test_conversion_handles_three_orders_of_magnitude
+    assert convert_mass(D(value), source, target) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+_______ test_conversion_handles_three_orders_of_magnitude[2.5-kg-g-2500] _______
+tests/test_core.py:41: in test_conversion_handles_three_orders_of_magnitude
+    assert convert_mass(D(value), source, target) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+______ test_conversion_handles_three_orders_of_magnitude[1.25-t-kg-1250] _______
+tests/test_core.py:41: in test_conversion_handles_three_orders_of_magnitude
+    assert convert_mass(D(value), source, target) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+__________ test_conversion_handles_three_orders_of_magnitude[0-g-t-0] __________
+tests/test_core.py:41: in test_conversion_handles_three_orders_of_magnitude
+    assert convert_mass(D(value), source, target) == D(expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+________ test_conversion_rejects_invalid_mass_or_unknown_unit[-1-kg-g] _________
+tests/test_core.py:50: in test_conversion_rejects_invalid_mass_or_unknown_unit
+    convert_mass(D(value), source, target)
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+________ test_conversion_rejects_invalid_mass_or_unknown_unit[NaN-kg-g] ________
+tests/test_core.py:50: in test_conversion_rejects_invalid_mass_or_unknown_unit
+    convert_mass(D(value), source, target)
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+_____ test_conversion_rejects_invalid_mass_or_unknown_unit[Infinity-kg-t] ______
+tests/test_core.py:50: in test_conversion_rejects_invalid_mass_or_unknown_unit
+    convert_mass(D(value), source, target)
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+________ test_conversion_rejects_invalid_mass_or_unknown_unit[1-lb-kg] _________
+tests/test_core.py:50: in test_conversion_rejects_invalid_mass_or_unknown_unit
+    convert_mass(D(value), source, target)
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+_______________ test_mass_conversion_round_trip_preserves_value ________________
+tests/test_core.py:54: in test_mass_conversion_round_trip_preserves_value
+    @given(st.integers(min_value=0, max_value=10**12), st.sampled_from(["g", "kg", "t"]))
+                   ^^^
+tests/test_core.py:56: in test_mass_conversion_round_trip_preserves_value
+    kg = convert_mass(D(amount), unit, "kg")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:24: in convert_mass
+    raise NotImplementedError
+E   NotImplementedError
+E   Failing test case: test_mass_conversion_round_trip_preserves_value(
+E       # The test always failed when commented parts were varied together.
+E       amount=0,  # or any other generated value
+E       unit='g',  # or any other generated value
+E   )
+_______________ test_reduction_is_invariant_to_common_unit_scale _______________
+tests/test_core.py:61: in test_reduction_is_invariant_to_common_unit_scale
+    @given(st.integers(0, 10**9), st.integers(1, 10**9), st.integers(-6, 6))
+                   ^^^
+tests/test_core.py:64: in test_reduction_is_invariant_to_common_unit_scale
+    assert reduction_percent(D(hub) * scale, D(city) * scale) == reduction_percent(D(hub), D(city))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:12: in reduction_percent
+    raise NotImplementedError
+E   NotImplementedError
+E   Failing test case: test_reduction_is_invariant_to_common_unit_scale(
+E       # The test always failed when commented parts were varied together.
+E       hub=0,  # or any other generated value
+E       city=1,  # or any other generated value
+E       exponent=0,  # or any other generated value
+E   )
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[100.1-100-0.001-True] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[100.10001-100-0.0010001-False] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[99.9-100-0.001-True] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[0-0-0-True] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[0.0000001-0-Infinity-False] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_ test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[-100.1--100-0.001-True] _
+tests/test_core.py:76: in test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance
+    assert relative_error(D(actual), D(reference)) == D(error)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+_____________ test_comparison_rejects_nonfinite_observations[NaN] ______________
+tests/test_core.py:83: in test_comparison_rejects_nonfinite_observations
+    relative_error(D(value), D("1"))
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+___________ test_comparison_rejects_nonfinite_observations[Infinity] ___________
+tests/test_core.py:83: in test_comparison_rejects_nonfinite_observations
+    relative_error(D(value), D("1"))
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+__________ test_comparison_rejects_nonfinite_observations[-Infinity] ___________
+tests/test_core.py:83: in test_comparison_rejects_nonfinite_observations
+    relative_error(D(value), D("1"))
+src/netenv/core.py:16: in relative_error
+    raise NotImplementedError
+E   NotImplementedError
+____ test_loader_preserves_conflicting_sources_and_three_significant_digits ____
+tests/test_core.py:87: in test_loader_preserves_conflicting_sources_and_three_significant_digits
+    data = load_data(DATA)
+           ^^^^^^^^^^^^^^^
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+________ test_loader_rejects_invalid_or_out_of_scope_records[negative] _________
+tests/test_core.py:111: in test_loader_rejects_invalid_or_out_of_scope_records
+    load_data(path)
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+_________ test_loader_rejects_invalid_or_out_of_scope_records[missing] _________
+tests/test_core.py:111: in test_loader_rejects_invalid_or_out_of_scope_records
+    load_data(path)
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+________ test_loader_rejects_invalid_or_out_of_scope_records[duplicate] ________
+tests/test_core.py:111: in test_loader_rejects_invalid_or_out_of_scope_records
+    load_data(path)
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+______ test_loader_rejects_invalid_or_out_of_scope_records[extra-metric] _______
+tests/test_core.py:111: in test_loader_rejects_invalid_or_out_of_scope_records
+    load_data(path)
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+________ test_loader_rejects_invalid_or_out_of_scope_records[nonfinite] ________
+tests/test_core.py:111: in test_loader_rejects_invalid_or_out_of_scope_records
+    load_data(path)
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+__________________ test_json_round_trip_does_not_change_audit __________________
+tests/test_core.py:115: in test_json_round_trip_does_not_change_audit
+    data = load_data(DATA)
+           ^^^^^^^^^^^^^^^
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+_________________ test_audit_does_not_hide_paper_disagreements _________________
+tests/test_core.py:122: in test_audit_does_not_hide_paper_disagreements
+    report = audit(load_data(DATA))
+                   ^^^^^^^^^^^^^^^
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+_________________ test_audit_order_does_not_change_comparisons _________________
+tests/test_core.py:144: in test_audit_order_does_not_change_comparisons
+    data = load_data(DATA)
+           ^^^^^^^^^^^^^^^
+src/netenv/core.py:8: in load_data
+    raise NotImplementedError
+E   NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/test_core.py::test_reduction_uses_city_baseline_and_allows_increases[25-100-75]
+FAILED tests/test_core.py::test_reduction_uses_city_baseline_and_allows_increases[0-100-100]
+FAILED tests/test_core.py::test_reduction_uses_city_baseline_and_allows_increases[100-100-0]
+FAILED tests/test_core.py::test_reduction_uses_city_baseline_and_allows_increases[125-100--25]
+FAILED tests/test_core.py::test_reduction_rejects_undefined_or_unphysical_inputs[1-0]
+FAILED tests/test_core.py::test_reduction_rejects_undefined_or_unphysical_inputs[-1-10]
+FAILED tests/test_core.py::test_reduction_rejects_undefined_or_unphysical_inputs[1--10]
+FAILED tests/test_core.py::test_reduction_rejects_undefined_or_unphysical_inputs[NaN-10]
+FAILED tests/test_core.py::test_reduction_rejects_undefined_or_unphysical_inputs[1-Infinity]
+FAILED tests/test_core.py::test_conversion_handles_three_orders_of_magnitude[2500-g-kg-2.5]
+FAILED tests/test_core.py::test_conversion_handles_three_orders_of_magnitude[2.5-kg-g-2500]
+FAILED tests/test_core.py::test_conversion_handles_three_orders_of_magnitude[1.25-t-kg-1250]
+FAILED tests/test_core.py::test_conversion_handles_three_orders_of_magnitude[0-g-t-0]
+FAILED tests/test_core.py::test_conversion_rejects_invalid_mass_or_unknown_unit[-1-kg-g]
+FAILED tests/test_core.py::test_conversion_rejects_invalid_mass_or_unknown_unit[NaN-kg-g]
+FAILED tests/test_core.py::test_conversion_rejects_invalid_mass_or_unknown_unit[Infinity-kg-t]
+FAILED tests/test_core.py::test_conversion_rejects_invalid_mass_or_unknown_unit[1-lb-kg]
+FAILED tests/test_core.py::test_mass_conversion_round_trip_preserves_value - ...
+FAILED tests/test_core.py::test_reduction_is_invariant_to_common_unit_scale
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[100.1-100-0.001-True]
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[100.10001-100-0.0010001-False]
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[99.9-100-0.001-True]
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[0-0-0-True]
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[0.0000001-0-Infinity-False]
+FAILED tests/test_core.py::test_relative_threshold_is_inclusive_without_hidden_absolute_tolerance[-100.1--100-0.001-True]
+FAILED tests/test_core.py::test_comparison_rejects_nonfinite_observations[NaN]
+FAILED tests/test_core.py::test_comparison_rejects_nonfinite_observations[Infinity]
+FAILED tests/test_core.py::test_comparison_rejects_nonfinite_observations[-Infinity]
+FAILED tests/test_core.py::test_loader_preserves_conflicting_sources_and_three_significant_digits
+FAILED tests/test_core.py::test_loader_rejects_invalid_or_out_of_scope_records[negative]
+FAILED tests/test_core.py::test_loader_rejects_invalid_or_out_of_scope_records[missing]
+FAILED tests/test_core.py::test_loader_rejects_invalid_or_out_of_scope_records[duplicate]
+FAILED tests/test_core.py::test_loader_rejects_invalid_or_out_of_scope_records[extra-metric]
+FAILED tests/test_core.py::test_loader_rejects_invalid_or_out_of_scope_records[nonfinite]
+FAILED tests/test_core.py::test_json_round_trip_does_not_change_audit - NotIm...
+FAILED tests/test_core.py::test_audit_does_not_hide_paper_disagreements - Not...
+FAILED tests/test_core.py::test_audit_order_does_not_change_comparisons - Not...
+37 failed in 3.09s
+
+Exit status: 1

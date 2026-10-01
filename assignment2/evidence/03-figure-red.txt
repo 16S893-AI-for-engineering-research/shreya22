@@ -1,0 +1,39 @@
+UTC: 2026-10-01T01:54:39Z
+Command: uv run --locked pytest -q --tb=short
+.....................................FFFF.                               [100%]
+=================================== FAILURES ===================================
+_____ test_real_plot_has_only_original_metrics_and_table7_basecase_heights _____
+tests/test_figures.py:21: in test_real_plot_has_only_original_metrics_and_table7_basecase_heights
+    fig = make_figure(load_data(DATA))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/figures.py:5: in make_figure
+    raise NotImplementedError
+E   NotImplementedError
+________ test_plot_order_is_stable_even_if_input_records_are_reordered _________
+tests/test_figures.py:43: in test_plot_order_is_stable_even_if_input_records_are_reordered
+    fig = make_figure(data)
+          ^^^^^^^^^^^^^^^^^
+src/netenv/figures.py:5: in make_figure
+    raise NotImplementedError
+E   NotImplementedError
+_________ test_export_round_trips_plotted_values_and_preserves_failure _________
+tests/test_figures.py:51: in test_export_round_trips_plotted_values_and_preserves_failure
+    report = export_outputs(load_data(DATA), tmp_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/netenv/figures.py:9: in export_outputs
+    raise NotImplementedError
+E   NotImplementedError
+________ test_two_exports_are_byte_identical_in_same_locked_environment ________
+tests/test_figures.py:78: in test_two_exports_are_byte_identical_in_same_locked_environment
+    export_outputs(data, tmp_path / "first")
+src/netenv/figures.py:9: in export_outputs
+    raise NotImplementedError
+E   NotImplementedError
+=========================== short test summary info ============================
+FAILED tests/test_figures.py::test_real_plot_has_only_original_metrics_and_table7_basecase_heights
+FAILED tests/test_figures.py::test_plot_order_is_stable_even_if_input_records_are_reordered
+FAILED tests/test_figures.py::test_export_round_trips_plotted_values_and_preserves_failure
+FAILED tests/test_figures.py::test_two_exports_are_byte_identical_in_same_locked_environment
+4 failed, 38 passed in 33.56s
+
+Exit status: 1

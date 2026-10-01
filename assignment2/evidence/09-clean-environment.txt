@@ -1,0 +1,28 @@
+UTC: 2026-10-01T02:05:44Z
+Fresh ignored environment; locked, offline dependency sync and full test suite.
+Using CPython 3.12.12
+Creating virtual environment at: /Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall 2026/16.S893/shreya22/.cache/assignment2-clean
+Resolved 19 packages in 23ms
+Installed 18 packages in 3.62s
+ + contourpy==1.4.0
+ + cycler==0.12.1
+ + fonttools==4.66.1
+ + hypothesis==6.168.3
+ + iniconfig==2.3.0
+ + kiwisolver==1.5.1
+ + matplotlib==3.11.2
+ + netenv-reproduction==0.1.0 (from file:///Users/shreyasharma/Library/CloudStorage/OneDrive-MassachusettsInstituteofTechnology/MIT/Courses/Fall%202026/16.S893/shreya22/assignment2)
+ + numpy==2.5.3
+ + packaging==26.3
+ + pillow==12.3.0
+ + pluggy==1.6.0
+ + pygments==2.21.0
+ + pyparsing==3.3.3
+ + pytest==9.1.1
+ + python-dateutil==2.9.0.post0
+ + six==1.17.0
+ + sortedcontainers==2.4.0
+...............................................                          [100%]
+47 passed in 9.71s
+
+Exit status: 0

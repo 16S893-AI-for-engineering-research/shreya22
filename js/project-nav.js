@@ -9,6 +9,7 @@
     { href: "project-methods.html", label: "Methods" },
     { href: "project-data.html", label: "Data" },
     { href: "project-progress.html", label: "Progress" },
+    { href: "project-assignment2.html", label: "Assignment 2" },
   ];
 
   function currentPage() {

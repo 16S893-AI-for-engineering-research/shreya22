@@ -1,0 +1,22 @@
+{
+  "python": "3.12.12",
+  "matplotlib": "3.11.2",
+  "normalized_input_sha256": "12d2251ef418f21ba41b8bd8df06b8594c3876522fd22dcdcca70344cdcee79e",
+  "code_environment_sha256": {
+    "pyproject.toml": "abdc809be2fa04aad0aa08fab423b77c670edf4f790933ee856395fcf933e336",
+    "uv.lock": "d56b0ac37389a40b1d26118b9427143c37bce0cd4d4373172ad632db332d63b2",
+    "src/netenv/__init__.py": "ea2d22c4e15d7ce1e882d9ecedd84a4f5ab1c0fd524f248fccd121bad5c42228",
+    "src/netenv/__main__.py": "307299fda7b77d22c64cb51430ec75e5f59d78e9c948786afb3b2544fe45e4b7",
+    "src/netenv/cli.py": "b90b366b882a2db27edd64bed3a702b8e044d11b2a7d0a1a57681ac6008de45b",
+    "src/netenv/core.py": "8502fcd1a77755ea20c329657983cd1b7ea84bee016af71bb9b55f86b75a2ff2",
+    "src/netenv/figures.py": "49bc5f53bfae903f97cbc8c80df6f5cc651e4b0bd4edcea3908e54cc00585b5a",
+    "src/netenv/page.py": "0873d4bc4f4f87614cf1398849c3fc2243886e1945c6e82723b3af4bad492893"
+  },
+  "outputs_sha256": {
+    "figure4_repro.svg": "d4f92c9a9e549ad44333e07b69c478783a940782c1c6c4041c26ee508c2e3e89",
+    "figure4_repro.png": "1e59e7e71fef780d1a776096ae76058b30c6ac0b81a761d0df0bac818bc53af1",
+    "totals.csv": "9ef99bba6ba9a4b7cbe7d9b691dae1c2e1f15a5957420d08066c8b8325dda5e4",
+    "comparisons.csv": "9e5434d0cff1e051356e34e4dc021611b4b978d91ac5243b1fc11cb9ec53ba2b",
+    "audit.json": "5bc2874fb59345a03860d43cb21d61608f329e5e262e6b42391189517a22257f"
+  }
+}
