@@ -1,0 +1,9 @@
+origin,destination,passengers
+BOS,JFK,120.0
+BOS,ORD,80.5
+SFO,JFK,60.25
+DEN,PHX,42.0
+PHX,SFO,30.0
+JFK,ORD,55.0
+ORD,JFK,50.0
+BOS,SFO,10.75

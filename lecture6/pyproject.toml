@@ -1,0 +1,12 @@
+[project]
+name = "assignment6-passenger-test"
+version = "0.1.0"
+description = "Lecture 6: passenger conservation test scaffolding"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=7,<9",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["src"]
