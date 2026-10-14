@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Lecture 6: passenger conservation test scaffolding"
 requires-python = ">=3.11"
 dependencies = [
+    "matplotlib>=3.7,<3.11",
     "pytest>=7,<9",
 ]
 
