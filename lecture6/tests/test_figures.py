@@ -25,15 +25,10 @@ _SRC_DIR = _THIS_DIR.parent / "src"
 sys.path.insert(0, str(_SRC_DIR))
 
 # ---------------------------------------------------------------------------
-# Import guard – gives a clear failure message if figures.py is missing
+# Plain import – a missing/renamed figures.py must cause a collection ERROR,
+# not a silent skip.  Do NOT wrap this in try/except ImportError.
 # ---------------------------------------------------------------------------
-try:
-    from figures import bar_compare  # noqa: E402
-except ImportError as _e:
-    pytest.skip(
-        f"figures.py not found – expected at lecture6/src/figures.py: {_e}",
-        allow_module_level=True,
-    )
+from figures import bar_compare  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
