@@ -88,3 +88,78 @@ def check_nonnegative(routes: Iterable[RouteFlow], tol: float = 1e-9) -> None:
                 f"-{tol} for record {rf}."
             )
     return None
+
+
+def check_simple_path(routes) -> None:
+    """Validate that no node appears more than once in any route.
+
+    A *simple path* visits each node at most once.  A route like
+    (BOS, JFK, BOS) is rejected because BOS appears at both position 0
+    and position 2.
+
+    Parameters
+    ----------
+    routes:
+        Iterable of RouteFlow records to validate.
+
+    Raises
+    ------
+    ValueError
+        On the first offending record, with a message that names the
+        first repeated node and the full record.
+
+    Returns
+    -------
+    None
+        When all records are valid.
+    """
+    for rf in routes:
+        seen: set = set()
+        for node in rf.route:
+            if node in seen:
+                raise ValueError(
+                    f"Simple-path violation: node {node!r} appears more than "
+                    f"once in route {rf.route} for record {rf}."
+                )
+            seen.add(node)
+    return None
+
+
+def check_hub_intermediates(routes, hubs) -> None:
+    """Validate that every interior node of every route is a hub.
+
+    Interior (intermediate) nodes are ``route[1:-1]``.  Routes with zero
+    or one interior nodes -- including point-to-point two-node routes and
+    single-node degenerate routes -- trivially satisfy the constraint.
+
+    Comparison is case-insensitive: hub codes and route node codes are both
+    upper-cased before comparison.
+
+    Parameters
+    ----------
+    routes:
+        Iterable of RouteFlow records to validate.
+    hubs:
+        Collection of hub airport codes (case-insensitive).
+
+    Raises
+    ------
+    ValueError
+        On the first offending record, naming the non-hub interior node
+        and the full record.
+
+    Returns
+    -------
+    None
+        When all records are valid.
+    """
+    hub_upper: set = {h.upper() for h in hubs}
+    for rf in routes:
+        interior = rf.route[1:-1]
+        for node in interior:
+            if node.upper() not in hub_upper:
+                raise ValueError(
+                    f"Hub-intermediate violation: interior node {node!r} is not "
+                    f"in hubs {sorted(hub_upper)} for record {rf}."
+                )
+    return None
