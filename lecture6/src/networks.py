@@ -20,6 +20,8 @@ from dataclasses import dataclass
 from typing import Iterable, List, Dict, Tuple, Optional
 import csv
 
+import hubs as _hubs_module
+
 
 @dataclass(frozen=True)
 class ODDemand:
@@ -69,38 +71,31 @@ def build_routes_hub_spoke(
 ) -> List[RouteFlow]:
     """Map each OD to a path through assigned hubs.
 
-    Rules (minimal placeholder):
-    - Airports in `hubs` are their own hub.
-    - If `assign` is provided, every non-hub airport must appear mapping -> one hub.
-    - If `assign` is None, every non-hub maps to the first hub from `hubs`.
+    Hub assignment is delegated exclusively to ``_hubs_module.hub_of`` — there
+    is no duplicated rule inside this function.
+
+    Rules:
+    - Airports in ``hubs`` are their own hub (Rule 1 of hubs.hub_of).
+    - If ``assign`` is provided, it is forwarded to _hubs_module.hub_of which
+      normalises keys case-insensitively (Rule 2).  Lower-case assign keys work.
+    - If ``assign`` is None, every non-hub maps to the first hub (Rule 3).
     - Routing:
-        * If H(O) == H(D): [O, H(O), D] unless O or D already equals H(O), in which case
-          the path compresses naturally (e.g., H -> D becomes [H, D]).
-        * If H(O) != H(D): [O, H(O), H(D), D], with natural compression for endpoints
-          that are hubs (e.g., H1 -> H2 -> D if O is H1).
-    - No splitting: each OD yields exactly one route in this placeholder.
+        * If H(O) == H(D): [O, H(O), D] unless O or D already equals H(O), in
+          which case the path compresses naturally (e.g., H -> D becomes [H, D]).
+        * If H(O) != H(D): [O, H(O), H(D), D], with natural compression for
+          endpoints that are hubs (e.g., H1 -> H2 -> D if O is H1).
+    - No splitting: each OD yields exactly one route.
 
     This function preserves total passengers but makes no optimality claims.
     """
     hubset = tuple(h.upper() for h in hubs)
     if not hubset:
         raise ValueError("At least one hub must be provided")
-    first_hub = hubset[0]
-
-    def hub_of(node: str) -> str:
-        if node in hubset:
-            return node
-        if assign and node in assign:
-            h = assign[node].upper()
-            if h not in hubset:
-                raise ValueError(f"Assigned hub {h} for {node} is not in hubs list")
-            return h
-        return first_hub
 
     routes: List[RouteFlow] = []
     for rec in demand:
-        ho = hub_of(rec.origin)
-        hd = hub_of(rec.destination)
+        ho = _hubs_module.hub_of(rec.origin, hubset, assign)
+        hd = _hubs_module.hub_of(rec.destination, hubset, assign)
         path: List[str]
         if ho == hd:
             # collapse repeated nodes naturally
@@ -113,7 +108,8 @@ def build_routes_hub_spoke(
             path = [rec.origin]
             if rec.origin != ho:
                 path.append(ho)
-            path.append(hd) if hd != path[-1] else None
+            if hd not in path:
+                path.append(hd)
             if hd != rec.destination:
                 path.append(rec.destination)
         routes.append(RouteFlow(rec.origin, rec.destination, tuple(path), rec.passengers))
