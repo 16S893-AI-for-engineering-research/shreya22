@@ -29,8 +29,9 @@
       <ul style="margin:0; padding-left:1.4em; color:#55586b; font-size:14px; line-height:1.8;">
         <li><strong>networks.py</strong> — ODDemand, RouteFlow, build_routes_point_to_point,
             build_routes_hub_spoke</li>
-        <li><strong>invariants.py</strong> — check_endpoints, check_no_loops,
-            check_hub_only_interiors, check_passengers_conserved</li>
+        <li><strong>invariants.py</strong> — check_endpoints, check_nonnegative,
+            check_simple_path, check_hub_intermediates (passenger conservation is
+            checked separately, in the tests and inside the CLI)</li>
         <li><strong>legs.py</strong> — passenger_legs (counts passenger × flight-leg pairs)</li>
         <li><strong>totals.py</strong> — network_totals (additive over segments,
             relabelling-invariant)</li>
@@ -47,8 +48,8 @@
     <p>
       Hub: <strong>ORD</strong>. Spokes: <strong>BOS</strong> and
       <strong>SFO</strong>.
-      Demand: 4 OD pairs, 100 passengers each direction
-      (BOS ↔ SFO and BOS ↔ ORD; symmetric).
+      Demand: 6 directional OD pairs &mdash; BOS&harr;SFO 100 passengers each way,
+      BOS&harr;ORD 60 each way, SFO&harr;ORD 40 each way.
       Total demand: 400 passengers.
     </p>
 
@@ -79,9 +80,9 @@
             <td style="padding:5px 8px;">Hub-and-spoke leg 2</td>
           </tr>
           <tr style="background:#f8f9fa;">
-            <td style="padding:5px 8px;">BOS → ORD (direct)</td>
-            <td style="text-align:right; padding:5px 8px;">751</td>
-            <td style="padding:5px 8px;">Both (hub is spoke dest.)</td>
+            <td style="padding:5px 8px;">BOS → ORD, SFO → ORD (own demand)</td>
+            <td style="text-align:right; padding:5px 8px;">751, 1600</td>
+            <td style="padding:5px 8px;">Both networks fly these direct</td>
           </tr>
         </tbody>
       </table>
@@ -127,6 +128,8 @@
             <text x="78" y="108" font-size="9" fill="#55586b" text-anchor="middle">751 nm</text>
 
             <!-- Caption -->
+            <line x1="210" y1="50" x2="130" y2="140" class="example-edge example-edge--p2p" />
+            <text x="182" y="108" font-size="9" fill="#55586b" text-anchor="middle">1600 nm</text>
             <text x="130" y="170" font-size="10" fill="#55586b" text-anchor="middle">
               Passenger-legs: 400
             </text>
@@ -168,11 +171,14 @@
       </div>
       <figcaption>
         <strong>Fig. 1 &mdash; Mock 3-airport network topologies.</strong>
-        Left: point-to-point (BOS ↔ SFO nonstop 2344 nm; BOS ↔ ORD direct 751 nm).
-        Right: hub-and-spoke (all BOS–SFO traffic routed via ORD: 751 + 1600 nm).
+        Left: point-to-point (every pair flown nonstop: BOS&harr;SFO 2344 nm,
+        BOS&harr;ORD 751 nm, SFO&harr;ORD 1600 nm).
+        Right: hub-and-spoke (BOS&ndash;SFO traffic connects at ORD: 751 + 1600 nm;
+        the ORD pairs stay direct).
         Passenger-legs counts each passenger × each flight-leg:
         400 (P2P) vs 600 (hub-and-spoke) for 400 total passengers.
-        The hub-and-spoke network uses 50% more flight-legs for the same demand.
+        The 200 BOS&ndash;SFO passengers each fly two legs instead of one, which is
+        the whole difference: 600 = 400 + 200.
         <strong>Fuel numbers are omitted</strong>: current coefficients are
         placeholders shown to be ~10–18× too high relative to OpenAP &mdash;
         no fuel result is reported here.
@@ -182,29 +188,31 @@
     <h2>How verification works</h2>
 
     <div class="card">
-      <h3>319 tests, three layers</h3>
+      <h3>The tests, in three layers</h3>
       <p>
-        The test suite currently has <strong>319 tests</strong> across 14 test
-        modules. Tests run with <code>uv run pytest</code> and pass from a clean
-        checkout with no external data.
+        The pipeline had <strong>319 tests</strong> when this mock ran (the suite
+        has since grown to about 450 with the BTS and OpenAP modules). They run with
+        <code>uv run pytest</code> from a clean checkout with no external data; the
+        few tests that need the full BTS files skip, with a stated reason, when the
+        files are not present.
       </p>
       <ol style="color:#55586b; font-size:14px; line-height:1.8; margin:8px 0 0 1em; padding:0;">
         <li>
-          <strong>Conservation</strong>: every route flow is checked that the
-          total passengers leaving each origin equal the total arriving at each
-          destination (±1 total, 1e-9 per OD pair). The 3-airport mock satisfies
-          this by construction.
+          <strong>Conservation</strong>: the passengers assigned to routes equal the
+          origin&ndash;destination demand, in total (within &plusmn;1 passenger) and for
+          every OD pair (within 1e-9). The 3-airport mock passes both.
         </li>
         <li>
-          <strong>Invariants</strong>: structural checks verify correct endpoints,
-          no self-loops, and that only hub airports appear as interior nodes
-          in hub-and-spoke routes.
+          <strong>Invariants</strong>: every route starts and ends at its OD pair,
+          carries no negative passengers, never visits an airport twice, and in
+          hub-and-spoke only ever connects at a hub.
         </li>
         <li>
-          <strong>Mutation testing</strong>: each new test module breaks the
-          implementation in at least 3 ways (e.g., off-by-one in conservation
-          tolerance, removing a hub-interior check, flipping P2P/HS labels)
-          and confirms at least one test fails per mutation.
+          <strong>Mutation testing</strong>: each module&rsquo;s code was deliberately
+          broken in at least three ways (for example, dropping the conservation
+          refusal, or making distance depend on the airport code&rsquo;s length) to
+          confirm a test fails. Several breaks first went <em>undetected</em> and the
+          tests were strengthened until they were caught.
         </li>
       </ol>
     </div>
@@ -244,12 +252,18 @@
       <h3>CI on every push &mdash; a real failure it caught</h3>
       <p>
         Continuous integration (CI) runs the full test suite on every push.
-        One real CI failure caught a portability bug in the project manifest:
-        the <code>pyproject.toml</code> had a platform-specific path assumption
-        in <code>pythonpath</code> that resolved correctly on the developer's
-        machine but caused a collection error on the CI runner. The fix was
-        making the path declaration relative to the project root. This would
-        not have been caught by local testing alone.
+        One real CI failure caught a portability bug. The command-line tool
+        wrote the demand file&rsquo;s path, exactly as typed, into its
+        <code>manifest.json</code>; given an absolute path, that leaked the
+        machine&rsquo;s checkout location, so the same inputs no longer gave
+        byte-identical outputs on another machine. The test meant to stop this
+        only searched for <code>/Users/</code> and <code>/home/</code>, so it
+        passed or failed depending on where the repository happened to be
+        checked out &mdash; it passed locally and failed on the CI runner,
+        whose checkout is under <code>/home/runner/</code>. The fix records
+        only the file name (its sha256 identifies the content), with a new
+        regression test that builds its own unique absolute path so it no
+        longer depends on the checkout location.
       </p>
     </div>
 
@@ -259,10 +273,11 @@
         <li>Network builder produces correct routes for both topologies from the same demand.</li>
         <li>Passenger conservation holds exactly (within floating-point tolerance).</li>
         <li>All four structural invariants pass on both P2P and hub-and-spoke routes.</li>
-        <li>Network totals are additive and relabelling-invariant (319 tests confirm this).</li>
+        <li>Network totals are additive over segments and unchanged when airports are
+            renamed (with their coordinates moved too).</li>
         <li>The CLI runs end-to-end from a CSV demand file.</li>
-        <li>The test suite is mutation-tested: 3 independent breaks per new module,
-            each confirmed to fail at least one test.</li>
+        <li>The test suite is mutation-tested, and mutation testing found real gaps
+            that passing tests had hidden.</li>
       </ul>
     </div>
 
