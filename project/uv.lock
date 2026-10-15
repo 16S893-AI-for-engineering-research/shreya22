@@ -483,6 +483,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "openap" },
+    { name = "pandas" },
     { name = "pytest" },
 ]
 
@@ -490,6 +491,7 @@ dependencies = [
 requires-dist = [
     { name = "matplotlib", specifier = ">=3.7,<3.11" },
     { name = "openap", specifier = ">=2.6.2" },
+    { name = "pandas", specifier = ">=1.5" },
     { name = "pytest", specifier = ">=7,<9" },
 ]
 
