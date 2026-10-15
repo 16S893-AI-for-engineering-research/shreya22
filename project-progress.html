@@ -13,35 +13,226 @@
   <main>
     <h1>Progress</h1>
     <p class="lede">
-      Status of the four tasks. Narrative notes on the process live in the
-      <a href="devlog.html">Dev Log</a>; this page tracks the research work
-      itself.
+      Current status of the pipeline and task work.
+      Narrative notes live in the <a href="devlog.html">Dev Log</a>;
+      this page tracks the research pipeline itself.
     </p>
+
+    <p>
+      <strong>Note on the Methods page:</strong> The
+      <a href="project-methods.html">Methods page</a> still describes an older
+      &ldquo;spectrum&rdquo; framing (hub-centricity as a continuous variable).
+      The project has since adopted a binary network comparison (hub-and-spoke
+      vs. point-to-point serving fixed demand) per ADR 0001 &mdash; the Methods
+      page will be updated in a later sprint.
+    </p>
+
+    <h2>Pipeline diagram</h2>
+    <p>
+      The eight stages below are the full analysis pipeline.
+      <strong>Status uses both color and a shape cue (not color alone).</strong>
+    </p>
+
+    <!-- ============================================================
+         PIPELINE DIAGRAM — inline SVG
+         viewBox: 0 0 900 340
+         8 stages, left-to-right, each 88px wide × 78px tall box
+         Arrows connect stages.  Legend bottom-left.
+         ============================================================ -->
+    <figure class="fig pipeline-diagram" aria-label="Analysis pipeline diagram showing eight stages with status">
+      <svg class="fig__svg" viewBox="0 0 900 340" role="img"
+           aria-label="Pipeline: BTS DB1B → Network builder → Invariant checks → Fleet → Fuel and NOx → Network totals → Exposure → Health burden">
+        <defs>
+          <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L7,3.5 z" fill="#94a3b8" />
+          </marker>
+        </defs>
+
+        <!-- ── Stage boxes ──
+             x positions (centre): 52, 162, 272, 382, 492, 602, 712, 822
+             box: width 88, height 78, corner-rx 6
+             Top of box: y=20, bottom: y=98
+        -->
+
+        <!-- Stage 1: BTS DB1B demand — IN PROGRESS -->
+        <rect x="8" y="20" width="88" height="78" rx="6"
+              class="status--in-progress" fill-opacity="0.15" stroke-width="2" />
+        <!-- triangle = IN PROGRESS shape cue -->
+        <polygon points="52,28 44,42 60,42" class="status--in-progress" />
+        <text x="52" y="57" class="pipeline-stage-label">BTS DB1B</text>
+        <text x="52" y="70" class="pipeline-stage-label">demand</text>
+        <text x="52" y="107" class="pipeline-check-label">sample ×10;</text>
+        <text x="52" y="117" class="pipeline-check-label">chunk-size invariant</text>
+
+        <!-- Arrow 1→2 -->
+        <line x1="96" y1="59" x2="107" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 2: Network builder — DONE -->
+        <rect x="110" y="20" width="88" height="78" rx="6"
+              class="status--done" fill-opacity="0.15" stroke-width="2" />
+        <!-- circle = DONE shape cue -->
+        <circle cx="154" cy="35" r="7" class="status--done" fill-opacity="0.7" />
+        <text x="154" y="57" class="pipeline-stage-label">Network</text>
+        <text x="154" y="70" class="pipeline-stage-label">builder</text>
+        <text x="154" y="107" class="pipeline-check-label">passengers conserved</text>
+        <text x="154" y="117" class="pipeline-check-label">per OD (±1 total, 1e-9/OD)</text>
+
+        <!-- Arrow 2→3 -->
+        <line x1="198" y1="59" x2="209" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 3: Invariant checks — DONE -->
+        <rect x="212" y="20" width="88" height="78" rx="6"
+              class="status--done" fill-opacity="0.15" stroke-width="2" />
+        <circle cx="256" cy="35" r="7" class="status--done" fill-opacity="0.7" />
+        <text x="256" y="57" class="pipeline-stage-label">Invariant</text>
+        <text x="256" y="70" class="pipeline-stage-label">checks</text>
+        <text x="256" y="107" class="pipeline-check-label">endpoints, no loops,</text>
+        <text x="256" y="117" class="pipeline-check-label">hub-only interiors; mutation-tested</text>
+
+        <!-- Arrow 3→4 -->
+        <line x1="300" y1="59" x2="311" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 4: Fleet T-100 — IN PROGRESS -->
+        <rect x="314" y="20" width="88" height="78" rx="6"
+              class="status--in-progress" fill-opacity="0.15" stroke-width="2" />
+        <polygon points="358,28 350,42 366,42" class="status--in-progress" />
+        <text x="358" y="57" class="pipeline-stage-label">Fleet:</text>
+        <text x="358" y="70" class="pipeline-stage-label">T-100 aircraft</text>
+        <text x="358" y="107" class="pipeline-check-label">config=1 passenger only;</text>
+        <text x="358" y="117" class="pipeline-check-label">ICAO code lookup</text>
+
+        <!-- Arrow 4→5 -->
+        <line x1="402" y1="59" x2="413" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 5: Fuel & NOx (OpenAP) — IN PROGRESS -->
+        <rect x="416" y="20" width="88" height="78" rx="6"
+              class="status--in-progress" fill-opacity="0.15" stroke-width="2" />
+        <polygon points="460,28 452,42 468,42" class="status--in-progress" />
+        <text x="460" y="57" class="pipeline-stage-label">Fuel &amp; NOx:</text>
+        <text x="460" y="70" class="pipeline-stage-label">OpenAP</text>
+        <text x="460" y="107" class="pipeline-check-label">units pinned;</text>
+        <text x="460" y="117" class="pipeline-check-label">placeholder, not a result</text>
+
+        <!-- Arrow 5→6 -->
+        <line x1="504" y1="59" x2="515" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 6: Network totals — DONE -->
+        <rect x="518" y="20" width="88" height="78" rx="6"
+              class="status--done" fill-opacity="0.15" stroke-width="2" />
+        <circle cx="562" cy="35" r="7" class="status--done" fill-opacity="0.7" />
+        <text x="562" y="57" class="pipeline-stage-label">Network</text>
+        <text x="562" y="70" class="pipeline-stage-label">totals</text>
+        <text x="562" y="107" class="pipeline-check-label">additive over segments;</text>
+        <text x="562" y="117" class="pipeline-check-label">relabelling-invariant</text>
+
+        <!-- Arrow 6→7 -->
+        <line x1="606" y1="59" x2="617" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 7: Exposure (GEOS-Chem adjoint) — NOT STARTED -->
+        <rect x="620" y="20" width="88" height="78" rx="6"
+              class="status--not-started" fill-opacity="0.12" stroke-width="1.5" stroke-dasharray="5 3" />
+        <!-- square = NOT STARTED shape cue -->
+        <rect x="650" y="28" width="14" height="14" rx="2"
+              class="status--not-started" fill-opacity="0.4" />
+        <text x="664" y="57" class="pipeline-stage-label">Exposure:</text>
+        <text x="664" y="70" class="pipeline-stage-label">GEOS-Chem adj.</text>
+        <text x="664" y="107" class="pipeline-check-label">adjoint sensitivity</text>
+        <text x="664" y="117" class="pipeline-check-label">units; grid alignment</text>
+
+        <!-- Arrow 7→8 -->
+        <line x1="708" y1="59" x2="719" y2="59" class="pipeline-arrow" />
+
+        <!-- Stage 8: Health burden — NOT STARTED -->
+        <rect x="722" y="20" width="88" height="78" rx="6"
+              class="status--not-started" fill-opacity="0.12" stroke-width="1.5" stroke-dasharray="5 3" />
+        <rect x="752" y="28" width="14" height="14" rx="2"
+              class="status--not-started" fill-opacity="0.4" />
+        <text x="766" y="57" class="pipeline-stage-label">Health</text>
+        <text x="766" y="70" class="pipeline-stage-label">burden</text>
+        <text x="766" y="107" class="pipeline-check-label">CRF units; population-</text>
+        <text x="766" y="117" class="pipeline-check-label">weighted sum check</text>
+
+        <!-- ── Legend ── -->
+        <g aria-label="Status legend">
+          <!-- DONE -->
+          <circle cx="20" cy="155" r="7" class="status--done" fill-opacity="0.7" />
+          <text x="33" y="160" font-size="11" fill="#1a1a2e" font-weight="600">DONE</text>
+          <text x="33" y="173" font-size="10" fill="#55586b">network builder, invariant checks,</text>
+          <text x="33" y="185" font-size="10" fill="#55586b">network totals plumbing, CLI</text>
+
+          <!-- IN PROGRESS -->
+          <polygon points="20,205 12,219 28,219" class="status--in-progress" />
+          <text x="33" y="213" font-size="11" fill="#1a1a2e" font-weight="600">IN PROGRESS (this week)</text>
+          <text x="33" y="226" font-size="10" fill="#55586b">BTS demand adapter, T-100 fleet,</text>
+          <text x="33" y="238" font-size="10" fill="#55586b">OpenAP fuel/NOx</text>
+
+          <!-- NOT STARTED -->
+          <rect x="13" y="252" width="14" height="14" rx="2"
+                class="status--not-started" fill-opacity="0.4" />
+          <text x="33" y="263" font-size="11" fill="#1a1a2e" font-weight="600">NOT STARTED</text>
+          <text x="33" y="276" font-size="10" fill="#55586b">exposure (adjoint), health burden,</text>
+          <text x="33" y="288" font-size="10" fill="#55586b">point-to-point feasibility cutoff</text>
+        </g>
+
+        <!-- ── Note on fuel placeholder ── -->
+        <text x="450" y="155" font-size="10" fill="#b45309" text-anchor="middle"
+              font-style="italic">
+          &#x26A0; Fuel coefficients are placeholder values (~10&#x2013;18&#xD7; too high vs OpenAP); not a result.
+        </text>
+      </svg>
+      <figcaption>
+        <strong>Pipeline status.</strong>
+        Status uses both color <em>and</em> a shape cue:
+        circle = Done, triangle = In Progress, square = Not Started.
+        Under each stage: the test that verifies it.
+        Fuel/NOx coefficients are currently <strong>placeholders</strong> shown to be ~10&ndash;18&times; too high
+        relative to OpenAP calibration &mdash; no fuel number from this pipeline should be read as a result.
+      </figcaption>
+    </figure>
 
     <h2>Task status</h2>
 
     <div class="card">
       <h3>01 &middot; Demand &amp; network baseline</h3>
       <div class="meta">Status: in progress</div>
-      <p>Identifying and assembling the open data sources for the US baseline.</p>
+      <p>
+        BTS DB1B adapter is in progress (streaming chunk reader, &times;10 sample
+        correction, study-region filter: BOS, DEN, DTW, MSP, ORD, SFO).
+        Network builder (hub-and-spoke + point-to-point), invariant checks,
+        network totals, and CLI are <strong>done</strong>.
+        See the <a href="project-prototype.html">Prototype page</a> for the
+        3-airport mock that verifies the builder end-to-end.
+      </p>
     </div>
 
     <div class="card">
-      <h3>02 &middot; Network re-optimisation</h3>
-      <div class="meta">Status: not started</div>
-      <p>Depends on the baseline being fixed first.</p>
+      <h3>02 &middot; Fleet &amp; emissions</h3>
+      <div class="meta">Status: in progress</div>
+      <p>
+        T-100 aircraft type lookup (AIRCRAFT_CONFIG=1 passenger filter, ICAO
+        code zero-padding) is in progress.
+        OpenAP fuel/NOx integration is in progress; current coefficients are
+        <strong>placeholder values, not results</strong>.
+      </p>
     </div>
 
     <div class="card">
       <h3>03 &middot; Emissions to impacts</h3>
       <div class="meta">Status: not started</div>
-      <p>Climate pathway is straightforward; the air-quality pathway is the hard part.</p>
+      <p>
+        GEOS-Chem adjoint sensitivity application and health-burden
+        calculation (Turner et al. ozone CRF, GEMM PM<sub>2.5</sub>
+        concentration-response) not yet started.
+      </p>
     </div>
 
     <div class="card">
       <h3>04 &middot; Trade-off mapping</h3>
       <div class="meta">Status: not started</div>
-      <p>Final synthesis plus sensitivity tests on every proxy assumption.</p>
+      <p>
+        Final synthesis and sensitivity tests on every proxy assumption.
+        Depends on stages 1&ndash;3 being complete.
+      </p>
     </div>
 
     <h2>Why the home page looks the way it does</h2>
@@ -52,8 +243,8 @@
     </p>
 
     <nav class="next-up">
-      <span>Back to:</span>
-      <a href="project.html">&larr; Proposal</a>
+      <span>Next:</span>
+      <a href="project-prototype.html">Prototype &rarr;</a>
     </nav>
   </main>
 

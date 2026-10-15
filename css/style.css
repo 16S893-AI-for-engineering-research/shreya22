@@ -791,6 +791,56 @@ p {
   fill: var(--ink-soft);
 }
 
+/* ---------- Pipeline diagram status indicators ---------- */
+
+.status--done {
+  fill: #16a34a;
+  stroke: #15803d;
+}
+
+.status--in-progress {
+  fill: #d97706;
+  stroke: #b45309;
+}
+
+.status--not-started {
+  fill: #94a3b8;
+  stroke: #64748b;
+}
+
+/* Pipeline diagram layout */
+
+.pipeline-diagram {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.pipeline-stage-label {
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+
+.pipeline-check-label {
+  font-size: 8.5px;
+  fill: var(--ink-soft);
+  text-anchor: middle;
+  font-style: italic;
+}
+
+.pipeline-arrow {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+  marker-end: url(#arrow);
+}
+
+.pipeline-legend-item text {
+  font-size: 11px;
+  fill: var(--ink);
+}
+
 /* ---------- "Next" link at page bottom ---------- */
 
 .next-up {

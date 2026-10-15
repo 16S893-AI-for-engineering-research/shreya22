@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project · Prototype — Shreya Sharma</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <div id="project-subnav"></div>
+
+  <main>
+    <h1>Prototype</h1>
+    <p class="lede">
+      What was built, how it was verified, and what is honestly not done yet.
+      This page documents the mock pipeline run from issue&nbsp;#2
+      (&#8220;build the smallest version of the analysis&#8221;).
+    </p>
+
+    <h2>What was built</h2>
+    <p>
+      The core analysis pipeline is implemented as a pure-Python package
+      (<code>project/src/</code>) with no runtime dependencies on the large
+      BTS data files. The modules are:
+    </p>
+    <div class="card">
+      <h3>Pipeline modules</h3>
+      <ul style="margin:0; padding-left:1.4em; color:#55586b; font-size:14px; line-height:1.8;">
+        <li><strong>networks.py</strong> — ODDemand, RouteFlow, build_routes_point_to_point,
+            build_routes_hub_spoke</li>
+        <li><strong>invariants.py</strong> — check_endpoints, check_no_loops,
+            check_hub_only_interiors, check_passengers_conserved</li>
+        <li><strong>legs.py</strong> — passenger_legs (counts passenger × flight-leg pairs)</li>
+        <li><strong>totals.py</strong> — network_totals (additive over segments,
+            relabelling-invariant)</li>
+        <li><strong>distance.py</strong> — distance_nm (great-circle; BOS, JFK, ORD, SFO,
+            DEN, PHX today)</li>
+        <li><strong>fuel.py</strong> — PLACEHOLDER coefficients (~10–18× too high vs OpenAP)</li>
+        <li><strong>emissions.py</strong> — PLACEHOLDER coefficients</li>
+        <li><strong>figures.py</strong> — bar_compare (matplotlib, for exploratory use)</li>
+        <li><strong>cli.py</strong> — command-line entry point</li>
+      </ul>
+    </div>
+
+    <h2>The 3-airport mock (issue&nbsp;#2)</h2>
+    <p>
+      Hub: <strong>ORD</strong>. Spokes: <strong>BOS</strong> and
+      <strong>SFO</strong>.
+      Demand: 4 OD pairs, 100 passengers each direction
+      (BOS ↔ SFO and BOS ↔ ORD; symmetric).
+      Total demand: 400 passengers.
+    </p>
+
+    <div class="card">
+      <h3>Route distances</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:14px; color:#55586b;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:6px 8px; border-bottom:1px solid #d0d2da;">Leg</th>
+            <th style="text-align:right; padding:6px 8px; border-bottom:1px solid #d0d2da;">Distance (nm)</th>
+            <th style="text-align:left; padding:6px 8px; border-bottom:1px solid #d0d2da;">Network</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:5px 8px;">BOS → SFO (nonstop)</td>
+            <td style="text-align:right; padding:5px 8px;">2344</td>
+            <td style="padding:5px 8px;">Point-to-point only</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td style="padding:5px 8px;">BOS → ORD</td>
+            <td style="text-align:right; padding:5px 8px;">751</td>
+            <td style="padding:5px 8px;">Hub-and-spoke leg 1</td>
+          </tr>
+          <tr>
+            <td style="padding:5px 8px;">ORD → SFO</td>
+            <td style="text-align:right; padding:5px 8px;">1600</td>
+            <td style="padding:5px 8px;">Hub-and-spoke leg 2</td>
+          </tr>
+          <tr style="background:#f8f9fa;">
+            <td style="padding:5px 8px;">BOS → ORD (direct)</td>
+            <td style="text-align:right; padding:5px 8px;">751</td>
+            <td style="padding:5px 8px;">Both (hub is spoke dest.)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px; margin-top:10px;">
+        Hub route adds 751 + 1600 = 2351 nm vs 2344 nm nonstop for BOS–SFO
+        &mdash; an extra 7 nm via ORD. The difference in <em>passenger-legs</em>
+        (counting each passenger × each flight-leg) is the meaningful quantity here,
+        not distance alone.
+      </p>
+    </div>
+
+    <!-- ============================================================
+         NETWORK DIAGRAM — inline SVG
+         Left half: Point-to-point. Right half: Hub-and-spoke.
+         viewBox: 0 0 600 200
+         ============================================================ -->
+    <figure class="fig" aria-label="Two network topology diagrams">
+      <div class="split">
+        <div class="split__half">
+          <p class="split__title">Point-to-point</p>
+          <svg class="fig__svg" viewBox="0 0 260 180"
+               role="img" aria-label="Point-to-point: BOS directly to SFO nonstop, BOS directly to ORD">
+            <!-- BOS top-left: (50, 50) -->
+            <!-- SFO top-right: (210, 50) -->
+            <!-- ORD bottom-centre: (130, 140) -->
+
+            <!-- Edges -->
+            <line x1="50" y1="50" x2="210" y2="50" class="example-edge example-edge--p2p" />
+            <line x1="50" y1="50" x2="130" y2="140" class="example-edge example-edge--p2p" />
+
+            <!-- Nodes -->
+            <circle cx="50" cy="50" r="14" class="example-node" />
+            <text x="50" y="54" class="example-label">BOS</text>
+
+            <circle cx="210" cy="50" r="14" class="example-node" />
+            <text x="210" y="54" class="example-label">SFO</text>
+
+            <circle cx="130" cy="140" r="14" class="example-node" />
+            <text x="130" y="144" class="example-label">ORD</text>
+
+            <!-- Distance labels -->
+            <text x="130" y="43" font-size="9" fill="#55586b" text-anchor="middle">2344 nm</text>
+            <text x="78" y="108" font-size="9" fill="#55586b" text-anchor="middle">751 nm</text>
+
+            <!-- Caption -->
+            <text x="130" y="170" font-size="10" fill="#55586b" text-anchor="middle">
+              Passenger-legs: 400
+            </text>
+          </svg>
+        </div>
+        <div class="split__half">
+          <p class="split__title">Hub-and-spoke</p>
+          <svg class="fig__svg" viewBox="0 0 260 180"
+               role="img" aria-label="Hub-and-spoke: BOS and SFO both connect through hub ORD">
+            <!-- BOS top-left: (50, 50) -->
+            <!-- SFO top-right: (210, 50) -->
+            <!-- ORD (hub) bottom-centre: (130, 140) -->
+
+            <!-- Edges via hub -->
+            <line x1="50" y1="50" x2="130" y2="140" class="example-edge example-edge--hub" />
+            <line x1="210" y1="50" x2="130" y2="140" class="example-edge example-edge--hub" />
+
+            <!-- Hub node (filled) -->
+            <circle cx="130" cy="140" r="14" class="example-node example-node--hub" />
+            <text x="130" y="144" class="example-label" fill="#fff">ORD</text>
+
+            <!-- Spoke nodes -->
+            <circle cx="50" cy="50" r="14" class="example-node" />
+            <text x="50" y="54" class="example-label">BOS</text>
+
+            <circle cx="210" cy="50" r="14" class="example-node" />
+            <text x="210" y="54" class="example-label">SFO</text>
+
+            <!-- Distance labels -->
+            <text x="78" y="108" font-size="9" fill="#55586b" text-anchor="middle">751 nm</text>
+            <text x="182" y="108" font-size="9" fill="#55586b" text-anchor="middle">1600 nm</text>
+
+            <!-- Caption -->
+            <text x="130" y="170" font-size="10" fill="#55586b" text-anchor="middle">
+              Passenger-legs: 600
+            </text>
+          </svg>
+        </div>
+      </div>
+      <figcaption>
+        <strong>Fig. 1 &mdash; Mock 3-airport network topologies.</strong>
+        Left: point-to-point (BOS ↔ SFO nonstop 2344 nm; BOS ↔ ORD direct 751 nm).
+        Right: hub-and-spoke (all BOS–SFO traffic routed via ORD: 751 + 1600 nm).
+        Passenger-legs counts each passenger × each flight-leg:
+        400 (P2P) vs 600 (hub-and-spoke) for 400 total passengers.
+        The hub-and-spoke network uses 50% more flight-legs for the same demand.
+        <strong>Fuel numbers are omitted</strong>: current coefficients are
+        placeholders shown to be ~10–18× too high relative to OpenAP &mdash;
+        no fuel result is reported here.
+      </figcaption>
+    </figure>
+
+    <h2>How verification works</h2>
+
+    <div class="card">
+      <h3>319 tests, three layers</h3>
+      <p>
+        The test suite currently has <strong>319 tests</strong> across 14 test
+        modules. Tests run with <code>uv run pytest</code> and pass from a clean
+        checkout with no external data.
+      </p>
+      <ol style="color:#55586b; font-size:14px; line-height:1.8; margin:8px 0 0 1em; padding:0;">
+        <li>
+          <strong>Conservation</strong>: every route flow is checked that the
+          total passengers leaving each origin equal the total arriving at each
+          destination (±1 total, 1e-9 per OD pair). The 3-airport mock satisfies
+          this by construction.
+        </li>
+        <li>
+          <strong>Invariants</strong>: structural checks verify correct endpoints,
+          no self-loops, and that only hub airports appear as interior nodes
+          in hub-and-spoke routes.
+        </li>
+        <li>
+          <strong>Mutation testing</strong>: each new test module breaks the
+          implementation in at least 3 ways (e.g., off-by-one in conservation
+          tolerance, removing a hub-interior check, flipping P2P/HS labels)
+          and confirms at least one test fails per mutation.
+        </li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Status classes on this page (pipeline legend)</h3>
+      <p style="font-size:13px; color:#55586b; margin:4px 0 10px;">
+        The pipeline diagram on the <a href="project-progress.html">Progress page</a>
+        uses three status classes &mdash; each with both a color and a distinct shape
+        so the legend works without relying on color alone:
+      </p>
+      <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:13px; line-height:1.9;">
+        <li>
+          <span class="status--done" style="display:inline-block; width:12px; height:12px;
+            border-radius:50%; background:#16a34a; vertical-align:middle; margin-right:6px;"></span>
+          <strong>DONE</strong> (circle): network builder, invariant checks,
+          network totals plumbing, CLI
+        </li>
+        <li>
+          <span style="display:inline-block; width:0; height:0;
+            border-left:7px solid transparent; border-right:7px solid transparent;
+            border-bottom:12px solid #d97706; vertical-align:middle; margin-right:6px;"
+            class="status--in-progress"></span>
+          <strong>IN PROGRESS</strong> (triangle): BTS demand adapter,
+          T-100 fleet, OpenAP fuel/NOx
+        </li>
+        <li>
+          <span class="status--not-started" style="display:inline-block; width:12px; height:12px;
+            border-radius:2px; background:#94a3b8; vertical-align:middle; margin-right:6px;"></span>
+          <strong>NOT STARTED</strong> (square): exposure (adjoint),
+          health burden, point-to-point feasibility cutoff
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>CI on every push &mdash; a real failure it caught</h3>
+      <p>
+        Continuous integration (CI) runs the full test suite on every push.
+        One real CI failure caught a portability bug in the project manifest:
+        the <code>pyproject.toml</code> had a platform-specific path assumption
+        in <code>pythonpath</code> that resolved correctly on the developer's
+        machine but caused a collection error on the CI runner. The fix was
+        making the path declaration relative to the project root. This would
+        not have been caught by local testing alone.
+      </p>
+    </div>
+
+    <h2>What worked</h2>
+    <div class="card">
+      <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
+        <li>Network builder produces correct routes for both topologies from the same demand.</li>
+        <li>Passenger conservation holds exactly (within floating-point tolerance).</li>
+        <li>All four structural invariants pass on both P2P and hub-and-spoke routes.</li>
+        <li>Network totals are additive and relabelling-invariant (319 tests confirm this).</li>
+        <li>The CLI runs end-to-end from a CSV demand file.</li>
+        <li>The test suite is mutation-tested: 3 independent breaks per new module,
+            each confirmed to fail at least one test.</li>
+      </ul>
+    </div>
+
+    <h2>Not yet done</h2>
+    <div class="card">
+      <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
+        <li>
+          <strong>BTS DB1B demand adapter</strong>: the streaming chunk reader for the
+          1.6 GB raw CSV (×10 sample correction, study-region filter) is in progress.
+        </li>
+        <li>
+          <strong>T-100 fleet assignment</strong>: matching each route to an
+          aircraft type from T-100 (AIRCRAFT_CONFIG=1, ICAO code lookup) is
+          in progress.
+        </li>
+        <li>
+          <strong>OpenAP fuel/NOx</strong>: current coefficients are
+          <strong>placeholder values, not results</strong>; calibration against
+          OpenAP reference outputs is in progress.
+        </li>
+        <li>
+          <strong>Exposure (GEOS-Chem adjoint)</strong>: applying the pre-computed
+          adjoint sensitivity fields to route-level emissions is not started.
+        </li>
+        <li>
+          <strong>Health burden</strong>: concentration-response function
+          (Turner et al. ozone, GEMM PM<sub>2.5</sub>) computation is not started.
+        </li>
+        <li>
+          <strong>Point-to-point feasibility cutoff</strong> (ADR 0007): a route
+          is only served nonstop if the assigned aircraft is range-feasible
+          for that stage length; otherwise it remains connecting. Not yet
+          implemented.
+        </li>
+      </ul>
+    </div>
+
+    <nav class="next-up">
+      <span>Back to:</span>
+      <a href="project-progress.html">&larr; Progress</a>
+    </nav>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/project-nav.js"></script>
+</body>
+</html>
