@@ -10,7 +10,7 @@ Outputs written to --out (only on success; nothing on any failure):
     totals.json       — p2p and hub_spoke network_totals dicts + parameters + warning
     totals.csv        — one row per metric: metric,p2p,hub_spoke,hub_over_p2p_ratio
     WARNING.txt       — verbatim placeholder-model disclaimer
-    manifest.json     — inputs (relative demand path, sha256), hubs, parameters,
+    manifest.json     — inputs (demand file BASENAME only, sha256), hubs, parameters,
                         output file names and sha256 of each
     passenger_legs.svg/.png  — bar chart of passenger_legs metric
     fuel_kg.svg/.png         — bar chart of fuel_kg metric
@@ -370,7 +370,7 @@ def _write_outputs(
 
     manifest_data = {
         "demand": {
-            "path": demand_path_as_given,
+            "path": demand_path.name,
             "sha256": _sha256_file(demand_path),
         },
         "hubs": hub_codes,

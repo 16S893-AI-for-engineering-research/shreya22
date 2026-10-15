@@ -267,14 +267,12 @@ def test_manifest_contains_required_keys(tmp_path: pathlib.Path) -> None:
       - 'parameters' dict with at least 'seats_per_flight' and 'lto_share'
       - 'outputs' dict mapping filename -> {sha256: ...}
 
-    The demand 'path' is stored exactly as given on the CLI.  When a relative
-    path is passed, it appears as relative in the manifest (no conversion to
-    absolute).  When an absolute non-home path is passed it appears as-is, but
-    it must NOT contain home-directory fragments (/Users/, /home/).
+    The demand 'path' is the file's BASENAME only (never the path as given), so
+    manifests are identical on every machine; the sha256 identifies the content.
+    No home-directory fragments (/Users/, /home/) may appear.
 
-    This test passes a relative path (using os.path.relpath) so it can verify
-    the as-given / no-username property without depending on the test runner's
-    cwd making the relative path resolvable at run time.
+    This test passes a relative path (using os.path.relpath) so the CLI can
+    resolve it from lecture6/src, and checks only the basename is recorded.
 
     Cannot catch: wrong values behind correct keys.
     """
@@ -301,11 +299,11 @@ def test_manifest_contains_required_keys(tmp_path: pathlib.Path) -> None:
     assert "lto_share" in manifest["parameters"]
     assert "outputs" in manifest, "manifest missing 'outputs'"
 
-    # demand path must be exactly as given (relative, not converted to absolute)
+    # demand path is recorded as the BASENAME only (portable; sha256 identifies content)
     stored_path = manifest["demand"]["path"]
-    assert stored_path == rel_demand, (
-        f"manifest demand path should be stored as given ({rel_demand!r}), "
-        f"got {stored_path!r}"
+    assert stored_path == pathlib.Path(rel_demand).name, (
+        f"manifest demand path should be the basename "
+        f"({pathlib.Path(rel_demand).name!r}), got {stored_path!r}"
     )
     # no home-directory fragments
     assert "/Users/" not in stored_path, (
@@ -924,3 +922,38 @@ def test_totals_json_structure(tmp_path: pathlib.Path) -> None:
     # Parameters must include seats_per_flight and lto_share
     assert "seats_per_flight" in data["parameters"]
     assert "lto_share" in data["parameters"]
+
+
+def test_manifest_records_only_basename_of_demand_file(tmp_path: pathlib.Path) -> None:
+    """
+    Invariance / portability test — exact string equality, no tolerance.
+
+    The demand file is copied to a deep, unmistakably machine-specific directory
+    and passed to the CLI by ABSOLUTE path.  manifest.json must record only the
+    file's basename (identity of the content is carried by its sha256), so that
+    identical inputs give byte-identical outputs on any machine.
+
+    Why this exists: the earlier absolute-path test only looked for '/Users/' and
+    '/home/', so it passed when the checkout lived under /tmp and failed (in CI
+    and on a laptop) when it did not.  This test does not depend on where the
+    repository is checked out: it builds its own unique absolute prefix.
+
+    Cannot catch: a path leaking into some other output file (covered by the
+    separate scan of totals.json and manifest.json).
+    """
+    deep = tmp_path / "machine_specific_prefix_8f3a" / "alice" / "data"
+    deep.mkdir(parents=True)
+    copied = deep / "tiny_demand.csv"
+    copied.write_bytes(_FIXTURE.read_bytes())
+
+    out = tmp_path / "out"
+    out.mkdir()
+    r = _run_cli(["--demand", str(copied), "--hubs", _HUBS_DEFAULT, "--out", str(out)])
+    assert r.returncode == 0, r.stderr
+
+    manifest_text = (out / "manifest.json").read_text()
+    manifest = json.loads(manifest_text)
+    assert manifest["demand"]["path"] == "tiny_demand.csv"
+    assert "machine_specific_prefix_8f3a" not in manifest_text
+    assert str(tmp_path) not in manifest_text
+    assert manifest["demand"]["sha256"] == _sha256(_FIXTURE)
