@@ -1,4 +1,5 @@
 {
+  "base_dir": "bts-cache",
   "files": {
     "DB1BMarket_2019_1.zip": {
       "byte_size": 89241935,

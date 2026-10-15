@@ -915,3 +915,61 @@ def test_t100_jan2019_domestic_pax_magnitude() -> None:
         f"Reviewer reference: 58.6 M.  "
         f"A value outside this range suggests wrong AIRCRAFT_CONFIG filter or double-counting."
     )
+
+
+class TestManifestBaseDir:
+    """Manifest stored apart from the files it describes."""
+
+    def test_verify_manifest_honours_base_dir(self, tmp_path):
+        """
+        Example + regression test — exact sha256/size match, no tolerance.
+
+        The repository commits data/bts-manifest.json while the files it
+        describes live in the git-ignored data/bts-cache/.  verify_manifest
+        must resolve files from the manifest's recorded ``base_dir`` (relative
+        to the manifest's own directory), not assume they sit next to it.
+        Before this test the committed manifest could not verify itself
+        (FileNotFoundError on data/DB1BMarket_2019_1.zip).
+
+        Cannot catch: a base_dir that points at the right directory but stale
+        copies of the files (that is what the sha256 comparison is for).
+        """
+        cache = tmp_path / "bts-cache"
+        cache.mkdir()
+        (cache / "a.csv").write_bytes(b"x,y\n1,2\n")
+        manifest = tmp_path / "bts-manifest.json"
+        write_manifest({str(cache / "a.csv"): "https://example.invalid/a.csv"}, manifest)
+        data = json.loads(manifest.read_text())
+        assert data["base_dir"] == "bts-cache"
+        assert not pathlib.PurePosixPath(data["base_dir"]).is_absolute()
+        verify_manifest(manifest)          # must not raise
+        (cache / "a.csv").write_bytes(b"x,y\n1,3\n")  # same size, different content
+        with pytest.raises(ManifestMismatchError):
+            verify_manifest(manifest)
+
+
+    def test_base_dir_is_relative_through_a_symlinked_cache(self, tmp_path):
+        """
+        Regression test (portability) — exact string, no tolerance.
+
+        In practice data/bts-cache may be a symlink to a big local disk.  The
+        recorded base_dir must stay the short relative path ('bts-cache'),
+        never a path through the symlink target (which leaks the machine's
+        home directory into a committed file and breaks on every other
+        checkout).  A reviewer hit exactly this: base_dir came out as
+        '../../../../../Users/<name>/...'.
+
+        Cannot catch: a symlink loop (filesystem error, not a manifest bug).
+        """
+        real = tmp_path / "elsewhere" / "big_disk"
+        real.mkdir(parents=True)
+        (real / "a.csv").write_bytes(b"x\n1\n")
+        repo_data = tmp_path / "repo" / "data"
+        repo_data.mkdir(parents=True)
+        (repo_data / "bts-cache").symlink_to(real, target_is_directory=True)
+        manifest = repo_data / "bts-manifest.json"
+        write_manifest({str(repo_data / "bts-cache" / "a.csv"): "https://example.invalid/a"}, manifest)
+        data = json.loads(manifest.read_text())
+        assert data["base_dir"] == "bts-cache"
+        assert "elsewhere" not in manifest.read_text()
+        verify_manifest(manifest)

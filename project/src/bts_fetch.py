@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import io
 import json
 import pathlib
@@ -333,6 +334,10 @@ def write_manifest(
     today = date.today().isoformat()
 
     files_dict: dict[str, dict] = {}
+    # absolute() not resolve(): keep symlinks, so the cache may be a symlink
+    parents = {pathlib.Path(os.path.abspath(p)).parent for p in paths_with_urls}
+    if len(parents) > 1:
+        raise ValueError(f"all manifest files must share one directory, got {sorted(map(str, parents))}")
     for path_str, source_url in sorted(paths_with_urls.items()):
         p = pathlib.Path(path_str)
         raw = p.read_bytes()
@@ -345,7 +350,13 @@ def write_manifest(
             "sha256": sha,
         }
 
-    manifest = {"files": files_dict}
+    # base_dir: where the files live, relative to the manifest's own directory,
+    # so the manifest can be committed while the files stay in an ignored cache.
+    base_dir = "."
+    if parents:
+        files_dir = next(iter(parents))
+        base_dir = pathlib.Path(os.path.relpath(files_dir, os.path.abspath(out_json.parent))).as_posix()
+    manifest = {"base_dir": base_dir, "files": files_dict}
     out_json.write_text(
         json.dumps(manifest, indent=2, sort_keys=True),
         encoding="utf-8",
@@ -363,7 +374,7 @@ def verify_manifest(manifest_path: pathlib.Path | str) -> None:
     """
     manifest_path = pathlib.Path(manifest_path)
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
-    base_dir = manifest_path.parent
+    base_dir = manifest_path.parent / data.get("base_dir", ".")
 
     for fname, entry in data["files"].items():
         fpath = base_dir / fname
