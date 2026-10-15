@@ -1,5 +1,5 @@
 """
-Tests for lecture6/src/legs.py: passenger_legs(routes) and total_passengers(routes).
+Tests for project/src/legs.py: passenger_legs(routes) and total_passengers(routes).
 
 passenger_legs(routes):
     sum over each RouteFlow of  passengers * (len(route) - 1).

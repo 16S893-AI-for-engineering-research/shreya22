@@ -61,7 +61,7 @@ _FIXED_RC: dict = {
     "figure.dpi": 100,
     "savefig.dpi": 100,
     # svg
-    "svg.hashsalt": "lecture6-deterministic",
+    "svg.hashsalt": "project-deterministic",
     "svg.fonttype": "none",  # embed as text not paths → smaller, stable
     # reproducibility
     "axes.autolimit_mode": "data",

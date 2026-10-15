@@ -1,9 +1,9 @@
-Lecture 6 — Passenger conservation test
+Project pipeline — hub-and-spoke vs point-to-point
 
 What this adds
-- A tiny OD-demand fixture (lecture6/tests/fixtures/tiny_demand.csv)
-- Minimal scaffolding functions in lecture6/src/networks.py
-- One pytest: lecture6/tests/test_passenger_conservation.py
+- A tiny OD-demand fixture (project/tests/fixtures/tiny_demand.csv)
+- Minimal scaffolding functions in project/src/networks.py
+- One pytest: project/tests/test_passenger_conservation.py
 - A CI workflow to run the test on every push
 
 Concept
@@ -27,6 +27,6 @@ What this test does not check (by design)
 Run locally
 
 - With uv (preferred):
-  - uv run --directory lecture6 -p 3.11 pytest -q
+  - uv run --directory project -p 3.11 pytest -q
 - With plain pytest:
-  - python -m pytest lecture6 -q
+  - python -m pytest project -q

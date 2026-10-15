@@ -1,7 +1,7 @@
 [project]
-name = "assignment6-passenger-test"
+name = "network-airquality"
 version = "0.1.0"
-description = "Lecture 6: passenger conservation test scaffolding"
+description = "Hub-and-spoke vs point-to-point network comparison: demand, routing, fuel and emissions (16.S893 project)"
 requires-python = ">=3.11"
 dependencies = [
     "matplotlib>=3.7,<3.11",

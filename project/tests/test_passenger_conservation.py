@@ -3,7 +3,7 @@ import pathlib
 import sys
 from collections import defaultdict
 
-# Make lecture6/src importable when pytest runs from repo root
+# Make project/src importable when pytest runs from repo root
 _THIS_DIR = pathlib.Path(__file__).resolve().parent
 _SRC_DIR = _THIS_DIR.parent / "src"
 sys.path.insert(0, str(_SRC_DIR))

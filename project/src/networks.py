@@ -1,5 +1,5 @@
 """
-Minimal scaffolding for Lecture 6 test-only purposes.
+Core data model and routing for the hub-and-spoke vs point-to-point comparison.
 
 This module provides a tiny interface to:
 - load_demand(path): read a CSV with columns origin,destination,passengers

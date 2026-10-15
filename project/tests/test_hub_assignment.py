@@ -1,4 +1,4 @@
-"""Tests for lecture6/src/hubs.py :: hub_of(node, hubs, assign=None).
+"""Tests for project/src/hubs.py :: hub_of(node, hubs, assign=None).
 
 Hubs used throughout: JFK and ORD.
 """

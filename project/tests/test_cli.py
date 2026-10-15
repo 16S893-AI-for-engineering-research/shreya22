@@ -1,7 +1,7 @@
 """
-Tests for lecture6/src/cli.py: the P2P vs hub-and-spoke comparison CLI.
+Tests for project/src/cli.py: the P2P vs hub-and-spoke comparison CLI.
 
-All subprocess tests set cwd=lecture6/src and use sys.executable so the
+All subprocess tests set cwd=project/src and use sys.executable so the
 correct venv Python is used.  Output directories are always tmp_path so
 nothing is written to the repo tree.
 
@@ -26,7 +26,7 @@ import csv
 
 import pytest
 
-# ── make lecture6/src importable for in-process calls ─────────────────────
+# ── make project/src importable for in-process calls ─────────────────────
 _THIS_DIR = pathlib.Path(__file__).resolve().parent
 _SRC_DIR = _THIS_DIR.parent / "src"
 if str(_SRC_DIR) not in sys.path:
@@ -272,14 +272,14 @@ def test_manifest_contains_required_keys(tmp_path: pathlib.Path) -> None:
     No home-directory fragments (/Users/, /home/) may appear.
 
     This test passes a relative path (using os.path.relpath) so the CLI can
-    resolve it from lecture6/src, and checks only the basename is recorded.
+    resolve it from project/src, and checks only the basename is recorded.
 
     Cannot catch: wrong values behind correct keys.
     """
     import os
     out = tmp_path / "out"
     out.mkdir()
-    # Use a relative path from the CLI cwd (lecture6/src) to the fixture
+    # Use a relative path from the CLI cwd (project/src) to the fixture
     rel_demand = os.path.relpath(str(_FIXTURE), start=_SRC_DIR_STR)
     r = _run_cli([
         "--demand", rel_demand,

@@ -1,5 +1,5 @@
 """
-Tests for lecture6/src/distance.py — haversine great-circle distances in nautical miles.
+Tests for project/src/distance.py — haversine great-circle distances in nautical miles.
 
 All tests use the airports: BOS, JFK, ORD, SFO, DEN, PHX (those in tiny_demand.csv).
 """
@@ -8,7 +8,7 @@ import itertools
 import sys
 import pathlib
 
-# Make lecture6/src importable when pytest runs from repo root
+# Make project/src importable when pytest runs from repo root
 _THIS_DIR = pathlib.Path(__file__).resolve().parent
 _SRC_DIR = _THIS_DIR.parent / "src"
 sys.path.insert(0, str(_SRC_DIR))

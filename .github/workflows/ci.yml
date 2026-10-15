@@ -21,4 +21,4 @@ jobs:
 
       - name: Run tests with uv
         run: |
-          uv run --directory lecture6 -p 3.11 pytest -q
+          uv run --directory project -p 3.11 pytest -q

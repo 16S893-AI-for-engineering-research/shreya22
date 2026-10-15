@@ -1,5 +1,5 @@
 """
-lecture6/src/distance.py — Haversine great-circle distance in nautical miles.
+project/src/distance.py — Haversine great-circle distance in nautical miles.
 
 Public API
 ----------
@@ -27,7 +27,7 @@ AIRPORT_COORDS : dict[str, tuple[float, float]]
     Mapping of IATA-like airport code -> (latitude_deg, longitude_deg).
     Coordinates are airport reference points (ARP) from OurAirports.com
     (open data, derived from FAA NASR).  Covers the six airports that
-    appear in lecture6/tests/fixtures/tiny_demand.csv:
+    appear in project/tests/fixtures/tiny_demand.csv:
         BOS, JFK, ORD, SFO, DEN, PHX.
 
 References
@@ -50,7 +50,7 @@ EARTH_RADIUS_NM: float = 3440.065
 
 # Airport reference-point coordinates (WGS-84 decimal degrees).
 # Source: OurAirports.com open database, derived from FAA NASR.
-# Covers the airports present in lecture6/tests/fixtures/tiny_demand.csv.
+# Covers the airports present in project/tests/fixtures/tiny_demand.csv.
 AIRPORT_COORDS: dict[str, tuple[float, float]] = {
     "BOS": (42.3643, -71.0052),   # Logan International, Boston MA
     "JFK": (40.6398, -73.7789),   # John F. Kennedy International, New York NY

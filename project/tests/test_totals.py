@@ -1,8 +1,8 @@
 """
-Tests for lecture6/src/totals.py: network_totals(routes, seats_per_flight, lto_share).
+Tests for project/src/totals.py: network_totals(routes, seats_per_flight, lto_share).
 
 Import scaffolding mirrors test_route_invariants.py: sys.path.insert so that
-pytest can find modules under lecture6/src/ whether or not the package is
+pytest can find modules under project/src/ whether or not the package is
 installed.
 """
 from __future__ import annotations

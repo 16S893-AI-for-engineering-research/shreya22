@@ -1,7 +1,7 @@
 """
-Tests for lecture6/src/emissions.py — NW-8
+Tests for project/src/emissions.py — NW-8
 
-All tests import from the `emissions` module (lecture6/src/emissions.py).
+All tests import from the `emissions` module (project/src/emissions.py).
 
 Emission indices (EI) used throughout are the PLACEHOLDER values defined
 in emissions.py.  Specific numeric assertions use those placeholder values

@@ -1,5 +1,5 @@
 """
-lecture6/src/hubs.py
+project/src/hubs.py
 ====================
 Standalone hub-assignment utility extracted from the routing logic in networks.py.
 

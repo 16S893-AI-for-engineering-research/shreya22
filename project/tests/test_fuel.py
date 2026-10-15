@@ -1,5 +1,5 @@
 """
-Tests for lecture6/src/fuel.py — fuel proxy: fuel_kg = c(class) * distance_nm.
+Tests for project/src/fuel.py — fuel proxy: fuel_kg = c(class) * distance_nm.
 
 All tests import fuel.py which does NOT exist yet, so the whole module fails on
 import until the feature is implemented. Run before implementing to confirm the

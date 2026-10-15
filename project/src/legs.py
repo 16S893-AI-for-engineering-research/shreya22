@@ -1,5 +1,5 @@
 """
-lecture6/src/legs.py
+project/src/legs.py
 ====================
 Passenger-leg accounting for RouteFlow records.
 

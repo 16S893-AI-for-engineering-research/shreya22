@@ -1,5 +1,5 @@
 """
-Tests for lecture6/src/invariants.py: check_endpoints and check_nonnegative.
+Tests for project/src/invariants.py: check_endpoints and check_nonnegative.
 
 Import scaffolding mirrors test_passenger_conservation.py so that pytest can
 run regardless of how the package is installed.

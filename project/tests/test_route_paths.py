@@ -1,5 +1,5 @@
 """
-Tests for check_simple_path and check_hub_intermediates in lecture6/src/invariants.py.
+Tests for check_simple_path and check_hub_intermediates in project/src/invariants.py.
 
 Import scaffolding mirrors test_route_invariants.py so pytest runs regardless
 of installation mode.

@@ -21,7 +21,7 @@ import pathlib
 
 def test_no_allow_module_level_skips() -> None:
     """
-    Property test — scans all lecture6/tests/*.py files for the literal text
+    Property test — scans all project/tests/*.py files for the literal text
     'allow_module_level=True'.  Fails if any file contains that string.
 
     Kind: property / invariance.
@@ -46,7 +46,7 @@ def test_no_allow_module_level_skips() -> None:
         "causes the entire module to be silently skipped when an import fails. "
         "Replace the try/except ImportError guard with a plain import so pytest "
         "reports a collection ERROR instead of a silent skip:\n"
-        + "\n".join(f"  lecture6/tests/{f}" for f in offenders)
+        + "\n".join(f"  project/tests/{f}" for f in offenders)
     )
 
 

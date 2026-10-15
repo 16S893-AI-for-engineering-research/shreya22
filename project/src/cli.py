@@ -257,7 +257,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     # ── 7. Build all outputs in a temp dir, then move atomically ──────────
-    tmpdir = pathlib.Path(tempfile.mkdtemp(prefix="cli_lecture6_"))
+    tmpdir = pathlib.Path(tempfile.mkdtemp(prefix="cli_project_"))
     try:
         _write_outputs(
             tmpdir=tmpdir,

@@ -1,5 +1,5 @@
 """
-Tests for lecture6/src/figures.py: bar_compare() deterministic SVG/PNG export.
+Tests for project/src/figures.py: bar_compare() deterministic SVG/PNG export.
 
 All tests use tmp_path (pytest built-in) as the output directory so nothing
 is written to the repo tree.
@@ -19,7 +19,7 @@ import sys
 
 import pytest
 
-# Make lecture6/src importable when pytest runs from repo root
+# Make project/src importable when pytest runs from repo root
 _THIS_DIR = pathlib.Path(__file__).resolve().parent
 _SRC_DIR = _THIS_DIR.parent / "src"
 sys.path.insert(0, str(_SRC_DIR))
