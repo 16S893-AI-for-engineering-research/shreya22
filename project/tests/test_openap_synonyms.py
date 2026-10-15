@@ -59,10 +59,20 @@ from openap_perf import flight_fuel_nox
 _ALL_MODELS: list[str] = sorted(
     set(v for v in BTS_TO_OPENAP.values() if v is not None)
 )
-# Expected count = 22 (verified manually against BTS_TO_OPENAP table).
-assert len(_ALL_MODELS) == 22, (
-    f"Expected 22 BTS→OpenAP target models, got {len(_ALL_MODELS)}: {_ALL_MODELS}"
-)
+# NW-20 verified these 22 target models.  NW-21 (written in parallel, merged
+# after) widened BTS_TO_OPENAP with 6 more exact/proxy targets
+# (a332, a333, a343, b734, b744, b748), so the table now has 28.  We therefore
+# assert the ORIGINAL 22 are still present (nothing was silently dropped) and
+# let every other mapped model be exercised by the parametrised tests below,
+# rather than pinning an exact count that goes stale whenever the mapping grows.
+_NW20_MODELS = frozenset({
+    "a20n", "a21n", "a319", "a320", "a321", "a359", "b38m", "b39m", "b737",
+    "b738", "b739", "b752", "b763", "b772", "b773", "b788", "b789", "crj9",
+    "e145", "e170", "e190", "e75l",
+})
+assert len(_NW20_MODELS) == 22
+_missing = _NW20_MODELS - set(_ALL_MODELS)
+assert not _missing, f"BTS_TO_OPENAP lost previously supported models: {sorted(_missing)}"
 
 # ---------------------------------------------------------------------------
 # Module-level cache: (ac, distance_nm) -> result dict.
@@ -494,10 +504,11 @@ class TestPhysicalPlausibility:
 
     # Plausible fuel-per-nm bands by rough aircraft category at 800 nm.
     # Wide lower bound: we're testing at 800 nm only and mass_fraction=0.8.
-    # Upper bound: no widebody burns > 30 kg/nm at 800 nm.
+    # Upper bound: raised 30 -> 40 when NW-21 added the 747s (b744 31.8, b748 30.1
+    # kg/nm at 800 nm, 0.8*MTOW). Still a sanity band, not a calibration.
     # These bounds deliberately err on the conservative side.
     _FUEL_PER_NM_MIN = 2.0    # kg/nm (smallest regional jet e.g. e145)
-    _FUEL_PER_NM_MAX = 30.0   # kg/nm (largest widebody b772 at MTOW*0.8)
+    _FUEL_PER_NM_MAX = 40.0   # kg/nm (heaviest: b744/b748 at ~0.8*MTOW run 30-32)
 
     @pytest.mark.parametrize("ac", _ALL_MODELS)
     def test_fuel_per_nm_positive_finite(self, ac: str) -> None:
@@ -518,11 +529,11 @@ class TestPhysicalPlausibility:
     def test_fuel_per_nm_in_plausible_band(self, ac: str) -> None:
         """
         Kind: property / physical-range.
-        Tolerance: [2, 30] kg/nm.
+        Tolerance: [2, 40] kg/nm.
         Reason: derived from OpenAP validation paper (Sun et al. 2020, TRC 119)
         and ICAO Carbon Emissions Calculator (Doc 9988). Regional jets burn
         ~3–6 kg/nm; narrow-bodies ~5–9 kg/nm; widebodies ~10–20 kg/nm.
-        The [2, 30] band is intentionally wide to accommodate the synonym
+        The [2, 40] band is intentionally wide to accommodate the synonym
         substitutions (e.g. crj9 trajectory using e190 kinematics) which may
         shift fuel modestly.
         Cannot catch: a systematic 2× error for all models.
