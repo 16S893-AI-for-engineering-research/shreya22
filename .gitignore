@@ -9,3 +9,4 @@ __pycache__/
 .cache/
 *.egg-info/
 .DS_Store
+data/bts-cache/
