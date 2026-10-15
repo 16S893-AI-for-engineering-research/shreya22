@@ -1,0 +1,10 @@
+id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,icao_code,iata_code,gps_code,local_code,home_link,wikipedia_link,keywords
+3488,KBOS,large_airport,General Edward Lawrence Logan International Airport,42.36197,-71.00789,20,NA,US,US-MA,Boston,yes,KBOS,BOS,KBOS,BOS,https://www.massport.com/logan-airport/,,Logan
+3830,KORD,large_airport,Chicago O'Hare International Airport,41.97859,-87.90483,672,NA,US,US-IL,Chicago,yes,KORD,ORD,KORD,ORD,https://www.flychicago.com/ohare/,,O'Hare
+3469,KSFO,large_airport,San Francisco International Airport,37.61899,-122.37483,13,NA,US,US-CA,San Francisco,yes,KSFO,SFO,KSFO,SFO,https://www.flysfo.com/,,SFO
+3751,KDEN,large_airport,Denver International Airport,39.85841,-104.6737,5431,NA,US,US-CO,Denver,yes,KDEN,DEN,KDEN,DEN,https://www.flydenver.com/,,DIA
+3484,KPHX,large_airport,Phoenix Sky Harbor International Airport,33.43529,-112.00597,1135,NA,US,US-AZ,Phoenix,yes,KPHX,PHX,KPHX,PHX,https://www.skyharbor.com/,,Sky Harbor
+3682,KATL,large_airport,Hartsfield-Jackson Atlanta International Airport,33.63669,-84.42810,1026,NA,US,US-GA,Atlanta,yes,KATL,ATL,KATL,ATL,https://www.atl.com/,,Hartsfield
+3533,KDTW,large_airport,Detroit Metropolitan Wayne County Airport,42.21243,-83.35350,645,NA,US,US-MI,Detroit,yes,KDTW,DTW,KDTW,DTW,https://www.metroairport.com/,,Wayne County
+3858,KMSP,large_airport,Minneapolis-Saint Paul International Airport,44.88055,-93.22188,841,NA,US,US-MN,Minneapolis,yes,KMSP,MSP,KMSP,MSP,https://www.mspairport.com/,,MSP
+9999,KZZX,closed,Closed Test Airport,45.00000,-90.00000,0,NA,US,US-WI,Testville,no,KZZX,ZZX,KZZX,ZZX,,,

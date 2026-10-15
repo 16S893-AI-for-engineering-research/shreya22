@@ -299,9 +299,14 @@ _BIJ_MAPS = [m for _, m in _BIJECTIONS]
 # ---------------------------------------------------------------------------
 
 def _relabel_coords(f: Dict[str, str]) -> Dict[str, Tuple[float, float]]:
-    """Return a new AIRPORT_COORDS dict with keys renamed by bijection f."""
+    """Return a new AIRPORT_COORDS dict with keys renamed by bijection f.
+
+    Only the codes in f are renamed; all other codes pass through unchanged.
+    This handles the case where AIRPORT_COORDS has been expanded beyond the
+    six test airports (e.g. after NW-19 loads it from airports.csv).
+    """
     orig = _distance_mod.AIRPORT_COORDS
-    return {f[k]: v for k, v in orig.items()}
+    return {f.get(k, k): v for k, v in orig.items()}
 
 
 def _relabel_demand(
