@@ -1,0 +1,34 @@
+{
+  "files": {
+    "DB1BMarket_2019_1.zip": {
+      "byte_size": 89241935,
+      "retrieval_date": "2026-10-15",
+      "sha256": "6aa2bccdaf5165a2762668a8cb41f560d84dde6c7c948a1c956d474fff08b9d5",
+      "source_url": "https://transtats.bts.gov/PREZIP/Origin_and_Destination_Survey_DB1BMarket_2019_1.zip"
+    },
+    "L_AIRCRAFT_TYPE.csv": {
+      "byte_size": 14177,
+      "retrieval_date": "2026-10-15",
+      "sha256": "4fdb4909c671582f0267a730b7a486cab218d2405076d95c344e4d4b2f77d4c4",
+      "source_url": "https://www.transtats.bts.gov/Download_Lookup.asp?Y11x72=Y_NVePeNSg_glcR"
+    },
+    "t100_2019_01.csv": {
+      "byte_size": 1910028,
+      "retrieval_date": "2026-10-15",
+      "sha256": "d80dce7e7960811a26898d5f623fc547804727a0c2e1016f8cd81dcf6879e923",
+      "source_url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45"
+    },
+    "t100_2019_02.csv": {
+      "byte_size": 1824387,
+      "retrieval_date": "2026-10-15",
+      "sha256": "c64ab571fc9b5dda92d40e9cc8265deb2f5694da333ebac788a37f1f63cf050a",
+      "source_url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45"
+    },
+    "t100_2019_03.csv": {
+      "byte_size": 1904348,
+      "retrieval_date": "2026-10-15",
+      "sha256": "98c3bd896f177c5faa771385af6753fe24756d3d4488568658623e1c88ece0d9",
+      "source_url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45"
+    }
+  }
+}
