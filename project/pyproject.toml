@@ -5,6 +5,7 @@ description = "Hub-and-spoke vs point-to-point network comparison: demand, routi
 requires-python = ">=3.11"
 dependencies = [
     "matplotlib>=3.7,<3.11",
+    "openap>=2.6.2",
     "pytest>=7,<9",
 ]
 
