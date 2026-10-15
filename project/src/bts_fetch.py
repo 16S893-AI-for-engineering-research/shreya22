@@ -15,6 +15,13 @@ fetch_t100_segment(year, month, dest_dir) -> pathlib.Path
     download parameters.  Extracts the LARGEST member from the returned zip
     and saves it to dest_dir.
 
+fetch_t2(year, quarter, dest_dir) -> pathlib.Path
+    Download BTS Form 41 Schedule T2 "U.S. Air Carrier Traffic and Capacity
+    Statistics by Aircraft Type" for a given year and quarter.  Uses a
+    cookie-session (GET form page first to capture session cookie, then POST)
+    because the BTS T2 form requires a live session unlike the PREZIP downloads.
+    Extracts the LARGEST member from the returned zip and saves it to dest_dir.
+
 fetch_aircraft_lookup(dest_dir) -> pathlib.Path
     Download the L_AIRCRAFT_TYPE lookup CSV from BTS and save to dest_dir.
 
@@ -73,6 +80,20 @@ _T100_FORM_URL = (
 _AIRCRAFT_LOOKUP_URL = (
     "https://www.transtats.bts.gov/Download_Lookup.asp?Y11x72=Y_NVePeNSg_glcR"
 )
+
+_T2_FORM_URL = (
+    "https://www.transtats.bts.gov/DL_SelectFields.aspx"
+    "?gnoyr_VQ=FIH&QO_fu146_anzr=Nv4%20Pn44vr4%20f7zzn4B"
+)
+
+# Fields to request in the T2 POST (matching the reviewer's field list)
+_T2_WANTED_FIELDS = frozenset([
+    "YEAR", "QUARTER", "UNIQUE_CARRIER", "CARRIER_GROUP_NEW",
+    "AIRCRAFT_TYPE", "AIRCRAFT_CONFIG", "SERVICE_CLASS",
+    "AVL_SEAT_MILES_320", "REV_PAX_MILES_140", "REV_ACRFT_MILES_FLOWN_410",
+    "REV_ACRFT_DEP_PERF_510", "HOURS_AIRBORNE_650", "AIRCRAFT_FUELS_921",
+    "NUM_MONTHS",
+])
 
 _T100_WANTED_FIELDS = frozenset([
     "YEAR", "MONTH", "UNIQUE_CARRIER", "ORIGIN", "DEST",
@@ -292,6 +313,74 @@ def fetch_aircraft_lookup(dest_dir: pathlib.Path | str) -> pathlib.Path:
     csv_bytes = _retry(_do_fetch)
 
     out_path = dest_dir / "L_AIRCRAFT_TYPE.csv"
+    out_path.write_bytes(csv_bytes)
+    return out_path
+
+
+def fetch_t2(
+    year: int,
+    quarter: int,
+    dest_dir: pathlib.Path | str,
+) -> pathlib.Path:
+    """Download and extract BTS Form 41 Schedule T2 data for *year* / *quarter*.
+
+    Schedule T2 is "U.S. Air Carrier Traffic and Capacity Statistics by
+    Aircraft Type", available at::
+
+        https://www.transtats.bts.gov/DL_SelectFields.aspx
+        ?gnoyr_VQ=FIH&QO_fu146_anzr=Nv4%20Pn44vr4%20f7zzn4B
+
+    Unlike the PREZIP DB1B download, this form requires a live session cookie:
+
+    1. GET the form page (captures ASP.NET session cookie and hidden fields).
+    2. POST with cboPeriod = quarter (1–4), cboYear = year, cboGeography = All,
+       btnDownload = Download, chkDownloadZip = on, and the field checkboxes
+       in _T2_WANTED_FIELDS.
+    3. The response is a zip; extract the LARGEST member (the data CSV;
+       the zip also contains Documentation.csv).
+    4. Write the CSV to dest_dir.
+
+    Each HTTP call is retried independently via _retry().
+    Returns the Path to the saved CSV file.
+    """
+    dest_dir = pathlib.Path(dest_dir)
+
+    # Step 1: GET the form page to capture ASP.NET hidden fields
+    def _get_form():
+        resp = _open_url(_T2_FORM_URL)
+        return resp.read()
+
+    html = _retry(_get_form)
+
+    # Step 2: scrape hidden fields and checkbox names
+    hidden_fields = _scrape_aspnet_fields(html)
+    checkbox_names = _scrape_checkbox_names(html)
+
+    # Step 3: build POST body
+    form: dict[str, str] = {}
+    form.update(hidden_fields)
+    form["cboGeography"] = "All"
+    form["cboYear"] = str(year)
+    form["cboPeriod"] = str(quarter)   # quarter (1-4) for T2, not month
+    form["btnDownload"] = "Download"
+    form["chkDownloadZip"] = "on"
+
+    # Include only checkboxes that are in the wanted set
+    for cb_name in checkbox_names:
+        if cb_name in _T2_WANTED_FIELDS:
+            form[cb_name] = "on"
+
+    post_body = urllib.parse.urlencode(form).encode("utf-8")
+
+    def _do_post():
+        resp = _open_url(_T2_FORM_URL, data=post_body)
+        return resp.read()
+
+    zip_bytes = _retry(_do_post)
+    csv_bytes = _extract_largest_member(zip_bytes)
+
+    out_name = f"t2_{year}_q{quarter}.csv"
+    out_path = dest_dir / out_name
     out_path.write_bytes(csv_bytes)
     return out_path
 
