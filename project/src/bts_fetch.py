@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.cookiejar
 import os
 import io
 import json
@@ -59,9 +60,10 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import urllib.request as _urllib_request
 import zipfile
 from datetime import date
-from typing import Optional
+from typing import Callable, Optional
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -118,7 +120,7 @@ class ManifestMismatchError(ValueError):
 # Injectable HTTP primitive (tests replace this with mock.patch)
 # ---------------------------------------------------------------------------
 
-def _open_url(url: str, data: Optional[bytes] = None, timeout: int = 300):
+def _open_url(url: str, data: Optional[bytes] = None, timeout: int = 300, opener=None):
     """Open a URL via urllib.request.urlopen and return the response object.
 
     Parameters
@@ -135,6 +137,8 @@ def _open_url(url: str, data: Optional[bytes] = None, timeout: int = 300):
         data=data,
         headers={"User-Agent": "Mozilla/5.0 (bts_fetch/1.0)"},
     )
+    if opener is not None:
+        return opener.open(req, timeout=timeout)
     return urllib.request.urlopen(req, timeout=timeout)
 
 
@@ -166,6 +170,65 @@ def _extract_largest_member(zip_bytes: bytes) -> bytes:
     zf = zipfile.ZipFile(io.BytesIO(zip_bytes))
     largest = max(zf.infolist(), key=lambda info: info.file_size)
     return zf.read(largest.filename)
+
+
+# ZIP local-file magic bytes (PK\x03\x04).
+_ZIP_MAGIC = b"PK\x03\x04"
+
+
+def _check_zip_magic(
+    data: bytes,
+    content_type: Optional[str] = None,
+) -> None:
+    """Raise ValueError if *data* does not start with the ZIP magic bytes.
+
+    The error message includes the content-type (if provided) and the first
+    up to 80 safely-printable bytes of *data*, so that callers can diagnose
+    what the server actually returned (e.g. an HTML session-expired page).
+
+    Parameters
+    ----------
+    data:
+        The response body to inspect.
+    content_type:
+        The Content-Type header from the response (may be None).
+
+    Raises
+    ------
+    ValueError
+        If *data* does not start with ``PK\x03\x04``.
+    """
+    if data[:4] == _ZIP_MAGIC:
+        return
+    snippet = data[:80]
+    try:
+        snippet_str = snippet.decode("utf-8", errors="replace")
+    except Exception:
+        snippet_str = repr(snippet)
+    ct_info = f", content-type: {content_type!r}" if content_type else ""
+    raise ValueError(
+        f"Expected a ZIP response (PK\\x03\\x04 magic){ct_info} "
+        f"but got {len(data)} bytes; first 80 bytes: {snippet_str!r}"
+    )
+
+
+def _make_t2_opener():
+    """Build a urllib opener with a shared CookieJar for the T2 session.
+
+    The BTS T2 form issues an ASP.NET session cookie on the GET request that
+    must be replayed on the subsequent POST.  Without a shared CookieJar the
+    POST returns an HTML error page instead of the requested zip.
+
+    Returns an opener whose ``.open(request)`` method automatically handles
+    cookies (stores them from responses and sends them on subsequent requests
+    to the same domain).  The CookieJar is accessible as ``opener.jar``.
+    """
+    jar = http.cookiejar.CookieJar()
+    processor = _urllib_request.HTTPCookieProcessor(jar)
+    opener = _urllib_request.build_opener(processor)
+    # Expose the jar so callers can inspect/inject cookies in tests
+    opener.jar = jar  # type: ignore[attr-defined]
+    return opener
 
 
 def _scrape_aspnet_fields(html: bytes) -> dict[str, str]:
@@ -321,6 +384,7 @@ def fetch_t2(
     year: int,
     quarter: int,
     dest_dir: pathlib.Path | str,
+    _opener_factory: Optional[Callable] = None,
 ) -> pathlib.Path:
     """Download and extract BTS Form 41 Schedule T2 data for *year* / *quarter*.
 
@@ -336,27 +400,63 @@ def fetch_t2(
     2. POST with cboPeriod = quarter (1–4), cboYear = year, cboGeography = All,
        btnDownload = Download, chkDownloadZip = on, and the field checkboxes
        in _T2_WANTED_FIELDS.
-    3. The response is a zip; extract the LARGEST member (the data CSV;
-       the zip also contains Documentation.csv).
-    4. Write the CSV to dest_dir.
+    3. The response is verified against the ZIP magic bytes (PK\\x03\\x04);
+       if not a zip, a clear ValueError is raised naming the content-type and
+       first 80 bytes of the response for diagnostics.
+    4. Extract the LARGEST member from the zip (the data CSV; the zip also
+       contains Documentation.csv).
+    5. Write the CSV to dest_dir.
 
-    Each HTTP call is retried independently via _retry().
-    Returns the Path to the saved CSV file.
+    Cookie session
+    --------------
+    The GET and the POST share ONE opener (hence one CookieJar), so the ASP.NET
+    session cookie set by the GET is replayed on the POST.  This is the default
+    behaviour, not an opt-in.
+
+    Parameters
+    ----------
+    year : int
+        Calendar year (e.g. 2019).
+    quarter : int
+        Quarter 1–4.
+    dest_dir : pathlib.Path | str
+        Directory to write the extracted CSV into.
+    _opener_factory : callable, optional
+        Test seam.  Called with no arguments; must return an object with an
+        ``.open(request, timeout=...)`` method.  Defaults to ``_make_t2_opener``
+        (a real cookie-jar opener).
+
+    Returns
+    -------
+    pathlib.Path
+        Path to the extracted and saved CSV file.
+
+    Raises
+    ------
+    ValueError
+        If the POST response is not a ZIP file (PK\\x03\\x04 magic missing),
+        with a message containing the content-type and first 80 bytes of the
+        non-zip response for diagnostics.
+    OSError
+        After MAX_RETRIES failed attempts.
     """
     dest_dir = pathlib.Path(dest_dir)
 
-    # Step 1: GET the form page to capture ASP.NET hidden fields
+    # One opener (hence one CookieJar) for BOTH requests: the ASP.NET session
+    # cookie set by the GET must be replayed on the POST, or the server answers
+    # with an HTML error page instead of a zip.  The factory is injectable for
+    # tests; the default is a real cookie-jar opener, never a cookie-less one.
+    opener = (_opener_factory or _make_t2_opener)()
+
     def _get_form():
-        resp = _open_url(_T2_FORM_URL)
+        resp = _open_url(_T2_FORM_URL, opener=opener)
         return resp.read()
 
     html = _retry(_get_form)
 
-    # Step 2: scrape hidden fields and checkbox names
     hidden_fields = _scrape_aspnet_fields(html)
     checkbox_names = _scrape_checkbox_names(html)
 
-    # Step 3: build POST body
     form: dict[str, str] = {}
     form.update(hidden_fields)
     form["cboGeography"] = "All"
@@ -364,8 +464,6 @@ def fetch_t2(
     form["cboPeriod"] = str(quarter)   # quarter (1-4) for T2, not month
     form["btnDownload"] = "Download"
     form["chkDownloadZip"] = "on"
-
-    # Include only checkboxes that are in the wanted set
     for cb_name in checkbox_names:
         if cb_name in _T2_WANTED_FIELDS:
             form[cb_name] = "on"
@@ -373,10 +471,23 @@ def fetch_t2(
     post_body = urllib.parse.urlencode(form).encode("utf-8")
 
     def _do_post():
-        resp = _open_url(_T2_FORM_URL, data=post_body)
-        return resp.read()
+        resp = _open_url(_T2_FORM_URL, data=post_body, opener=opener)
+        body = resp.read()
+        ct: Optional[str] = None
+        if hasattr(resp, "getheader"):
+            try:
+                ct = resp.getheader("Content-Type")
+            except Exception:
+                pass
+        if ct is None and hasattr(resp, "headers"):
+            headers = resp.headers
+            if hasattr(headers, "get"):
+                ct = headers.get("Content-Type")
+        _check_zip_magic(body, ct)
+        return body
 
     zip_bytes = _retry(_do_post)
+
     csv_bytes = _extract_largest_member(zip_bytes)
 
     out_name = f"t2_{year}_q{quarter}.csv"
