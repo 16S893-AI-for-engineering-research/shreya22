@@ -385,8 +385,112 @@ def _write_outputs(
 
 
 # ---------------------------------------------------------------------------
+# Pipeline subcommand
+# ---------------------------------------------------------------------------
+
+def main_pipeline(argv: Optional[List[str]] = None) -> int:
+    """Run the real data-driven pipeline subcommand.
+
+    Usage (as subcommand)::
+
+        python -m cli pipeline --demand PATH --hubs ORD,DEN --t100 FILE [FILE ...]
+                                --out DIR [--p2p-rule observed|all]
+                                [--scale 1.0]
+
+    Delegates to pipeline.run_pipeline() with a cached OpenAP perf function
+    (rounds distance to nearest 10 nm per cache key).  Falls back to the
+    fake perf when openap is unavailable (for offline/CI use via the injected
+    perf_fn override used in tests).
+
+    Exit codes
+    ----------
+    0  success
+    2  bad usage / inputs
+    3  conservation or invariant check failure
+    """
+    parser = argparse.ArgumentParser(
+        prog="cli pipeline",
+        description="Real data-driven P2P vs hub-and-spoke pipeline.",
+    )
+    parser.add_argument("--demand", required=True,
+                        help="Path to demand CSV (origin,destination,passengers).")
+    parser.add_argument("--hubs", required=True,
+                        help="Comma-separated hub airport codes, e.g. ORD,DEN.")
+    parser.add_argument("--t100", required=True, nargs="+", dest="t100_paths",
+                        help="One or more T-100 CSV files.")
+    parser.add_argument("--out", required=True,
+                        help="Output directory (must already exist).")
+    parser.add_argument("--p2p-rule", default="observed", dest="p2p_rule",
+                        choices=("all", "observed"),
+                        help="P2P nonstop rule: 'all' or 'observed' (default).")
+    parser.add_argument("--scale", type=float, default=1.0,
+                        help="Extra passenger multiplier for sensitivity runs (default 1.0). "
+                             "Do NOT use 10 for DB1B: db1b.py already applies x10.")
+
+    args = parser.parse_args(argv)
+
+    hub_codes = [h.strip().upper() for h in args.hubs.split(",") if h.strip()]
+    if not hub_codes:
+        print("ERROR: --hubs must be non-empty.", file=sys.stderr)
+        return 2
+
+    # Build the perf function: real OpenAP with (aircraft, dist_10nm) cache.
+    # Import here to allow the module to load even without openap installed.
+    try:
+        from openap_perf import flight_fuel_nox as _flight_fuel_nox
+        from fleet import BTS_TO_OPENAP as _BTS_TO_OPENAP
+        _perf_cache: dict = {}
+
+        def _real_perf(bts_code: str, distance_nm_val: float) -> Optional[dict]:
+            openap_code = _BTS_TO_OPENAP.get(bts_code)
+            if openap_code is None:
+                return None
+            dist_rounded = round(distance_nm_val / 10.0) * 10.0
+            key = (openap_code, dist_rounded)
+            if key not in _perf_cache:
+                result = _flight_fuel_nox(openap_code, dist_rounded)
+                _perf_cache[key] = {
+                    "fuel_kg": result["fuel_kg"],
+                    "nox_kg": result["nox_kg"],
+                }
+            return _perf_cache[key]
+
+        perf_fn = _real_perf
+    except Exception as exc:
+        print(f"ERROR: could not initialise OpenAP perf function: {exc}",
+              file=sys.stderr)
+        return 2
+
+    from pipeline import run_pipeline
+    return run_pipeline(
+        demand_path=args.demand,
+        hubs=hub_codes,
+        t100_paths=args.t100_paths,
+        out_dir=args.out,
+        perf_fn=perf_fn,
+        p2p_rule=args.p2p_rule,
+        scale=args.scale,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
+
+def _dispatch(argv: Optional[List[str]] = None) -> int:
+    """Dispatch to the pipeline subcommand or the legacy main().
+
+    If the first argument is 'pipeline', strip it and call main_pipeline().
+    Otherwise fall through to the existing main() which handles
+    --demand / --hubs / --out directly.
+    """
+    if argv is None:
+        argv = sys.argv[1:]
+    if argv and argv[0] == "pipeline":
+        return main_pipeline(argv[1:])
+    return main(argv)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_dispatch())
