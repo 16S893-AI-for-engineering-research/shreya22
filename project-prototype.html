@@ -35,10 +35,19 @@
         <li><strong>legs.py</strong> — passenger_legs (counts passenger × flight-leg pairs)</li>
         <li><strong>totals.py</strong> — network_totals (additive over segments,
             relabelling-invariant)</li>
-        <li><strong>distance.py</strong> — distance_nm (great-circle; BOS, JFK, ORD, SFO,
-            DEN, PHX today)</li>
-        <li><strong>fuel.py</strong> — PLACEHOLDER coefficients (~10–18× too high vs OpenAP)</li>
-        <li><strong>emissions.py</strong> — PLACEHOLDER coefficients</li>
+        <li><strong>distance.py</strong> — distance_nm (great-circle) for 806 airports
+            from OurAirports</li>
+        <li><strong>hubs.py</strong> — hub assignment: first hub, or nearest hub</li>
+        <li><strong>db1b.py</strong> — DB1B Market demand adapter (10% sample × 10)</li>
+        <li><strong>fleet.py</strong>, <strong>openap_perf.py</strong>, <strong>network_perf.py</strong>
+            — T-100 aircraft mix per route, OpenAP fuel and NO<sub>x</sub> per flight, network totals</li>
+        <li><strong>pipeline.py</strong> — <code>cli pipeline</code>: all of the above, for both structures</li>
+        <li><strong>t2_check.py</strong>, <strong>fuel_gap.py</strong> — comparison with BTS reported fuel;
+            decomposition of a fuel gap</li>
+        <li><strong>bts_fetch.py</strong> — reproducible BTS downloads with a hashed manifest</li>
+        <li><strong>fuel.py</strong>, <strong>emissions.py</strong>, <strong>totals.py</strong> —
+            the older PLACEHOLDER model, used only by the original <code>cli</code> mode
+            (the 3-airport mock below)</li>
         <li><strong>figures.py</strong> — bar_compare (matplotlib, for exploratory use)</li>
         <li><strong>cli.py</strong> — command-line entry point</li>
       </ul>
@@ -190,8 +199,9 @@
     <div class="card">
       <h3>The tests, in three layers</h3>
       <p>
-        The pipeline had <strong>319 tests</strong> when this mock ran (the suite
-        has since grown to about 450 with the BTS and OpenAP modules). They run with
+        The pipeline had <strong>319 tests</strong> when the mock ran; the suite is now
+        <strong>791</strong> (776 pass and 15 skip when the BTS data files are absent,
+        as on CI). They run with
         <code>uv run pytest</code> from a clean checkout with no external data; the
         few tests that need the full BTS files skip, with a stated reason, when the
         files are not present.
@@ -228,22 +238,22 @@
         <li>
           <span class="status--done" style="display:inline-block; width:12px; height:12px;
             border-radius:50%; background:#16a34a; vertical-align:middle; margin-right:6px;"></span>
-          <strong>DONE</strong> (circle): network builder, invariant checks,
-          network totals plumbing, CLI
+          <strong>DONE</strong> (circle): demand, network builder, invariant checks,
+          T-100 fleet, OpenAP fuel/NO<sub>x</sub>, CLI
         </li>
         <li>
           <span style="display:inline-block; width:0; height:0;
             border-left:7px solid transparent; border-right:7px solid transparent;
             border-bottom:12px solid #d97706; vertical-align:middle; margin-right:6px;"
             class="status--in-progress"></span>
-          <strong>IN PROGRESS</strong> (triangle): BTS demand adapter,
-          T-100 fleet, OpenAP fuel/NOx
+          <strong>IN PROGRESS</strong> (triangle): point-to-point feasibility cutoff
+          (only the proxy rule so far)
         </li>
         <li>
           <span class="status--not-started" style="display:inline-block; width:12px; height:12px;
             border-radius:2px; background:#94a3b8; vertical-align:middle; margin-right:6px;"></span>
           <strong>NOT STARTED</strong> (square): exposure (adjoint),
-          health burden, point-to-point feasibility cutoff
+          health burden
         </li>
       </ul>
     </div>
@@ -267,6 +277,66 @@
       </p>
     </div>
 
+    <h2>The six-airport region on real data</h2>
+    <p>
+      <code>cli pipeline</code> now runs BOS, DEN, DTW, MSP, ORD and SFO for 2019&nbsp;Q1:
+      DB1B demand (2,395,440 passengers), the real T-100 aircraft mix, and OpenAP fuel and
+      NO<sub>x</sub> for both structures. The outputs are byte-identical across two runs.
+      <strong>These totals are outputs of a modelled prototype, not findings</strong>:
+      the metric this project compares is population-weighted exposure (ADR&nbsp;0003), and
+      none of it is computed yet.
+    </p>
+    <div class="card">
+      <h3>Why the totals cannot be compared with BTS directly (and what was found)</h3>
+      <p>
+        Modelled point-to-point fuel (138&nbsp;kt) is 35% below what the T-100 aircraft
+        kilometres would imply from BTS-reported fuel per nautical mile (212&nbsp;kt).
+        The gap decomposes exactly into four factors (their product equals the total ratio
+        to 1e-9, a tested identity):
+      </p>
+      <table style="width:100%; border-collapse:collapse; font-size:14px; color:#55586b;">
+        <thead><tr><th style="text-align:left;">Factor</th><th style="text-align:right;">Value</th><th style="text-align:left; padding-left:12px;">Reading</th></tr></thead>
+        <tbody>
+          <tr><td>Passenger coverage (DB1B&nbsp;&times;10 / T-100)</td><td style="text-align:right;">0.613</td><td style="padding-left:12px;">largest driver</td></tr>
+          <tr><td>Flights per passenger</td><td style="text-align:right;">0.973</td><td style="padding-left:12px;">close to T-100</td></tr>
+          <tr><td>Nautical miles per flight</td><td style="text-align:right;">1.132</td><td style="padding-left:12px;">model flies longer segments than T-100 averages</td></tr>
+          <tr><td>Fuel per nautical mile</td><td style="text-align:right;">0.963</td><td style="padding-left:12px;">includes 7.4% of departures with no OpenAP model</td></tr>
+          <tr><td><strong>Product</strong></td><td style="text-align:right;"><strong>0.650</strong></td><td style="padding-left:12px;">= modelled / reference</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;">
+        A control run feeds T-100&rsquo;s own passenger counts in as demand. It reproduces
+        T-100 aircraft-nm to 0.2% and fuel to 5%, so the fuel model is not the cause. Coverage
+        is lowest on short pairs (0.37&ndash;0.43 on DTW&ndash;ORD, MSP&ndash;ORD, DTW&ndash;MSP) and
+        highest on BOS&ndash;SFO (0.89&ndash;0.94), which fits a story where DB1B origin&ndash;destination
+        demand omits connecting passengers who fill short T-100 legs. <strong>That story is
+        consistent with the numbers but has not been tested directly.</strong> The control
+        shares its aircraft mix and distances with the model, so it cannot catch an error in
+        those.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Hub assignment is a modelling choice that changes the answer</h3>
+      <p>
+        With hubs ORD and DEN, assigning each airport to its <em>nearest</em> hub sends SFO to DEN
+        (838&nbsp;nm instead of 1,600&nbsp;nm to ORD) and everything else to ORD. Hub-and-spoke
+        fuel then falls from 170&nbsp;kt to 146&nbsp;kt (&minus;14%), with aircraft-nm down
+        from 22.5&nbsp;M to 20.7&nbsp;M. That is a property of the assignment rule, not evidence
+        about hub-and-spoke networks. The earlier default (every airport to the first hub)
+        had made a second hub do nothing. The nearest-hub rule has no decision record yet.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>A correction the review made</h3>
+      <p>
+        The agent that built <code>cli pipeline</code> told users to pass <code>--scale 10</code>
+        for DB1B demand, but the demand file is already multiplied by 10, so following that
+        advice would have inflated every number 100-fold. Found by reading the code against the
+        data, fixed, and covered by a regression test.
+      </p>
+    </div>
+
     <h2>What worked</h2>
     <div class="card">
       <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
@@ -275,7 +345,10 @@
         <li>All four structural invariants pass on both P2P and hub-and-spoke routes.</li>
         <li>Network totals are additive over segments and unchanged when airports are
             renamed (with their coordinates moved too).</li>
-        <li>The CLI runs end-to-end from a CSV demand file.</li>
+        <li>The CLI runs end-to-end from a CSV demand file, and <code>cli pipeline</code> runs the
+            six-airport region on real data with reproducible, hashed inputs.</li>
+        <li>OpenAP fuel per nautical mile is within 8&ndash;15% below BTS-reported fuel for five
+            narrowbody types, and the BTS table can be re-fetched and matches its recorded hash.</li>
         <li>The test suite is mutation-tested, and mutation testing found real gaps
             that passing tests had hidden.</li>
       </ul>
@@ -285,32 +358,35 @@
     <div class="card">
       <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
         <li>
-          <strong>BTS DB1B demand adapter</strong>: the streaming chunk reader for the
-          1.6 GB raw CSV (×10 sample correction, study-region filter) is in progress.
-        </li>
-        <li>
-          <strong>T-100 fleet assignment</strong>: matching each route to an
-          aircraft type from T-100 (AIRCRAFT_CONFIG=1, ICAO code lookup) is
-          in progress.
-        </li>
-        <li>
-          <strong>OpenAP fuel/NOx</strong>: current coefficients are
-          <strong>placeholder values, not results</strong>; calibration against
-          OpenAP reference outputs is in progress.
-        </li>
-        <li>
           <strong>Exposure (GEOS-Chem adjoint)</strong>: applying the pre-computed
-          adjoint sensitivity fields to route-level emissions is not started.
+          adjoint sensitivity fields to route-level emissions is not started. This is the
+          step the research question depends on; everything above is plumbing for it.
         </li>
         <li>
           <strong>Health burden</strong>: concentration-response function
           (Turner et al. ozone, GEMM PM<sub>2.5</sub>) computation is not started.
         </li>
         <li>
-          <strong>Point-to-point feasibility cutoff</strong> (ADR 0007): a route
-          is only served nonstop if the assigned aircraft is range-feasible
-          for that stage length; otherwise it remains connecting. Not yet
-          implemented.
+          <strong>Point-to-point feasibility cutoff</strong> (ADR&nbsp;0007): a nonstop is
+          currently assumed only where T-100 shows one; the check that the assigned aircraft
+          can actually fly the stage length is not implemented.
+        </li>
+        <li>
+          <strong>Demand coverage</strong>: DB1B origin&ndash;destination demand covers 61% of
+          T-100 passengers in the region. Whether connecting passengers explain the rest is untested.
+        </li>
+        <li>
+          <strong>Airport codes</strong>: 17 of ~12,000 T-100 segments (163 of 1.99&nbsp;M
+          departures) join the wrong airport because OurAirports reuses some IATA codes, and
+          1% of departures involve airports not in the table. None are inside this six-airport region.
+        </li>
+        <li>
+          <strong>Aircraft coverage</strong>: 12% of national departures have no OpenAP model
+          (turboprops, business jets, MD-80 series, Boeing 717) and are excluded from fuel, not estimated.
+        </li>
+        <li>
+          <strong>Agent loop</strong> (issue&nbsp;#2): a subagent that steps in when a run is invalid
+          is not built; the CLI refuses to write on bad input but nothing repairs it.
         </li>
       </ul>
     </div>
