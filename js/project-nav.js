@@ -10,6 +10,7 @@
     { href: "project-data.html", label: "Data" },
     { href: "project-progress.html", label: "Progress" },
     { href: "project-prototype.html", label: "Prototype" },
+    { href: "project-trip-tool.html", label: "Trip tool" },
     { href: "project-pod-clinic.html", label: "Pod clinic" },
     { href: "project-assignment2.html", label: "Reproduce Paper Result" },
   ];

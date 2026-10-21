@@ -22,3 +22,11 @@ jobs:
       - name: Run tests with uv
         run: |
           uv run --directory project -p 3.11 pytest -q
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run site JavaScript tests
+        run: node --test js/test/*.test.js

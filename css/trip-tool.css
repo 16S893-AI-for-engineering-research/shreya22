@@ -1,0 +1,148 @@
+/* Trip tool page. Colours reuse the variables in style.css. Meaning is never
+   carried by colour alone: structures are named in text, lines differ in dash
+   pattern and every status has a word. */
+
+.trip-tool {
+  --tt-p2p: #1d4ed8;  /* 6.7:1 on white */
+  --tt-hs: #8a3b00;   /* 7.8:1 on white */
+  --tt-warn-bg: #fff4e5;
+  --tt-warn-ink: #7a2e00;
+}
+
+.trip-tool :focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+.caveat {
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+.caveat h2 { margin: 0 0 8px; font-size: 17px; }
+.caveat ul { margin: 0; padding-left: 1.2em; color: var(--ink); font-size: 14px; line-height: 1.6; }
+.caveat li { margin-bottom: 4px; }
+
+.picker {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+.picker__field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 220px; min-width: 0; }
+.picker label { font-size: 13px; font-weight: 700; color: var(--ink); }
+.picker select,
+.picker__swap {
+  font: inherit;
+  font-size: 15px;
+  min-height: 44px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 6px 10px;
+  max-width: 100%;
+}
+.picker__swap { cursor: pointer; font-weight: 700; }
+.picker__swap:hover:not(:disabled) { background: var(--accent-soft); }
+.picker select:disabled, .picker__swap:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.status-msg { font-size: 14px; color: var(--ink-soft); min-height: 1.4em; margin-bottom: 8px; }
+.status-msg--error {
+  color: var(--danger);
+  font-weight: 700;
+  border: 2px solid var(--danger);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #fff;
+}
+.status-msg--error::before { content: "Error: "; }
+
+.fetch-help { border: 2px dashed var(--ink-soft); border-radius: var(--radius); padding: 4px 20px 8px; background: #fff; }
+.fetch-help pre { background: #f1f2f6; padding: 10px 12px; border-radius: 6px; overflow-x: auto; }
+
+.banner, .warn-box {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.banner { background: var(--accent-soft); border: 2px solid var(--accent-dark); color: #1e2a6b; }
+.banner::before { content: "\2139\FE0E  "; font-weight: 700; }
+.warn-box { background: var(--tt-warn-bg); border: 2px solid var(--tt-warn-ink); color: var(--tt-warn-ink); }
+.warn-box::before { content: "\26A0\FE0E  Data check failed: "; font-weight: 700; }
+.caution-box { border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 14px; font-weight: 600;
+  background: #fff7e6; border: 2px solid #8a4b00; color: #5c3200; }
+.caution-box::before { content: "\25B2\FE0E  Caution: "; font-weight: 700; }
+.warn-box ul { margin: 6px 0 0; padding-left: 1.2em; font-weight: 400; }
+
+.trip-title { font-size: 22px; margin: 16px 0 4px; }
+.trip-context { font-size: 13px; color: var(--ink-soft); margin: 0 0 12px; }
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.compare__col {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top-width: 6px;
+  border-radius: var(--radius);
+  padding: 16px;
+  min-width: 0;
+}
+.compare__col--p2p { border-top-color: var(--tt-p2p); border-top-style: solid; }
+.compare__col--hs { border-top-color: var(--tt-hs); border-top-style: double; border-top-width: 8px; }
+.compare__col h3 { margin: 0 0 4px; font-size: 18px; }
+.compare__col--p2p h3 { color: var(--tt-p2p); }
+.compare__col--hs h3 { color: var(--tt-hs); }
+.compare__col--p2p h3::before { content: "\2014  "; }
+.compare__col--hs h3::before { content: "\2260  "; }
+.compare__same { font-size: 13px; font-weight: 700; margin: 0 0 8px; }
+
+.route-line { font-size: 17px; font-weight: 700; margin: 4px 0; overflow-wrap: anywhere; }
+.hub-line { font-size: 14px; color: var(--ink); margin: 4px 0 8px; }
+
+.leg { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 12px; }
+.leg h4 { margin: 0 0 6px; font-size: 15px; }
+.leg dl, .totals dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-size: 14px; }
+.leg dt, .totals dt { color: var(--ink-soft); min-width: 0; overflow-wrap: anywhere; }
+.leg dd, .totals dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+.leg .mix-title { grid-column: 1 / -1; font-weight: 700; color: var(--ink); margin-top: 6px; }
+.leg .key-metric dt, .totals .key-metric dt { color: var(--ink); font-weight: 700; }
+
+.totals { border-top: 3px solid var(--ink); margin-top: 14px; padding-top: 8px; }
+.totals h4 { margin: 0 0 6px; font-size: 15px; }
+
+.profile { margin-top: 8px; }
+.profile figcaption { font-size: 12px; color: var(--ink-soft); }
+.profile svg { width: 100%; height: auto; max-width: 420px; display: block; background: #fff; }
+.profile .ax { stroke: var(--ink); stroke-width: 1; fill: none; }
+.profile .grid { stroke: var(--line); stroke-width: 1; }
+.profile text { font-size: 10px; fill: var(--ink); font-family: inherit; }
+.profile .curve { fill: none; stroke-width: 2.5; }
+.profile .curve--p2p { stroke: var(--tt-p2p); }
+.profile .curve--hs { stroke: var(--tt-hs); stroke-dasharray: 7 4; }
+.profile-missing { font-size: 12px; color: var(--ink-soft); font-style: italic; }
+
+.source { font-size: 12px; color: var(--ink-soft); margin-top: 28px; overflow-wrap: anywhere; }
+
+.summary-scroll { overflow-x: auto; max-width: 100%; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0 16px; background: #fff; }
+.summary-table caption { text-align: left; font-weight: 700; padding: 4px 0; }
+.summary-table th, .summary-table td { border: 1px solid var(--line); padding: 6px 10px; text-align: right; }
+.summary-table th:first-child, .summary-table td:first-child { text-align: left; }
+
+@media (max-width: 720px) {
+  .compare { grid-template-columns: 1fr; }
+  .picker__swap { width: 100%; order: 3; }
+  .summary-table { font-size: 12.5px; }
+  .summary-table th, .summary-table td { padding: 5px 6px; }
+  .picker__field { flex-basis: 100%; }
+}

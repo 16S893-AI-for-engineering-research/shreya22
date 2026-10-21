@@ -1,0 +1,1102 @@
+{
+ "airports": [
+  {
+   "departures": 2380,
+   "iata": "ORD",
+   "name": "Chicago O'Hare International"
+  },
+  {
+   "departures": 1800,
+   "iata": "BOS",
+   "name": "Boston Logan International"
+  },
+  {
+   "departures": 1180,
+   "iata": "SFO",
+   "name": "San Francisco International"
+  }
+ ],
+ "hubs_fallback": [
+  "ORD",
+  "BOS",
+  "SFO"
+ ],
+ "pairs": {
+  "BOS-ORD": {
+   "db1b_nonstop_share": 0.75,
+   "db1b_passengers": 88000,
+   "destination": "ORD",
+   "great_circle_nm": 867,
+   "hub": {
+    "candidates": [],
+    "iata": "SFO",
+    "rule": "fallback_shortest_top10_hub",
+    "share_of_connecting_passengers": null
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "BOS",
+     "SFO",
+     "ORD"
+    ],
+    "fuel_kg_per_passenger": 185,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 17820,
+      "fuel_kg_per_passenger": 110,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 210,
+      "nox_kg_per_passenger": 1.296,
+      "origin": "BOS",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 300,
+      "unmapped_share": 0
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.8
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 1637,
+      "fuel_kg_per_flight": 10800,
+      "fuel_kg_per_passenger": 75,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 126,
+      "nox_kg_per_passenger": 0.875,
+      "origin": "SFO",
+      "passengers_per_flight": 144,
+      "profile_key": "b738-1650",
+      "seats_per_departure": 180,
+      "t100_departures": 880,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 2.171,
+    "total_nm": 4341,
+    "unmapped_share_max": 0
+   },
+   "messages": [
+    "No DB1B connecting itineraries for this pair; hub chosen by fallback: shortest path through the top-10 hubs."
+   ],
+   "nonstop_observed": true,
+   "origin": "BOS",
+   "point_to_point": {
+    "airports": [
+     "BOS",
+     "ORD"
+    ],
+    "fuel_kg_per_passenger": 50,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       },
+       {
+        "bts_code": "674",
+        "name": "Embraer 170",
+        "openap": "e170",
+        "range_km": 3982,
+        "range_ok": true,
+        "share": 0.1
+       },
+       {
+        "bts_code": "628",
+        "name": "Canadair CRJ900",
+        "openap": "crj9",
+        "range_km": 2956,
+        "range_ok": true,
+        "share": 0.05
+       },
+       {
+        "bts_code": "626",
+        "name": "Boeing 717-200",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.05
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6000,
+      "fuel_kg_per_passenger": 50,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 60,
+      "nox_kg_per_passenger": 0.5,
+      "origin": "BOS",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1500,
+      "unmapped_share": 0.05
+     }
+    ],
+    "nox_kg_per_passenger": 0.5,
+    "total_nm": 867,
+    "unmapped_share_max": 0.05
+   },
+   "point_to_point_is_connecting": false
+  },
+  "BOS-SFO": {
+   "db1b_nonstop_share": 0.5,
+   "db1b_passengers": 42000,
+   "destination": "SFO",
+   "great_circle_nm": 2704,
+   "hub": {
+    "candidates": [
+     {
+      "iata": "ORD",
+      "share": 0.625
+     },
+     {
+      "iata": "DEN",
+      "share": 0.25
+     },
+     {
+      "iata": "DFW",
+      "share": 0.125
+     }
+    ],
+    "iata": "ORD",
+    "rule": "db1b_most_used",
+    "share_of_connecting_passengers": 0.625
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "BOS",
+     "ORD",
+     "SFO"
+    ],
+    "fuel_kg_per_passenger": 125.239,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       },
+       {
+        "bts_code": "674",
+        "name": "Embraer 170",
+        "openap": "e170",
+        "range_km": 3982,
+        "range_ok": true,
+        "share": 0.1
+       },
+       {
+        "bts_code": "628",
+        "name": "Canadair CRJ900",
+        "openap": "crj9",
+        "range_km": 2956,
+        "range_ok": true,
+        "share": 0.05
+       },
+       {
+        "bts_code": "626",
+        "name": "Boeing 717-200",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.05
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6000,
+      "fuel_kg_per_passenger": 50,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 60,
+      "nox_kg_per_passenger": 0.5,
+      "origin": "BOS",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1500,
+      "unmapped_share": 0.05
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.5
+       },
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.4
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 1637,
+      "fuel_kg_per_flight": 11000,
+      "fuel_kg_per_passenger": 75.239,
+      "load_factor": 0.85,
+      "nox_kg_per_flight": 130,
+      "nox_kg_per_passenger": 0.889,
+      "origin": "ORD",
+      "passengers_per_flight": 146.2,
+      "profile_key": "a320-1650",
+      "seats_per_departure": 172,
+      "t100_departures": 8,
+      "unmapped_share": 0.1
+     }
+    ],
+    "nox_kg_per_passenger": 1.389,
+    "total_nm": 2504,
+    "unmapped_share_max": 0.1
+   },
+   "messages": [
+    "Some departures on this trip use aircraft with no OpenAP model; they are excluded from fuel, not estimated."
+   ],
+   "nonstop_observed": true,
+   "origin": "BOS",
+   "point_to_point": {
+    "airports": [
+     "BOS",
+     "SFO"
+    ],
+    "fuel_kg_per_passenger": 110,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 17820,
+      "fuel_kg_per_passenger": 110,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 210,
+      "nox_kg_per_passenger": 1.296,
+      "origin": "BOS",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 300,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 1.296,
+    "total_nm": 2704,
+    "unmapped_share_max": 0
+   },
+   "point_to_point_is_connecting": false
+  },
+  "ORD-BOS": {
+   "db1b_nonstop_share": 0.75,
+   "db1b_passengers": 87000,
+   "destination": "BOS",
+   "great_circle_nm": 867,
+   "hub": {
+    "candidates": [
+     {
+      "iata": "SFO",
+      "share": 0.625
+     },
+     {
+      "iata": "DEN",
+      "share": 0.25
+     },
+     {
+      "iata": "DFW",
+      "share": 0.125
+     }
+    ],
+    "iata": "SFO",
+    "rule": "db1b_most_used",
+    "share_of_connecting_passengers": 0.625
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "ORD",
+     "SFO",
+     "BOS"
+    ],
+    "fuel_kg_per_passenger": 186.35,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.5
+       },
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.4
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 1637,
+      "fuel_kg_per_flight": 11000,
+      "fuel_kg_per_passenger": 75.239,
+      "load_factor": 0.85,
+      "nox_kg_per_flight": 130,
+      "nox_kg_per_passenger": 0.889,
+      "origin": "ORD",
+      "passengers_per_flight": 146.2,
+      "profile_key": "a320-1650",
+      "seats_per_departure": 172,
+      "t100_departures": 8,
+      "unmapped_share": 0.1
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 18000,
+      "fuel_kg_per_passenger": 111.111,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 213,
+      "nox_kg_per_passenger": 1.315,
+      "origin": "SFO",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 290,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 2.204,
+    "total_nm": 4341,
+    "unmapped_share_max": 0.1
+   },
+   "messages": [
+    "Some departures on this trip use aircraft with no OpenAP model; they are excluded from fuel, not estimated."
+   ],
+   "nonstop_observed": true,
+   "origin": "ORD",
+   "point_to_point": {
+    "airports": [
+     "ORD",
+     "BOS"
+    ],
+    "fuel_kg_per_passenger": 51,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.3
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6120,
+      "fuel_kg_per_passenger": 51,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 61.2,
+      "nox_kg_per_passenger": 0.51,
+      "origin": "ORD",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1480,
+      "unmapped_share": 0.1
+     }
+    ],
+    "nox_kg_per_passenger": 0.51,
+    "total_nm": 867,
+    "unmapped_share_max": 0.1
+   },
+   "point_to_point_is_connecting": false
+  },
+  "ORD-SFO": {
+   "db1b_nonstop_share": null,
+   "db1b_passengers": 0,
+   "destination": "SFO",
+   "great_circle_nm": 1637,
+   "hub": {
+    "candidates": [],
+    "iata": "BOS",
+    "rule": "fallback_shortest_top10_hub",
+    "share_of_connecting_passengers": null
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "ORD",
+     "BOS",
+     "SFO"
+    ],
+    "fuel_kg_per_passenger": 161,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.3
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6120,
+      "fuel_kg_per_passenger": 51,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 61.2,
+      "nox_kg_per_passenger": 0.51,
+      "origin": "ORD",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1480,
+      "unmapped_share": 0.1
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 17820,
+      "fuel_kg_per_passenger": 110,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 210,
+      "nox_kg_per_passenger": 1.296,
+      "origin": "BOS",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 300,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 1.806,
+    "total_nm": 3571,
+    "unmapped_share_max": 0.1
+   },
+   "messages": [
+    "No observed nonstop in T-100 (fewer than 13 departures in 2019Q1); point-to-point is the same connecting trip as hub-and-spoke (ADR 0007).",
+    "No DB1B connecting itineraries for this pair; hub chosen by fallback: shortest path through the top-10 hubs.",
+    "Some departures on this trip use aircraft with no OpenAP model; they are excluded from fuel, not estimated."
+   ],
+   "nonstop_observed": false,
+   "origin": "ORD",
+   "point_to_point": {
+    "airports": [
+     "ORD",
+     "BOS",
+     "SFO"
+    ],
+    "fuel_kg_per_passenger": 161,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.3
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6120,
+      "fuel_kg_per_passenger": 51,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 61.2,
+      "nox_kg_per_passenger": 0.51,
+      "origin": "ORD",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1480,
+      "unmapped_share": 0.1
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "SFO",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 17820,
+      "fuel_kg_per_passenger": 110,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 210,
+      "nox_kg_per_passenger": 1.296,
+      "origin": "BOS",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 300,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 1.806,
+    "total_nm": 3571,
+    "unmapped_share_max": 0.1
+   },
+   "point_to_point_is_connecting": true
+  },
+  "SFO-BOS": {
+   "db1b_nonstop_share": 0.5,
+   "db1b_passengers": 40500,
+   "destination": "BOS",
+   "great_circle_nm": 2704,
+   "hub": {
+    "candidates": [
+     {
+      "iata": "ORD",
+      "share": 0.625
+     },
+     {
+      "iata": "DEN",
+      "share": 0.25
+     },
+     {
+      "iata": "DFW",
+      "share": 0.125
+     }
+    ],
+    "iata": "ORD",
+    "rule": "db1b_most_used",
+    "share_of_connecting_passengers": 0.625
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "SFO",
+     "ORD",
+     "BOS"
+    ],
+    "fuel_kg_per_passenger": 126,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.8
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 1637,
+      "fuel_kg_per_flight": 10800,
+      "fuel_kg_per_passenger": 75,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 126,
+      "nox_kg_per_passenger": 0.875,
+      "origin": "SFO",
+      "passengers_per_flight": 144,
+      "profile_key": "b738-1650",
+      "seats_per_departure": 180,
+      "t100_departures": 880,
+      "unmapped_share": 0
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.3
+       },
+       {
+        "bts_code": "645",
+        "name": "Bombardier Dash 8-400",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.1
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6120,
+      "fuel_kg_per_passenger": 51,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 61.2,
+      "nox_kg_per_passenger": 0.51,
+      "origin": "ORD",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1480,
+      "unmapped_share": 0.1
+     }
+    ],
+    "nox_kg_per_passenger": 1.385,
+    "total_nm": 2504,
+    "unmapped_share_max": 0.1
+   },
+   "messages": [
+    "Some departures on this trip use aircraft with no OpenAP model; they are excluded from fuel, not estimated."
+   ],
+   "nonstop_observed": true,
+   "origin": "SFO",
+   "point_to_point": {
+    "airports": [
+     "SFO",
+     "BOS"
+    ],
+    "fuel_kg_per_passenger": 111.111,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 18000,
+      "fuel_kg_per_passenger": 111.111,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 213,
+      "nox_kg_per_passenger": 1.315,
+      "origin": "SFO",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 290,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 1.315,
+    "total_nm": 2704,
+    "unmapped_share_max": 0
+   },
+   "point_to_point_is_connecting": false
+  },
+  "SFO-ORD": {
+   "db1b_nonstop_share": 0.5,
+   "db1b_passengers": 61000,
+   "destination": "ORD",
+   "great_circle_nm": 1637,
+   "hub": {
+    "candidates": [
+     {
+      "iata": "BOS",
+      "share": 0.625
+     },
+     {
+      "iata": "DEN",
+      "share": 0.25
+     },
+     {
+      "iata": "DFW",
+      "share": 0.125
+     }
+    ],
+    "iata": "BOS",
+    "rule": "db1b_most_used",
+    "share_of_connecting_passengers": 0.625
+   },
+   "hub_and_spoke": {
+    "airports": [
+     "SFO",
+     "BOS",
+     "ORD"
+    ],
+    "fuel_kg_per_passenger": 161.111,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.75
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.25
+       }
+      ],
+      "destination": "BOS",
+      "distance_nm": 2704,
+      "fuel_kg_per_flight": 18000,
+      "fuel_kg_per_passenger": 111.111,
+      "load_factor": 0.9,
+      "nox_kg_per_flight": 213,
+      "nox_kg_per_passenger": 1.315,
+      "origin": "SFO",
+      "passengers_per_flight": 162,
+      "profile_key": "b738-2700",
+      "seats_per_departure": 180,
+      "t100_departures": 290,
+      "unmapped_share": 0
+     },
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.6
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       },
+       {
+        "bts_code": "674",
+        "name": "Embraer 170",
+        "openap": "e170",
+        "range_km": 3982,
+        "range_ok": true,
+        "share": 0.1
+       },
+       {
+        "bts_code": "628",
+        "name": "Canadair CRJ900",
+        "openap": "crj9",
+        "range_km": 2956,
+        "range_ok": true,
+        "share": 0.05
+       },
+       {
+        "bts_code": "626",
+        "name": "Boeing 717-200",
+        "openap": null,
+        "range_km": null,
+        "range_ok": null,
+        "share": 0.05
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 867,
+      "fuel_kg_per_flight": 6000,
+      "fuel_kg_per_passenger": 50,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 60,
+      "nox_kg_per_passenger": 0.5,
+      "origin": "BOS",
+      "passengers_per_flight": 120,
+      "profile_key": "b738-850",
+      "seats_per_departure": 150,
+      "t100_departures": 1500,
+      "unmapped_share": 0.05
+     }
+    ],
+    "nox_kg_per_passenger": 1.815,
+    "total_nm": 3571,
+    "unmapped_share_max": 0.05
+   },
+   "messages": [
+    "Some departures on this trip use aircraft with no OpenAP model; they are excluded from fuel, not estimated."
+   ],
+   "nonstop_observed": true,
+   "origin": "SFO",
+   "point_to_point": {
+    "airports": [
+     "SFO",
+     "ORD"
+    ],
+    "fuel_kg_per_passenger": 75,
+    "legs": [
+     {
+      "aircraft_mix": [
+       {
+        "bts_code": "614",
+        "name": "Boeing 737-800",
+        "openap": "b738",
+        "range_km": 5436,
+        "range_ok": true,
+        "share": 0.8
+       },
+       {
+        "bts_code": "698",
+        "name": "Airbus A320-200",
+        "openap": "a320",
+        "range_km": 6100,
+        "range_ok": true,
+        "share": 0.2
+       }
+      ],
+      "destination": "ORD",
+      "distance_nm": 1637,
+      "fuel_kg_per_flight": 10800,
+      "fuel_kg_per_passenger": 75,
+      "load_factor": 0.8,
+      "nox_kg_per_flight": 126,
+      "nox_kg_per_passenger": 0.875,
+      "origin": "SFO",
+      "passengers_per_flight": 144,
+      "profile_key": "b738-1650",
+      "seats_per_departure": 180,
+      "t100_departures": 880,
+      "unmapped_share": 0
+     }
+    ],
+    "nox_kg_per_passenger": 0.875,
+    "total_nm": 1637,
+    "unmapped_share_max": 0
+   },
+   "point_to_point_is_connecting": false
+  }
+ },
+ "schema_version": 1,
+ "source": {
+  "airports_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "db1b_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "nonstop_min_departures": 13,
+  "notes": [
+   "Hand-written fixture for developing the trip tool; not real data.",
+   "ORD-SFO has 8 departures (< 13), so it is not an observed nonstop but can still appear as a leg of another trip."
+  ],
+  "openap_version": "2.0-fixture",
+  "quarter": "2019Q1",
+  "t100_sha256": [
+   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ]
+ }
+}

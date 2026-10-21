@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project · Trip tool — Shreya Sharma</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/trip-tool.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+  <div id="project-subnav"></div>
+
+  <main class="trip-tool">
+    <h1>Trip tool</h1>
+    <p class="lede">
+      Pick two of the 50 busiest US airports and compare one passenger's trip
+      under the two network structures: point-to-point (a nonstop) and
+      hub-and-spoke (one connection). Fuel and NO<sub>x</sub> come from OpenAP
+      for the aircraft that actually fly each leg in the T-100 data.
+    </p>
+
+    <aside class="caveat" aria-labelledby="caveat-title">
+      <h2 id="caveat-title">Read this first</h2>
+      <ul>
+        <li><strong>These are intermediate model outputs, not findings.</strong>
+            The project's comparison metric is population-weighted exposure
+            (<a href="docs/adr/0003-comparison-metric-population-weighted-exposure.md">ADR 0003</a>),
+            which has <strong>not been computed yet</strong>. Fuel and NO<sub>x</sub> per
+            passenger are only the inputs to it.</li>
+        <li><strong>One quarter only:</strong> 2019 Q1 (T-100 segments, DB1B 10% sample scaled &times;10).</li>
+        <li><strong>Idealized flights:</strong> OpenAP synthetic flights at 80% MTOW, no wind.</li>
+        <li><strong>Aircraft with no OpenAP model</strong> (turboprops, business jets, some older types)
+            are excluded from fuel, not estimated, and are not rescaled to the other types. The share is shown on every leg.</li>
+        <li><strong>Per passenger</strong> = leg fuel (or NO<sub>x</sub>) per flight &divide; (seats &times; load factor),
+            where seats and load factor are T-100 averages for that segment.</li>
+        <li>Point-to-point is only a nonstop when one was actually observed
+            (at least 13 departures in the quarter); otherwise it is the same connecting trip
+            (<a href="docs/adr/0007-point-to-point-feasibility-cutoff.md">ADR 0007</a>).</li>
+      </ul>
+    </aside>
+
+    <form class="picker" id="picker" onsubmit="return false" aria-label="Choose a trip">
+      <div class="picker__field">
+        <label for="origin">Origin</label>
+        <select id="origin" name="origin" disabled></select>
+      </div>
+      <button type="button" id="swap" class="picker__swap" aria-label="Swap origin and destination" disabled>
+        <span aria-hidden="true">&#8644;</span> Swap
+      </button>
+      <div class="picker__field">
+        <label for="destination">Destination</label>
+        <select id="destination" name="destination" disabled></select>
+      </div>
+    </form>
+
+    <div id="status" class="status-msg" role="status" aria-live="polite">Loading trip data&hellip;</div>
+
+    <div id="result" aria-live="polite" aria-atomic="false" aria-busy="true"></div>
+
+    <div id="fetch-help" class="fetch-help" hidden>
+      <h2>This page needs a web server</h2>
+      <p>
+        Browsers block <code>fetch()</code> of local files when a page is opened as
+        <code>file://</code>. From the repository root run:
+      </p>
+      <pre><code>python3 -m http.server</code></pre>
+      <p>then open <code>http://localhost:8000/project-trip-tool.html</code>.</p>
+    </div>
+
+    <p id="source" class="source"></p>
+
+    <nav class="next-up">
+      <span>Back to:</span>
+      <a href="project-prototype.html">&larr; Prototype</a>
+    </nav>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/project-nav.js"></script>
+  <script src="js/trip-tool-core.js"></script>
+  <script src="js/trip-tool.js"></script>
+</body>
+</html>
