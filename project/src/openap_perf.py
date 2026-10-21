@@ -381,3 +381,28 @@ def flight_fuel_nox(
         "fuel_model": fuel_model,
         "used_synonym": used_synonym,
     }
+
+
+def trajectory_for_distance(ac: str, distance_nm: float) -> pd.DataFrame:
+    """Return the synthetic trajectory that ``flight_fuel_nox`` integrates.
+
+    Public helper (NW-28) so callers can draw the same climb/cruise/descent
+    profile that the fuel number comes from, without reaching into private
+    functions.  Uses the same cruise-distance computation and the same
+    native-then-synonym fallback as ``flight_fuel_nox``.
+
+    Returns a DataFrame with (at least) columns ``t`` (s), ``altitude`` (ft),
+    ``groundspeed`` (kt) and ``s`` (m flown since brake release).
+    """
+    if distance_nm <= 0:
+        raise ValueError(f"distance_nm must be positive; got {distance_nm!r}")
+    ac_lc = ac.lower()
+    try:
+        climb_m, descent_m = _climb_descent_distances(ac_lc, use_synonym=False)
+    except ValueError:
+        climb_m, descent_m = _climb_descent_distances(ac_lc, use_synonym=True)
+    cruise_m = max(distance_nm * 1852.0 - climb_m - descent_m, _MIN_CRUISE_M)
+    try:
+        return _get_trajectory(ac_lc, cruise_m, use_synonym=False)
+    except ValueError:
+        return _get_trajectory(ac_lc, cruise_m, use_synonym=True)
