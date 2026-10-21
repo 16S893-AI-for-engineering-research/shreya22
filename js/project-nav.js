@@ -10,7 +10,8 @@
     { href: "project-data.html", label: "Data" },
     { href: "project-progress.html", label: "Progress" },
     { href: "project-prototype.html", label: "Prototype" },
-    { href: "project-assignment2.html", label: "Assignment 2" },
+    { href: "project-pod-clinic.html", label: "Pod clinic" },
+    { href: "project-assignment2.html", label: "Reproduce Paper Result" },
   ];
 
   function currentPage() {
