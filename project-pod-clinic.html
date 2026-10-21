@@ -59,10 +59,10 @@
 
     <div class="card">
       <h3>Part 2 &middot; An interactive trip tool</h3>
-      <div class="meta">Status: being built for this clinic</div>
+      <div class="meta">Status: working prototype, <a href="project-trip-tool.html">open the trip tool</a></div>
       <p>
         Building on the verified smallest test case: pick two airports from the
-        50 busiest US airports, and the tool shows the trip two ways.
+        50 busiest US airports (2,450 ordered pairs, 2019&nbsp;Q1), and the tool shows the trip two ways.
       </p>
       <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
         <li><strong>Point-to-point</strong>: the nonstop, if one is actually flown
@@ -80,6 +80,28 @@
         Choosing aircraft and hubs is a lookup in BTS data, so there is no agent
         in this version: results stay reproducible and testable.
       </p>
+      <p style="margin-top:10px;">
+        <strong>What it shows today.</strong> For BOS&rarr;SFO it finds a real nonstop (91.9% of
+        DB1B passengers fly it) and LAX as the most-used connection (15.6% of connecting
+        passengers). The nonstop is 2,344&nbsp;nm and uses mostly 757-200s (48%) and A321neo-XLRs (38%);
+        the route via LAX is 2,557&nbsp;nm (2,264 + 293) with a different aircraft mix on each leg.
+        These are intermediate model outputs, not findings.
+      </p>
+      <p style="margin-top:10px;">
+        <strong>Known weaknesses I found while checking it:</strong>
+      </p>
+      <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
+        <li>For 744 of 2,450 pairs, one structure has a leg where over 20% of departures use
+            aircraft with no OpenAP model (Boeing 717, MD-80s). Those flights are left out of fuel,
+            not estimated, so the two columns are <strong>not comparable</strong>; the page says so.
+            This is why the connection can look cheaper than the nonstop (330 of 1,943 pairs).</li>
+        <li>For 119 pairs no connection is observed in DB1B, and the fallback hub (shortest of the top
+            10 hubs) can be silly for short pairs, for example DFW&ndash;DAL via DEN.</li>
+        <li>Some aircraft in the real mix fly legs beyond OpenAP&rsquo;s nominal design range (a 737-800
+            on LAX&ndash;HNL). That is flagged as a model warning: it is flown in practice, so the model
+            range, not the flight, is the doubtful part.</li>
+        <li>Everything is one quarter, idealized flights at 80% of maximum takeoff weight, no wind.</li>
+      </ul>
       <p style="margin-top:10px;">
         <strong>One honest limit:</strong> a single trip is not a network. Hub
         economics come from many trips sharing legs, so the tool compares
@@ -113,6 +135,9 @@
         <strong>[DRAFT &mdash; questions to be edited before the clinic]</strong>
       </p>
       <ol style="margin:0; padding-left:1.4em; color:#55586b; font-size:14px; line-height:1.9;">
+        <li>When a structure&rsquo;s fuel is understated because 20&ndash;50% of its flights have no
+            aircraft model, should the tool refuse to compare, rescale the mapped flights, or
+            use a proxy aircraft? Each answer changes the numbers.</li>
         <li>Is comparing one trip nonstop vs via a hub a useful bridge to the network
             question, or does it invite the wrong conclusions?</li>
         <li>DB1B covers only 61% of T-100 passengers in my region. Would you fix the
