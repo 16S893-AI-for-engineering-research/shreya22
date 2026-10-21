@@ -33,7 +33,7 @@
 
     <div class="card">
       <h3>Part 1 &middot; The network-level question</h3>
-      <div class="meta">Status: demand, aircraft and fuel stages run on real data; exposure not started</div>
+      <div class="meta">Status: runs on real data for the six-airport region; exposure not started</div>
       <p>
         Build both network structures for the <em>same</em> fixed demand and
         compare them. Today this runs for a six-airport region (BOS, DEN, DTW,
@@ -46,6 +46,50 @@
         <li>Checks: passenger conservation, route invariants, deterministic outputs,
             791 tests with mutation checks, CI on every push.</li>
       </ul>
+      <h4 style="margin:14px 0 4px; font-size:15px;">Region results, 2019&nbsp;Q1 (same 2,395,440 passengers in every row)</h4>
+      <div style="overflow-x:auto;" tabindex="0" role="region" aria-label="Part 1 region results table (scrolls sideways on narrow screens)">
+      <table style="width:100%; border-collapse:collapse; font-size:13px; color:#55586b; min-width:640px;">
+        <thead>
+          <tr style="text-align:right; border-bottom:2px solid #d8dae6;">
+            <th scope="col" style="text-align:left; padding:4px 6px;">Structure</th>
+            <th scope="col" style="padding:4px 6px;">Passenger-legs</th>
+            <th scope="col" style="padding:4px 6px;">Flights</th>
+            <th scope="col" style="padding:4px 6px;">Fuel (kt)</th>
+            <th scope="col" style="padding:4px 6px;">Fuel vs P2P</th>
+            <th scope="col" style="padding:4px 6px;">NO<sub>x</sub> (t)</th>
+            <th scope="col" style="padding:4px 6px;">Departures with no model</th>
+          </tr>
+        </thead>
+        <tbody style="text-align:right;">
+          <tr style="border-bottom:1px solid #e6e8f0;"><th scope="row" style="text-align:left; padding:4px 6px; font-weight:600;">Point-to-point</th><td>2.40&nbsp;M</td><td>18,496</td><td>138.0</td><td>1.00&times;</td><td>1,974</td><td>7.4%</td></tr>
+          <tr style="border-bottom:1px solid #e6e8f0;"><th scope="row" style="text-align:left; padding:4px 6px; font-weight:600;">Hub-and-spoke, one hub (ORD)</th><td>3.81&nbsp;M</td><td>32,397</td><td>170.4</td><td>1.24&times;</td><td>2,688</td><td>10.1%</td></tr>
+          <tr><th scope="row" style="text-align:left; padding:4px 6px; font-weight:600;">Hub-and-spoke, two hubs (ORD + DEN, nearest)</th><td>4.28&nbsp;M</td><td>35,534</td><td>146.3</td><td>1.06&times;</td><td>2,155</td><td>10.4%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="margin-top:10px;">
+        <strong>How to read this (and why it is not a finding).</strong>
+      </p>
+      <ul style="margin:0; padding-left:1.2em; color:#55586b; font-size:14px; line-height:1.8;">
+        <li><strong>The answer moves with a modelling choice.</strong> Adding DEN as a second hub, with
+            each airport sent to its nearest hub (SFO goes to DEN), cuts hub-and-spoke fuel from
+            1.24&times; to 1.06&times; of point-to-point. The structure did not change; the hub rule did.
+            The nearest-hub rule has no decision record yet.</li>
+        <li><strong>Hub-and-spoke has more flights and more passenger-legs by construction</strong>
+            (1.6&ndash;1.8&times; the legs, 1.75&ndash;1.9&times; the flights): connecting passengers fly
+            two legs. Fuel rises far less than flights, because trunk legs use larger aircraft.</li>
+        <li><strong>The rows cover different shares of the fleet.</strong> 10% of hub-and-spoke departures
+            have no OpenAP model, against 7% for point-to-point; those flights are left out of fuel, which
+            understates hub-and-spoke more.</li>
+        <li><strong>Demand is 61% of T-100 passengers</strong> in this region, and the point-to-point
+            network gets a nonstop only where T-100 shows one (all 30 directed pairs here have one).</li>
+        <li><strong>None of this is exposure.</strong> The project compares population-weighted exposure
+            (ADR&nbsp;0003); fuel and NO<sub>x</sub> totals say nothing about where the emissions land.</li>
+      </ul>
+      <p style="margin-top:6px; font-size:13px;">
+        Reproducible from <a href="https://github.com/16S893-AI-for-engineering-research/shreya22/tree/main/data/part1-region">data/part1-region</a>
+        (outputs and input hashes).
+      </p>
       <p style="margin-top:10px;">
         What I learned from checking it: modelled fuel is 35% below a BTS-based
         reference, and almost all of that is <strong>demand coverage</strong>

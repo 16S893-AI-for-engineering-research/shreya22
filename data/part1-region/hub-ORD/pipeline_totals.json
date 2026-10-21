@@ -1,0 +1,24 @@
+{
+  "scaled": false,
+  "scale_factor": 1.0,
+  "p2p_rule": "observed",
+  "hub_assign": "nearest",
+  "p2p": {
+    "passengers": 2395440.0,
+    "passenger_legs": 2395440.0,
+    "flights": 18495.74334854955,
+    "fuel_kg": 137954427.11613202,
+    "nox_kg": 1974442.5674620608,
+    "unmapped_share": 0.0744276039987101,
+    "missing_segment_count": 0
+  },
+  "hub_spoke": {
+    "passengers": 2395440.0,
+    "passenger_legs": 3813920.0,
+    "flights": 32397.43668065794,
+    "fuel_kg": 170440011.59573436,
+    "nox_kg": 2688067.787462794,
+    "unmapped_share": 0.10149293700207539,
+    "missing_segment_count": 0
+  }
+}

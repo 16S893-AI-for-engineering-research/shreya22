@@ -1,0 +1,58 @@
+{
+  "inputs": {
+    "demand": {
+      "path": "demand_region_2019Q1.csv",
+      "sha256": "3b3e862efeb414641313cd8f02ea3a1ff9f354cf0544925da5d24231b46248e5"
+    },
+    "t100": [
+      {
+        "path": "t100_2019_01.csv",
+        "sha256": "d80dce7e7960811a26898d5f623fc547804727a0c2e1016f8cd81dcf6879e923"
+      },
+      {
+        "path": "t100_2019_02.csv",
+        "sha256": "c64ab571fc9b5dda92d40e9cc8265deb2f5694da333ebac788a37f1f63cf050a"
+      },
+      {
+        "path": "t100_2019_03.csv",
+        "sha256": "98c3bd896f177c5faa771385af6753fe24756d3d4488568658623e1c88ece0d9"
+      }
+    ],
+    "airports_csv_sha256": "00985a9219220fc6443d38dd1897f1d760f7fb8726735b0303e4ed702abeedbd"
+  },
+  "hubs": [
+    "ORD"
+  ],
+  "p2p_rule": "observed",
+  "hub_assign": "nearest",
+  "scale_factor": 1.0,
+  "scaled": false,
+  "parameters": {
+    "scale_factor": 1.0,
+    "p2p_rule": "observed",
+    "hub_assign": "nearest"
+  },
+  "forced_connections": 0,
+  "missing_segments": [],
+  "unmapped_codes": [
+    "479",
+    "515",
+    "608",
+    "655",
+    "656"
+  ],
+  "outputs": {
+    "pipeline_totals.json": {
+      "sha256": "dc0ebca7c72e2e945d54bde51be49a904c67d3ae61cfe1fcce85f2526adb542b"
+    },
+    "pipeline_totals.csv": {
+      "sha256": "a2214288ff25ec4d548b4d15068adca2f46cb15e63510ef7cde40517c454e7dc"
+    },
+    "segments.csv": {
+      "sha256": "5327b2783a4ef717b456ab7611016275c9ebf37c9140867c3285db20d4a02b90"
+    },
+    "MODEL.txt": {
+      "sha256": "1f5b3e5d4ff186d98bd7cf504439a8beb9d5364494aeaeb6e82c9a574e2ba1a6"
+    }
+  }
+}

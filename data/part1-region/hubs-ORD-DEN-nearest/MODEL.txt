@@ -1,0 +1,63 @@
+MODEL DESCRIPTION — pipeline.py NW-25
+======================================
+
+What is modelled
+----------------
+* Aircraft performance: OpenAP synthetic flight trajectories (WRAP kinematic
+  model) integrated with FuelFlow and Emission models.  Each flight is
+  synthesised at 80% MTOW (mass_fraction=0.8), no wind, standard atmosphere,
+  level climb-cruise-descent profile.
+* Fleet assignment: T-100 Domestic Segment data provides per-directional-
+  segment departure shares by BTS aircraft type code.  These shares are used
+  as fractional weights when aggregating per-flight fuel and NOx.
+* Flight counts: fluid (fractional) — flights = passenger_load /
+  (seats_per_departure × load_factor).  No integer rounding is applied.
+* Passenger routing: hub-and-spoke assigns each airport to a hub; point-to-
+  point assigns each OD pair a nonstop (rule 'all') or falls back to the hub
+  for pairs absent from the T-100 mix (rule 'observed', default, per ADR 0007).
+* Synonym models: some aircraft types in BTS_TO_OPENAP map to OpenAP synonym
+  models (e.g. b38m→b737 for trajectory, b39m→b38m for drag polar).  These
+  are explicit approximations documented in fleet.py.
+* Distance: great-circle (haversine) distance in nautical miles between
+  airport reference points from OurAirports.com.
+* Demand: the input CSV from db1b.py is DB1B (a 10% ticket sample) already
+  multiplied by 10 to approximate full volume; this pipeline does not scale
+  it again (scale_factor in the manifest is 1.0 unless set for a sensitivity
+  run).  The x10 is a sampling assumption, not a measured count.
+* Hub assignment (hub_assign option, default 'nearest'): each non-hub airport
+  is assigned to its nearest hub by great-circle distance (haversine_nm);
+  ties broken by hub-list order.  Mode 'first' reproduces pre-NW-27 behaviour
+  (every non-hub maps to the first hub in the list).
+
+  MODELLING CHOICE — not covered by an ADR:
+  Nearest-hub assignment minimises each airport's great-circle distance to
+  its hub, which is a simple geometric proxy for routing convenience.  It is
+  NOT a claim that nearest-hub is operationally optimal or that airlines use
+  proximity as the primary criterion for spoke-hub pairing.  Factors such as
+  slot availability, alliance membership, and directional traffic flows are
+  not considered.  This choice is a prototype modelling decision and should
+  not be interpreted as a research finding.
+
+What is NOT modelled
+--------------------
+* Integer flight counts (fractional equivalents only).
+* Schedules, departure times, or slot constraints.
+* Passenger exposure, health impacts, or population weighting.
+* Weather, winds, actual flight paths, or actual fuel burn from FDR data.
+* Airport congestion, gate limitations, or turnaround time.
+* Revenue management, pricing, or passenger choice behaviour.
+* Connecting passenger minimum connection time or missed connections.
+* Aircraft availability, maintenance, or network feasibility constraints.
+
+Limitations to note
+-------------------
+* Fluid flight counts can be physically implausible for thin routes (e.g.,
+  0.003 flights on a route with 0.5 passengers and 150-seat aircraft).
+* The T-100 mix reflects what was actually operated, not what would be
+  optimally assigned; proxy mappings (e.g., CRJ-200 → crj9) introduce
+  known over-estimates of per-flight fuel burn.
+* Unmapped aircraft codes (turboprops, pistons, business jets, MD-80 series)
+  are excluded from fuel sums; unmapped_share quantifies the gap.
+* Results are outputs of a modelled prototype, not research findings.
+  No claim is made that hub-and-spoke is better or worse than point-to-point;
+  the two scenarios differ by design (routing structure, not efficiency intent).
