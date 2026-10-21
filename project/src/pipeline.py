@@ -125,6 +125,19 @@ What is modelled
   multiplied by 10 to approximate full volume; this pipeline does not scale
   it again (scale_factor in the manifest is 1.0 unless set for a sensitivity
   run).  The x10 is a sampling assumption, not a measured count.
+* Hub assignment (hub_assign option, default 'nearest'): each non-hub airport
+  is assigned to its nearest hub by great-circle distance (haversine_nm);
+  ties broken by hub-list order.  Mode 'first' reproduces pre-NW-27 behaviour
+  (every non-hub maps to the first hub in the list).
+
+  MODELLING CHOICE — not covered by an ADR:
+  Nearest-hub assignment minimises each airport's great-circle distance to
+  its hub, which is a simple geometric proxy for routing convenience.  It is
+  NOT a claim that nearest-hub is operationally optimal or that airlines use
+  proximity as the primary criterion for spoke-hub pairing.  Factors such as
+  slot availability, alliance membership, and directional traffic flows are
+  not considered.  This choice is a prototype modelling decision and should
+  not be interpreted as a research finding.
 
 What is NOT modelled
 --------------------
@@ -257,6 +270,7 @@ def run_pipeline(
     *,
     p2p_rule: str = "observed",
     scale: float = 1.0,
+    hub_assign: str = "nearest",
 ) -> int:
     """Run the full P2P vs hub-and-spoke comparison pipeline.
 
@@ -277,6 +291,12 @@ def run_pipeline(
         'all' or 'observed' (default 'observed').
     scale:
         Passenger multiplier applied to demand (default 1.0).
+    hub_assign:
+        'nearest' (default) or 'first'.
+        'nearest': each non-hub airport is assigned to its nearest hub by
+        great-circle distance (distance_nm); ties broken by hub-list order.
+        'first': each non-hub maps to the first hub in the list (pre-NW-27
+        behaviour, useful for backward-compat comparisons).
 
     Returns
     -------
@@ -284,6 +304,7 @@ def run_pipeline(
         0 on success; non-zero on failure (nothing written to out_dir).
     """
     import sys
+    from hubs import assign_hubs as _assign_hubs
 
     out_path = pathlib.Path(out_dir)
     hub_codes = [h.strip().upper() for h in hubs]
@@ -294,6 +315,11 @@ def run_pipeline(
 
     if p2p_rule not in ("all", "observed"):
         print(f"ERROR: p2p_rule must be 'all' or 'observed', got {p2p_rule!r}",
+              file=sys.stderr)
+        return 2
+
+    if hub_assign not in ("nearest", "first"):
+        print(f"ERROR: hub_assign must be 'nearest' or 'first', got {hub_assign!r}",
               file=sys.stderr)
         return 2
 
@@ -341,6 +367,21 @@ def run_pipeline(
     # ── 4. Build routes ───────────────────────────────────────────────────
     forced_connections = 0
 
+    # Compute the hub assignment mapping for hub-and-spoke routing.
+    # 'nearest': assign each airport to its nearest hub by great-circle distance.
+    # 'first':   assign every non-hub to the first hub (pre-NW-27 behaviour).
+    try:
+        if hub_assign == "nearest":
+            all_region_nodes = list(region_set)
+            assign_map = _assign_hubs(
+                all_region_nodes, hub_codes, _distance_nm
+            )
+        else:  # 'first'
+            assign_map = None  # hub_of Rule 3: fall back to first hub
+    except Exception as exc:
+        print(f"ERROR: hub assignment failed: {exc}", file=sys.stderr)
+        return 2
+
     try:
         if p2p_rule == "all":
             p2p_routes = build_routes_point_to_point(demand)
@@ -348,7 +389,7 @@ def run_pipeline(
             p2p_routes, forced_connections = _build_p2p_observed(
                 demand, hub_codes, observed_segs
             )
-        hs_routes = build_routes_hub_spoke(demand, hubs=hub_codes)
+        hs_routes = build_routes_hub_spoke(demand, hubs=hub_codes, assign=assign_map)
     except Exception as exc:
         print(f"ERROR: route building failed: {exc}", file=sys.stderr)
         return 2
@@ -437,6 +478,7 @@ def run_pipeline(
         "scaled": scale != 1.0,
         "scale_factor": scale,
         "p2p_rule": p2p_rule,
+        "hub_assign": hub_assign,
         "p2p": p2p_summary,
         "hub_spoke": hs_summary,
     }
@@ -451,6 +493,7 @@ def run_pipeline(
             t100_paths=[pathlib.Path(p) for p in t100_paths],
             hub_codes=hub_codes,
             p2p_rule=p2p_rule,
+            hub_assign=hub_assign,
             scale=scale,
             totals_data=totals_data,
             p2p_perf=p2p_perf,
@@ -482,6 +525,7 @@ def _write_outputs(
     t100_paths: List[pathlib.Path],
     hub_codes: List[str],
     p2p_rule: str,
+    hub_assign: str,
     scale: float,
     totals_data: Dict,
     p2p_perf: Dict,
@@ -572,11 +616,13 @@ def _write_outputs(
         },
         "hubs": hub_codes,
         "p2p_rule": p2p_rule,
+        "hub_assign": hub_assign,
         "scale_factor": scale,
         "scaled": scale != 1.0,
         "parameters": {
             "scale_factor": scale,
             "p2p_rule": p2p_rule,
+            "hub_assign": hub_assign,
         },
         "forced_connections": forced_connections,
         "missing_segments": [[s[0], s[1]] for s in all_missing],

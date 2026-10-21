@@ -395,7 +395,7 @@ def main_pipeline(argv: Optional[List[str]] = None) -> int:
 
         python -m cli pipeline --demand PATH --hubs ORD,DEN --t100 FILE [FILE ...]
                                 --out DIR [--p2p-rule observed|all]
-                                [--scale 1.0]
+                                [--scale 1.0] [--hub-assign nearest|first]
 
     Delegates to pipeline.run_pipeline() with a cached OpenAP perf function
     (rounds distance to nearest 10 nm per cache key).  Falls back to the
@@ -426,6 +426,10 @@ def main_pipeline(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--scale", type=float, default=1.0,
                         help="Extra passenger multiplier for sensitivity runs (default 1.0). "
                              "Do NOT use 10 for DB1B: db1b.py already applies x10.")
+    parser.add_argument("--hub-assign", default="nearest", dest="hub_assign",
+                        choices=("nearest", "first"),
+                        help="Hub assignment mode: 'nearest' (default, by great-circle "
+                             "distance) or 'first' (every non-hub to first hub in list).")
 
     args = parser.parse_args(argv)
 
@@ -470,6 +474,7 @@ def main_pipeline(argv: Optional[List[str]] = None) -> int:
         perf_fn=perf_fn,
         p2p_rule=args.p2p_rule,
         scale=args.scale,
+        hub_assign=args.hub_assign,
     )
 
 
