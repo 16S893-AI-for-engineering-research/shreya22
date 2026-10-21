@@ -363,8 +363,10 @@ def _build_leg_uncached(env: Env, o: str, d: str) -> Tuple[Dict, List[str]]:
                 rok = bool(rng >= dist * NM_TO_KM)
                 if not rok:
                     msgs.append(
-                        f"Range: {name} ({openap}, {share * 100:.1f}% of departures) cannot fly "
-                        f"{o}-{d} ({dist:.0f} nm = {dist * NM_TO_KM:.0f} km; type range {rng:.0f} km)."
+                        f"Range: {name} ({openap}, {share * 100:.1f}% of departures) flies "
+                        f"{o}-{d} in the T-100 data, but the leg ({dist:.0f} nm = {dist * NM_TO_KM:.0f} km) is "
+                        f"beyond OpenAP's nominal design range for this type ({rng:.0f} km), so its modelled "
+                        f"fuel may be unreliable."
                     )
         entries.append({"bts_code": code, "name": name, "openap": openap, "share": share,
                         "range_km": rng, "range_ok": rok})

@@ -95,7 +95,7 @@ per (OpenAP code, d). `range_ok = range_km >= distance_nm * 1.852` with
 `range_km = openap.prop.aircraft(code)['cruise']['range']`; `null` when OpenAP
 has no range for the type (currently CRJ-900 `crj9`). A type with `range_ok:
 false` still contributes to the mix and the fuel (it appears because carriers do
-fly it on the segment; the flag is a model-realism warning, also written as a
+fly it on the segment; the flag is a model-realism warning (the leg exceeds OpenAP's nominal design range; the type is observed flying it), also written as a
 `Range:` message).
 
 **Profiles.** From `openap_perf.trajectory_for_distance(code, d50)`, `d50` = leg

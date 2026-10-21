@@ -667,6 +667,9 @@ def test_range_failure_reported_in_trip_messages(t100, db1b, airports):
     e = make_env(t100, db1b, airports, range_fn=lambda c: 10.0)
     t = tc.build_trip(e, "SFO", "BOS")
     assert any("range" in m.lower() for m in t["messages"])
+    # The type is observed flying the leg, so the message must not claim it cannot (it is a model-range warning).
+    assert not any("cannot fly" in m.lower() for m in t["messages"])
+    assert any("nominal design range" in m for m in t["messages"])
     assert not any("range" in m.lower() for m in tc.build_trip(make_env(t100, db1b, airports), "SFO", "BOS")["messages"])
 
 

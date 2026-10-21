@@ -519,7 +519,12 @@ test("project-nav.js has Trip tool right after Prototype and leaves the other la
   const i = labels.indexOf("Prototype");
   assert.equal(labels[i + 1], "Trip tool");
   assert.match(src, /href:\s*"project-trip-tool\.html",\s*label:\s*"Trip tool"/);
-  assert.equal(labels.length, 8);
+  // Every pre-existing label must still be present, in this relative order. (A fixed count would break whenever
+  // another page is added to the sub-nav, as it did when "Pod clinic" was added in parallel.)
+  const expected = ["Proposal", "Background", "Methods", "Data", "Progress", "Prototype", "Trip tool"];
+  assert.deepEqual(labels.slice(0, expected.length), expected);
+  assert.ok(labels.includes("Reproduce Paper Result"), "renamed Assignment 2 entry must remain");
+  assert.equal(new Set(labels).size, labels.length, "no duplicate labels");
 });
 
 test("trip-tool.js contains no arithmetic on fuel/NOx fields (display reads core output only)", () => {
