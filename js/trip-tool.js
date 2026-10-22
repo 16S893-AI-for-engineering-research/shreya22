@@ -7,8 +7,11 @@
 (function () {
   "use strict";
   var Core = window.TripToolCore;
+  var Geo = window.TripToolGeo;
   var TRIPS_URL = "data/trips_top50.json";
   var PROFILES_URL = "data/trip_profiles.json";
+  var AIRPORTS_URL = "data/trip_airports.json";
+  var OUTLINE_URL = "data/world-outline.path.txt";
 
   var el = {
     origin: document.getElementById("origin"),
@@ -21,6 +24,11 @@
   };
   var trips = null;
   var profiles = null;
+  // Map inputs: undefined = still loading, null = failed to load.
+  var airports;
+  var outlineD;
+  var outlineNode = null;
+  var mapsRenderedWidth = 0;
   var state = Core.parseHash(window.location.hash);
 
   function h(tag, cls, text) {
@@ -79,6 +87,147 @@
     fig.appendChild(h("figcaption", null, "Idealized OpenAP trajectory (" + row.profileKey.split("-")[0].toUpperCase() +
       ", top aircraft type on this leg; 80% MTOW, no wind). Not the flown track."));
     return fig;
+  }
+
+  // ---------- ground-track maps (geometry in TripToolGeo) ----------
+
+  var LEGEND_NOTE = "Ground tracks are idealized great circles; real routings differ.";
+
+  // Width one map will have, in CSS px: two columns above 720 px, one below,
+  // minus the figure's padding and border (26 px) - see css/trip-tool.css. Used
+  // only to size dots and text, so a few px of error is harmless.
+  var FIG_CHROME_PX = 26;
+  function mapWidthPx() {
+    var w = el.result.clientWidth || 520;
+    return (window.innerWidth <= 720 ? w : (w - 16) / 2) - FIG_CHROME_PX;
+  }
+
+  function basemap() {
+    if (!outlineNode) {
+      outlineNode = s("path", { class: "gt-land", d: outlineD, "vector-effect": "non-scaling-stroke" });
+    }
+    return outlineNode.cloneNode(false);
+  }
+
+  function polyline(points, cls, dashed) {
+    var p = s("path", { class: cls + (dashed ? " gt-leg--dashed" : " gt-leg--solid"), d: Geo.pathD(points), fill: "none",
+      "vector-effect": "non-scaling-stroke" });
+    return p;
+  }
+
+  function drawDot(d, u, cls) {
+    var g = s("g", { class: "gt-dot gt-dot--" + d.role });
+    if (d.role === "origin") {
+      g.appendChild(s("circle", { cx: d.x, cy: d.y, r: 5 * u, class: "gt-fill " + cls, "vector-effect": "non-scaling-stroke" }));
+    } else if (d.role === "destination") {
+      g.appendChild(s("rect", { x: d.x - 5 * u, y: d.y - 5 * u, width: 10 * u, height: 10 * u, class: "gt-fill " + cls, "vector-effect": "non-scaling-stroke" }));
+    } else {
+      g.appendChild(s("circle", { cx: d.x, cy: d.y, r: 8 * u, class: "gt-ring " + cls, "vector-effect": "non-scaling-stroke" }));
+      g.appendChild(s("circle", { cx: d.x, cy: d.y, r: 3 * u, class: "gt-fill " + cls, "vector-effect": "non-scaling-stroke" }));
+    }
+    return g;
+  }
+
+  var mapIdSeq = 0;
+  function mapSvg(m, vbStr, vb, u) {
+    var id = "gt" + (mapIdSeq++);
+    var isP2P = m.id === "point_to_point";
+    var cls = isP2P ? "gt--p2p" : "gt--hs";
+    var svg = s("svg", { viewBox: vbStr, role: "img", "aria-labelledby": id + "-t " + id + "-d", class: "gt-svg " + cls,
+      preserveAspectRatio: "xMidYMid meet" });
+    svg.appendChild(s("title", { id: id + "-t" }, m.title));
+    svg.appendChild(s("desc", { id: id + "-d" }, m.desc));
+    svg.setAttribute("font-size", Geo.LABEL_FONT_PX * u);
+    if (outlineD) svg.appendChild(basemap());
+    if (!m.ok) return svg;
+    // legs first, then number badges, then dots and labels on top
+    m.arcs.forEach(function (a) { svg.appendChild(polyline(a.points, "gt-leg " + cls, a.dashed)); });
+    m.arcs.forEach(function (a) {
+      if (a.number == null) return;
+      var g = s("g", { class: "gt-badge" });
+      g.appendChild(s("circle", { cx: a.mid[0], cy: a.mid[1], r: 6.5 * u, class: "gt-badge-bg " + cls, "vector-effect": "non-scaling-stroke" }));
+      g.appendChild(s("text", { x: a.mid[0], y: a.mid[1] + 3.6 * u, "text-anchor": "middle", class: "gt-badge-num" }, a.number));
+      svg.appendChild(g);
+    });
+    m.dots.forEach(function (d) {
+      svg.appendChild(drawDot(d, u, cls));
+      svg.appendChild(s("text", { x: d.x + d.labelDx * u, y: d.y + d.labelDy * u, "text-anchor": d.labelAnchor,
+        class: "gt-label" + (d.role === "hub" ? " gt-label--hub" : ""), "stroke-width": 3 * u }, d.label));
+    });
+    return svg;
+  }
+
+  function mapUnavailable(msg) {
+    var p = h("p", "gt-error", msg);
+    p.setAttribute("role", "status");
+    return p;
+  }
+
+  function legendSvgSample(kind) {
+    // tiny 26 x 12 px inline sample of a line / dot style for the legend
+    var svg = s("svg", { width: 26, height: 14, viewBox: "0 0 26 14", "aria-hidden": "true", focusable: "false", class: "gt-sample" });
+    if (kind === "solid" || kind === "dashed") {
+      svg.appendChild(s("line", { x1: 1, y1: 7, x2: 25, y2: 7, class: "gt-leg gt--ink " + (kind === "dashed" ? "gt-leg--dashed" : "gt-leg--solid") }));
+    } else if (kind === "origin") {
+      svg.appendChild(s("circle", { cx: 13, cy: 7, r: 5, class: "gt-fill gt--ink" }));
+    } else if (kind === "destination") {
+      svg.appendChild(s("rect", { x: 8, y: 2, width: 10, height: 10, class: "gt-fill gt--ink" }));
+    } else {
+      svg.appendChild(s("circle", { cx: 13, cy: 7, r: 6, class: "gt-ring gt--ink" }));
+      svg.appendChild(s("circle", { cx: 13, cy: 7, r: 2.2, class: "gt-fill gt--ink" }));
+    }
+    return svg;
+  }
+
+  function legend() {
+    var ul = h("ul", "gt-legend");
+    ul.setAttribute("aria-label", "Map legend");
+    [["solid", "nonstop leg (solid line)"], ["dashed", "leg of a connecting trip (dashed line, numbered 1, 2)"],
+     ["origin", "origin (filled circle)"], ["destination", "destination (filled square)"],
+     ["hub", "hub / connection airport (large ringed dot, labelled \u201chub\u201d)"]].forEach(function (x) {
+      var li = h("li");
+      li.appendChild(legendSvgSample(x[0]));
+      li.appendChild(document.createTextNode(" " + x[1]));
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function renderMaps(trip) {
+    var sec = h("section", "ground-tracks");
+    sec.setAttribute("aria-labelledby", "gt-title");
+    var title = h("h3", "gt-title", "Ground tracks");
+    title.id = "gt-title";
+    sec.appendChild(title);
+    var grid = h("div", "gt-grid");
+    var widthPx = mapWidthPx();
+    mapsRenderedWidth = widthPx;
+    var model = airports ? Geo.buildMaps(trip, airports, { widthPx: widthPx }) : null;
+    var fallbackModel = model || Geo.buildMaps(trip, { airports: {} }, { widthPx: widthPx });
+    fallbackModel.maps.forEach(function (m) {
+      var fig = h("figure", "gt-fig " + (m.id === "point_to_point" ? "gt-fig--p2p" : "gt-fig--hs"));
+      fig.appendChild(h("h4", "gt-fig-title", m.heading));
+      if (airports === undefined) {
+        fig.appendChild(mapUnavailable("Loading map data\u2026"));
+      } else if (airports === null) {
+        fig.appendChild(mapUnavailable("Map unavailable: " + AIRPORTS_URL + " could not be loaded."));
+      } else if (!m.ok) {
+        fig.appendChild(mapUnavailable(m.error));
+      } else {
+        fig.appendChild(mapSvg(m, fallbackModel.viewBox.str, fallbackModel.viewBox, fallbackModel.unit));
+      }
+      var cap = h("figcaption");
+      var lines = h("ul", "gt-caption");
+      m.caption.forEach(function (c) { lines.appendChild(h("li", null, c)); });
+      cap.appendChild(lines);
+      if (m.note) cap.appendChild(h("p", "gt-note", m.note));
+      fig.appendChild(cap);
+      grid.appendChild(fig);
+    });
+    sec.appendChild(grid);
+    sec.appendChild(legend());
+    sec.appendChild(h("p", "gt-ideal", LEGEND_NOTE));
+    return sec;
   }
 
   // ---------- columns ----------
@@ -221,6 +370,7 @@
     scroller.setAttribute("aria-label", "Summary table (scrolls sideways on narrow screens)");
     scroller.appendChild(renderSummary(view));
     frag.appendChild(scroller);
+    frag.appendChild(renderMaps(trips.pairs[view.key]));
     var grid = h("div", "compare");
     Core.renderRows(view).forEach(function (col) { grid.appendChild(renderColumn(col, view)); });
     frag.appendChild(grid);
@@ -304,6 +454,10 @@
     });
   }
 
+  window.addEventListener("resize", function () {
+    if (trips && Math.abs(mapWidthPx() - mapsRenderedWidth) > 8) render();
+  });
+
   getJSON(TRIPS_URL)
     .then(function (data) {
       var v = Core.validateData(data);
@@ -316,6 +470,12 @@
       render();
       // Profiles are optional: the comparison works without the plots.
       getJSON(PROFILES_URL).then(function (p) { profiles = p; render(); }, function () { render(); });
+      // Maps are optional too: a failure is shown in place of the maps, never as a crash.
+      getJSON(AIRPORTS_URL).then(function (a) { airports = a; render(); }, function () { airports = null; render(); });
+      fetch(OUTLINE_URL).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      }).then(function (t) { outlineD = t.trim(); outlineNode = null; render(); }, function () { outlineD = null; });
     })
     .catch(fail);
 })();

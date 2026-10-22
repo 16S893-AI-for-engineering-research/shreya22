@@ -105,3 +105,12 @@ even index spacing, first and last samples kept.
 
 **Determinism.** `json.dumps(sort_keys=True, separators=(",", ":"),
 allow_nan=False)`; no timestamps, no absolute paths; input hashes are in `source`.
+
+## File 3: data/trip_airports.json (NW-31, ground-track maps)
+
+`{"schema_version":1, "airports": {"BOS": {"lat": 42.3643, "lon": -71.0052}, ...}}`: exactly
+the airports listed in `trips_top50.json` plus every airport on either route of any pair
+(hubs included; 64 today). Coordinates are from `project/data/airports.csv`, rounded to 4
+decimals. Regenerate with `python -m build_trip_airports --out ../../data/trip_airports.json`
+(from `project/src`; needs no cache and no network). Geometry for the maps lives in
+`js/trip-tool-geo.js`.
